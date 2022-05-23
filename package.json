@@ -1,0 +1,33 @@
+{
+    "name": "sprinkle-js",
+    "version": "0.0.3",
+    "description": "A quick drop in reactive library to sprinkle reactivity in your web-app",
+    "module": "dist/sprinkle-js.esm.js",
+    "main": "dist/sprinkle-js.cjs.js",
+    "scripts": {
+        "build": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": "git+https://github.com/paoloricciuti/sprinkle-js.git",
+    "keywords": [
+        "sprinkle",
+        "javascript",
+        "reactive",
+        "dropin"
+    ],
+    "author": "Paolo Ricciuti",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/paoloricciuti/sprinkle-js/issues"
+    },
+    "homepage": "https://github.com/paoloricciuti/sprinkle-js#readme",
+    "devDependencies": {
+        "@babel/preset-typescript": "^7.17.12",
+        "@preconstruct/cli": "^2.1.5",
+        "babel-minify": "^0.5.2",
+        "typescript": "^4.6.4",
+        "babel-preset-minify": "^0.5.2"
+    },
+    "volta": {
+        "node": "17.0.1"
+    }
+}
