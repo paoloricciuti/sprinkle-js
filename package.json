@@ -1,10 +1,9 @@
 {
     "name": "sprinkle-js",
-    "version": "0.0.8",
+    "version": "0.0.12",
     "description": "A quick drop in reactive library to sprinkle reactivity in your web-app",
     "module": "dist/sprinkle-js.esm.js",
-    "browser": "dist/sprinkle-js.cjs.js",
-    "unpkg": "dist/sprinkle-js.js",
+    "main": "dist/sprinkle-js.cjs.js",
     "scripts": {
         "build": "yarn preconstruct build && node ./automation/pack-browser.js"
     },
@@ -30,8 +29,5 @@
     },
     "volta": {
         "node": "17.0.1"
-    },
-    "files": [
-        "/dist/*"
-    ]
+    }
 }
