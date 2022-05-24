@@ -1,6 +1,6 @@
 {
     "name": "sprinkle-js",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "A quick drop in reactive library to sprinkle reactivity in your web-app",
     "module": "dist/sprinkle-js.esm.js",
     "main": "dist/sprinkle-js.cjs.js",
@@ -30,5 +30,7 @@
     "volta": {
         "node": "17.0.1"
     },
-    "dependencies": {}
+    "files": [
+        "/dist/*"
+    ]
 }
