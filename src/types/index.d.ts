@@ -15,6 +15,6 @@ type IStringOrDomElement<T extends HTMLElement> = string | T;
 
 type IGetDomElementFn = <T extends HTMLElement>(domElement: IStringOrDomElement<T>) => T | null;
 
-interface AppendNode extends ChildNode {
+interface AppendNode<T extends ChildNode> extends T {
     key?: any;
 }

@@ -7,7 +7,7 @@ function subscribe(running: ICreateEffectRunning, subscriptions: ISubscription) 
     running.dependencies.add(subscriptions);
 }
 
-const createVariable = (value: Object) => {
+const createVariable = <T extends Object>(value: T) => {
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
     const subscriptions: ISubscription = new Set<ICreateEffectRunning>();
     const variable = new Proxy(value, {
@@ -86,7 +86,7 @@ const bindStyle = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<any
     bindDom(elem, () => ({ style: fn() }));
 };
 
-const bindChildrens = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<NodeListOf<AppendNode>>) => {
+const bindChildrens = <T extends ChildNode>(domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<NodeListOf<AppendNode<T>>>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem === null) return;
@@ -95,7 +95,7 @@ const bindChildrens = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect
             elem.append(...Array.from(elements));
             return;
         }
-        const differentElements = diff([...Array.from((elem.childNodes as NodeListOf<AppendNode>))], [...Array.from(elements)], (a, b) => a.key != null && b.key != null ? a.key === b.key : a === b);
+        const differentElements = diff([...Array.from((elem.childNodes as NodeListOf<AppendNode<T>>))], [...Array.from(elements)], (a, b) => a.key != null && b.key != null ? a.key === b.key : a === b);
         let nextEqual = differentElements.find(element => element.type === "=");
         let index = 0;
         for (let element of differentElements) {
