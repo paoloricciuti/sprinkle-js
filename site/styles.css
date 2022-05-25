@@ -1,3 +1,139 @@
+:root {
+    --clr-saturation: 85%;
+    --clr-lightness: 60%;
+    --clr-lightness-dull: 40%;
+    --clr-bg-hue: 50;
+    --clr-primary-hue: 94;
+    --clr-secondary-hue: 25;
+    --clr-bg: hsl(var(--clr-bg-hue), var(--clr-saturation), var(--clr-lightness));
+    --clr-primary: hsl(var(--clr-primary-hue), var(--clr-saturation), var(--clr-lightness));
+    --clr-primary-dull: hsl(var(--clr-primary-hue), var(--clr-saturation), var(--clr-lightness-dull));
+    --clr-secondary: hsl(var(--clr-secondary-hue), var(--clr-saturation), var(--clr-lightness));
+    --clr-secondary-dull: hsl(var(--clr-secondary-hue), var(--clr-saturation), var(--clr-lightness-dull));
+}
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+    margin: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+    list-style: none;
+}
+
+/* Set core root defaults */
+html:focus-within {
+    scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+    line-height: 1.5;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+    text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+    max-width: 100%;
+    display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+body {
+    background-color: var(--clr-bg);
+}
+
+button {
+    --_active-bg: var(--clr-primary);
+    font-family: 'Amatic SC', cursive;
+    font-size: 1.5rem;
+    background-color: var(--_active-bg);
+    padding: .4em 1.3em;
+    font-weight: 700;
+    transition: outline-offset 125ms;
+}
+
+button:focus, button:focus-visible {
+    outline: 1px solid --clr-secondary;
+    outline-offset: .3em;
+}
+
+button:active {
+    --_active-bg: var(--clr-primary-dull);
+}
+
+button.secondary {
+    --_active-bg: var(--clr-secondary);
+}
+
+button:active.secondary {
+    --_active-bg: var(--clr-secondary-dull);
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+    font-family: 'Permanent Marker', cursive;
+}
+
+.to-the-moon {
+    background: linear-gradient(90deg, var(--clr-primary-dull), var(--clr-secondary-dull));
+    color: black;
+}
+
+@supports(-webkit-background-clip: text) {
+    .to-the-moon {
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+}
+
 #movable {
     background-color: red;
     position: absolute;

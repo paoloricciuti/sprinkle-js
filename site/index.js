@@ -33,7 +33,7 @@ const pos = createVariable({
 window.ul = ul;
 window.pos = pos;
 
-bindTextContent("span", () => pos.text);
+bindTextContent(".pos", () => JSON.stringify(pos));
 
 const div = document.createElement("div");
 document.body.append(div);
