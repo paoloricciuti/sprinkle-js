@@ -1,3 +1,5 @@
+import { IGetDomElementFn, IStringOrDomElement } from "./types/index";
+
 const getDomElement: IGetDomElementFn = <T extends HTMLElement>(domElement: IStringOrDomElement<T>) => {
     return typeof domElement === "string" ? document.querySelector<T>(domElement) : domElement;
 };

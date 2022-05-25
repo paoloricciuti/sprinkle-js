@@ -1,3 +1,4 @@
+import { AppendNode, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IStringOrDomElement, ISubscription } from "./types/index";
 import { findNext, updateDom, diff, getDomElement } from "./utils";
 
 const context: ICreateEffectRunning[] = [];
@@ -86,7 +87,7 @@ const bindStyle = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<any
     bindDom(elem, () => ({ style: fn() }));
 };
 
-const bindChildrens = <T extends ChildNode>(domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<NodeListOf<AppendNode<T>>>) => {
+const bindChildrens = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<NodeListOf<AppendNode>>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem === null) return;
@@ -95,7 +96,7 @@ const bindChildrens = <T extends ChildNode>(domElement: IStringOrDomElement<HTML
             elem.append(...Array.from(elements));
             return;
         }
-        const differentElements = diff([...Array.from((elem.childNodes as NodeListOf<AppendNode<T>>))], [...Array.from(elements)], (a, b) => a.key != null && b.key != null ? a.key === b.key : a === b);
+        const differentElements = diff([...Array.from((elem.childNodes as NodeListOf<AppendNode>))], [...Array.from(elements)], (a, b) => a.key != null && b.key != null ? a.key === b.key : a === b);
         let nextEqual = differentElements.find(element => element.type === "=");
         let index = 0;
         for (let element of differentElements) {
