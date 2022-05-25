@@ -89,6 +89,7 @@ select {
 
 body {
     background-color: var(--clr-bg);
+    overflow-x: hidden;
 }
 
 button {
@@ -123,6 +124,25 @@ button:active.secondary {
     font-family: 'Permanent Marker', cursive;
 }
 
+.hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+    width: min(90%, 55rem);
+    margin: auto;
+    padding-block: 4rem;
+    gap: 4rem;
+}
+
+.title {
+    transform: rotateZ(-3deg);
+    align-self: end;
+}
+
+.get-started {
+    align-self: baseline;
+}
+
 .to-the-moon {
     background: linear-gradient(90deg, var(--clr-primary-dull), var(--clr-secondary-dull));
     color: black;
@@ -136,33 +156,71 @@ button:active.secondary {
     }
 }
 
-#movable {
-    background-color: red;
+.board {
+    background-color: brown;
+    padding: 1rem;
+    max-width: 20rem;
+    min-height: 30rem;
+    box-shadow: 0 0 .5rem rgba(0 0 0 / .3);
+    transform: rotateZ(8deg);
+    grid-row: 1 / span 2;
+    grid-column: 2;
+}
+
+@media screen and (max-width: 43.75rem) {
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .board {
+        grid-column: 1;
+        grid-row: 3;
+    }
+}
+
+.paper {
+    position: relative;
+    background-color: hsl(63 75% 70%);
+    padding: 1rem;
+    min-height: 100%;
+    box-shadow: 0 0 .5rem rgba(0 0 0 / .3)
+}
+
+.paper:before {
+    content: '';
     position: absolute;
-    top: var(--top, 0);
-    left: var(--left, 0);
-    width: 1rem;
+    background: grey;
+    width: 10%;
     height: 1rem;
-    pointer-events: none;
-    transform: translate(-50%, -50%)
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 .5rem rgba(0 0 0 / .3)
 }
 
-#list>li {
-    animation: fade-in 250ms;
+code>div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .2rem;
 }
 
-.hidden {
-    display: none;
+.key {
+    overflow: hidden;
+    margin-left: 1rem;
 }
 
-@keyframes fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(-100%);
-    }
+.mod-value {
+    text-align: center;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background-color: rgb(255 255 255 / .5);
+    font-family: monospace;
+    line-height: 0;
+    width: calc(var(--chars, 0) * 1ch);
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0%);
-    }
+.key:after {
+    content: '........................................................................................................................';
 }

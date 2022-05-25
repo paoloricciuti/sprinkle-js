@@ -1,98 +1,64 @@
-import { createVariable, createRef, bindInputValue, bindTextContent, bindDom, bindStyle, bindChildrens } from "https://cdn.skypack.dev/sprinkle-js";
+import { createVariable, bindDom, bindTextContent } from "https://cdn.skypack.dev/sprinkle-js";
 
-const x = createRef(1);
-const y = createRef(1);
-const bool = createRef(false);
-
-const ul = createRef([]);
-bindChildrens("#list", () => ul.value.map(val => {
-    const li = document.createElement("li");
-    li.innerText = val;
-    li.key = val;
-    li.addEventListener("click", () => {
-        ul.value = ul.value.filter(elem => elem !== val);
-    });
-    bindStyle(li, () => ({
-        color: x.value % 2 === 0 ? "red" : "green",
-    }));
-    return li;
-}));
-
-bindDom("#boolVal", () => ({
-    checked: bool.value,
-}));
-
-bindDom("#num", () => ({
-    className: bool.value ? "hidden" : "",
-}));
-
-const pos = createVariable({
-    x: 0,
-    y: 0,
-});
-window.ul = ul;
-window.pos = pos;
-
-bindTextContent(".pos", () => JSON.stringify(pos));
-
-const div = document.createElement("div");
-document.body.append(div);
-bindTextContent(div, () => "Il conto è " + (x.value + y.value));
-
-btnX.addEventListener("click", () => {
-    x.value += 1;
+const state = createVariable({
+    title: "well nothing!",
+    theme: "auto",
+    mineBitcoin: true,
+    bitcoinRate: 10,
 });
 
-btnY.addEventListener("click", () => {
-    y.value += 1;
-});
+window.state = state;
 
-btnFlip.addEventListener("click", () => {
-    bool.value = !bool.value;
-});
+bindTextContent(".to-the-moon", () => state.title);
 
-num.addEventListener("input", (e) => {
-    y.value = +e.target.value;
-});
-
-boolVal.addEventListener("input", (e) => {
-    bool.value = e.target.checked;
-});
-
-btnBoth.addEventListener("click", () => {
-    y.value += 1;
-    x.value++;
-});
-
-btnAddlist.addEventListener("click", () => {
-    ul.value = [...ul.value, Math.random()];
-});
-
-btnShufflelist.addEventListener("click", () => {
-    ul.value = ul.value.sort(() => Math.random() - .5);
-});
-
-btnSortlist.addEventListener("click", () => {
-    ul.value = ul.value.sort((a, b) => a - b);
-});
-
-bindInputValue(num, () => y.value);
-
-bindStyle(num, () => ({
-    width: `${x.value}rem`,
-    color: y.value % 2 === 0 ? "red" : "blue",
-}));
-
-bindStyle("#movable", () => ({
-    backgroundColor: "green",
-    "--top": `${pos.y}px`,
-    "--left": `${pos.x}px`,
-    width: `${pos.x / 10}px`,
-    height: `${pos.x / 10}px`,
-    opacity: bool.value ? .3 : 1,
-}));
-
-window.addEventListener("mousemove", ({ clientX, clientY }) => {
-    pos.x = clientX;
-    pos.y = clientY;
-});
+const openPar = document.createTextNode("{");
+const keys = Object.keys(state);
+const df = document.createDocumentFragment();
+df.append(openPar);
+for (let key of keys) {
+    let div = document.createElement("div");
+    let span = document.createElement("span");
+    span.textContent = `"${key}":`;
+    let spanVal = document.createElement("span");
+    const type = typeof state[key];
+    if (type === "string" || type === "number") {
+        const first = document.createTextNode("\"");
+        const last = document.createTextNode("\"");
+        const input = document.createElement("input");
+        input.type = type === "string" ? "text" : "number";
+        input.className = "mod-value";
+        bindDom(input, () => ({
+            value: state[key],
+            style: {
+                "--chars": state[key].toString().length + (type === "string" ? 0 : 2),
+            }
+        }));
+        input.addEventListener("input", (e) => {
+            state[key] = type === "string" ? e.target.value : +e.target.value;
+        });
+        if (type === "string") {
+            spanVal.append(first, input, last);
+        } else {
+            spanVal.append(input);
+        }
+    } else if (type === "boolean") {
+        spanVal.textContent = state[key];
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        bindDom(checkbox, () => ({
+            checked: state[key],
+        }));
+        checkbox.addEventListener("change", (e) => {
+            state[key] = e.target.checked;
+        });
+        spanVal.append(checkbox);
+    }
+    span.className = "key";
+    spanVal.className = "value";
+    div.append(span);
+    div.append(spanVal);
+    df.append(div);
+}
+const closePar = document.createTextNode("}");
+df.append(closePar);
+document.querySelector("code").append(df);
