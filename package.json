@@ -6,7 +6,10 @@
     "main": "dist/sprinkle-js.cjs.js",
     "scripts": {
         "build": "yarn preconstruct build && node ./automation/pack-browser.js",
-        "publish": "yarn version --patch && yarn build && npm pubish"
+        "publish:nobump": "yarn build && npm publish",
+        "publish:patch": "yarn build && yarn version --patch && npm publish",
+        "publish:minor": "yarn build && yarn version --minor && npm publish",
+        "publish:major": "yarn build && yarn version --major && npm publish"
     },
     "repository": "git+https://github.com/paoloricciuti/sprinkle-js.git",
     "keywords": [

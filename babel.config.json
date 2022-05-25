@@ -2,5 +2,6 @@
     "presets": [
         "@babel/preset-typescript",
         "minify"
-    ]
+    ],
+    "comments": false
 }
