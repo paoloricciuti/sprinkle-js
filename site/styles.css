@@ -99,6 +99,7 @@ button {
     padding: .4em 1.3em;
     font-weight: 700;
     transition: outline-offset 125ms;
+    border: 0.125rem solid black;
 }
 
 button:focus, button:focus-visible {
@@ -130,6 +131,7 @@ button:active.secondary {
 @supports(-webkit-background-clip: text) {
     .to-the-moon {
         -webkit-background-clip: text;
+        background-clip: text;
         color: transparent;
     }
 }

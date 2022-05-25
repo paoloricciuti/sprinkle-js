@@ -14,6 +14,5 @@ export interface ICreateEffectRunning {
 export type IStringOrDomElement<T extends HTMLElement> = string | T;
 
 export type IGetDomElementFn = <T extends HTMLElement>(domElement: IStringOrDomElement<T>) => T | null;
-export interface AppendNode extends ChildNode {
-    key?: any;
-}
+
+export type AppendNode<T extends ChildNode = ChildNode> = T & { key?: any; };
