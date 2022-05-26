@@ -104,7 +104,7 @@ button {
     border: 0.125rem solid black;
 }
 
-button:focus, button:focus-visible {
+button:is(:focus, :focus-visible):not(:active) {
     outline: 1px solid --clr-secondary;
     outline-offset: .3em;
 }
@@ -123,6 +123,32 @@ button:active.secondary {
 
 :where(h1, h2, h3, h4, h5, h6) {
     font-family: 'Permanent Marker', cursive;
+}
+
+.header {
+    --header-height: 7vh;
+    min-height: var(--header-height);
+    padding: 1rem 2rem;
+    background-color: var(--clr-bg);
+    box-shadow: 0 0 1rem 0 rgb(0 0 0 / .3);
+    position: sticky;
+    top: 0;
+    display: flex;
+    gap: 1rem;
+    z-index: 10;
+}
+
+.header>.logo {
+    height: var(--header-height);
+    display: flex;
+    gap: 1rem;
+    position: absolute;
+    filter: drop-shadow(0 0 .3rem rgb(0 0 0 / .3));
+}
+
+.logo>img {
+    object-fit: contain;
+    transform: rotate(calc(var(--logo-rotation, 0)*5deg));
 }
 
 .hero {

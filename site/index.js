@@ -1,6 +1,7 @@
-import { createVariable, bindDom, bindTextContent } from "https://cdn.skypack.dev/sprinkle-js";
+import { createVariable, bindDom, bindTextContent, bindStyle } from "https://cdn.skypack.dev/sprinkle-js";
 
 const state = createVariable({
+    logoRotation: 0,
     title: "well nothing!",
     theme: "auto",
     mineBitcoin: true,
@@ -10,6 +11,13 @@ const state = createVariable({
 window.state = state;
 
 bindTextContent(".to-the-moon", () => state.title);
+bindStyle(".logo > img", () => ({
+    "--logo-rotation": state.logoRotation,
+}));
+
+window.addEventListener("scroll", (e) => {
+    state.logoRotation = Math.floor(window.scrollY);
+});
 
 const openPar = document.createTextNode("{");
 const keys = Object.keys(state);
