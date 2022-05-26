@@ -126,7 +126,7 @@ button:active.secondary {
 }
 
 .header {
-    --header-height: 7vh;
+    --header-height: 4rem;
     min-height: var(--header-height);
     padding: 1rem 2rem;
     background-color: var(--clr-bg);
@@ -149,6 +149,11 @@ button:active.secondary {
 .logo>img {
     object-fit: contain;
     transform: rotate(calc(var(--logo-rotation, 0)*5deg));
+}
+
+.logo>h1 {
+    font-size: clamp(1.31rem, calc(1.28rem + 0.19vw), 1.50rem);
+    align-self: center;
 }
 
 .hero {
