@@ -203,8 +203,8 @@ button:active.secondary {
 .board {
     background-color: brown;
     padding: 1rem;
-    max-width: 20rem;
-    min-height: 30rem;
+    width: 20rem;
+    height: 30rem;
     box-shadow: 0 0 .5rem rgba(0 0 0 / .3);
     transform: rotateZ(8deg);
     grid-row: 1 / span 2;
@@ -240,6 +240,17 @@ button:active.secondary {
     left: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 .5rem rgba(0 0 0 / .3)
+}
+
+.paper::after {
+    content: 'application state';
+    background: blue;
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-inline: 0.3rem;
+    font-size: .68rem;
 }
 
 code>div {
