@@ -90,6 +90,7 @@ select {
 body {
     background-color: var(--clr-bg);
     overflow-x: hidden;
+    background-image: url(./assets/tiles.png);
 }
 
 button {
@@ -141,6 +142,18 @@ button:active.secondary {
 
 .get-started {
     align-self: baseline;
+    position: relative;
+}
+
+.get-started:before {
+    content: '';
+    position: absolute;
+    transform: translateX(-163%) rotate(22deg);
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-image: url(./assets/arrow.svg);
+    pointer-events: none;
 }
 
 .to-the-moon {
@@ -203,6 +216,7 @@ code>div {
     justify-content: space-between;
     align-items: center;
     gap: .2rem;
+    overflow-x: hidden;
 }
 
 .key {
