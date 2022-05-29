@@ -1,15 +1,14 @@
 {
     "name": "sprinkle-js",
-    "version": "0.0.18",
+    "version": "0.0.19",
     "description": "A quick drop in reactive library to sprinkle reactivity in your web-app",
     "module": "dist/sprinkle-js.esm.js",
     "main": "dist/sprinkle-js.cjs.js",
     "scripts": {
         "build": "yarn preconstruct build && node ./automation/pack-browser.js",
-        "publish:nobump": "yarn build && npm publish",
-        "publish:patch": "yarn build && yarn version --patch && npm publish",
-        "publish:minor": "yarn build && yarn version --minor && npm publish",
-        "publish:major": "yarn build && yarn version --major && npm publish",
+        "publish:patch": "yarn build && yarn version --patch",
+        "publish:minor": "yarn build && yarn version --minor",
+        "publish:major": "yarn build && yarn version --major",
         "test": "jest"
     },
     "repository": "git+https://github.com/paoloricciuti/sprinkle-js.git",
