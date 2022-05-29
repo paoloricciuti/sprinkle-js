@@ -19,21 +19,26 @@ bindStyle(".footer", () => ({
     "--animation-state": state.mineBitcoin ? "running" : "paused",
 }));
 
-setInterval(() => {
-    if (!state.mineBitcoin) return;
-    const chance = Math.floor(Math.random() * 100);
-    if (chance <= state.bitcoinRate) {
-        const bitcoinElem = document.createElement("img");
-        bitcoinElem.src = "./assets/bitcoin.svg";
-        bitcoinElem.classList.add("bitcoin");
-        bitcoinElem.addEventListener("animationend", () => {
-            bitcoinElem.remove();
-        });
-        document.querySelector(".footer").append(bitcoinElem);
+const arms = document.querySelector("#arms");
+
+let iterationCount = 0;
+
+arms.addEventListener("animationiteration", () => {
+    if (iterationCount % 2 === 1) {
+        const chance = Math.floor(Math.random() * 100);
+
+        if (chance <= state.bitcoinRate) {
+            const bitcoinElem = document.createElement("img");
+            bitcoinElem.src = "./assets/bitcoin.svg";
+            bitcoinElem.classList.add("bitcoin");
+            bitcoinElem.addEventListener("animationend", () => {
+                bitcoinElem.remove();
+            });
+            document.querySelector(".footer").append(bitcoinElem);
+        }
     }
-}, 2000);
-
-
+    iterationCount++;
+});
 
 window.addEventListener("scroll", (e) => {
     state.logoRotation = Math.floor(window.scrollY);
