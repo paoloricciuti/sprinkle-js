@@ -280,3 +280,72 @@ code>div {
 .key:after {
     content: '........................................................................................................................';
 }
+
+.footer {
+    height: 10rem;
+    position: absolute;
+    bottom: 0;
+    background-image: url('./assets/mine.svg');
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    width: 100%;
+    background-size: auto;
+}
+
+.footer>svg {
+    height: 100%;
+    width: auto;
+}
+
+.footer>svg #body {
+    animation: mine-body 1s infinite alternate linear;
+    transform-origin: bottom center;
+    transform-box: fill-box;
+    animation-play-state: var(--animation-state, paused);
+}
+
+.footer>svg #arms {
+    animation: mine-arms 1s infinite alternate linear;
+    transform-origin: bottom right;
+    transform-box: fill-box;
+    animation-play-state: var(--animation-state, paused);
+}
+
+.bitcoin {
+    position: absolute;
+    top: 0;
+    animation: fade-away 1s;
+    width: 3rem;
+    height: 3rem;
+}
+
+@keyframes fade-away {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(45%, -100%);
+    }
+}
+
+@keyframes mine-body {
+    from {
+        transform: rotate(-10deg);
+    }
+
+    to {
+        transform: rotate(10deg)
+    }
+}
+
+@keyframes mine-arms {
+    from {
+        transform: rotate(-50deg);
+    }
+
+    to {
+        transform: rotate(20deg)
+    }
+}

@@ -2,13 +2,14 @@ export type IEffect<T> = () => T;
 
 export type ICreateEffect = (fn: IEffect<any>) => void;
 
-export type ICreateEffectExecute = () => void;
+export type ICreateEffectExecute = () => (() => void) | void;
 
 export type ISubscription = Set<ICreateEffectRunning>;
 
 export interface ICreateEffectRunning {
     execute: ICreateEffectExecute;
     dependencies: Set<ISubscription>;
+    cleanup?: () => void;
 }
 
 export type IStringOrDomElement<T extends HTMLElement> = string | T;

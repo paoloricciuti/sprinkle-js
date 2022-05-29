@@ -1,7 +1,7 @@
 import { AppendNode, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IStringOrDomElement, ISubscription } from "./types/index";
 import { findNext, updateDom, diff, getDomElement } from "./utils";
 
-const context: ICreateEffectRunning[] = [];
+let context: ICreateEffectRunning[] = [];
 
 function subscribe(running: ICreateEffectRunning, subscriptions: ISubscription) {
     subscriptions.add(running);
@@ -20,7 +20,10 @@ const createVariable = <T extends Object>(value: T) => {
         set: (...props) => {
             const ok = Reflect.set(...props);
             for (const sub of [...subscriptions]) {
-                sub.execute();
+                const cleanUpFn = sub.execute();
+                if (cleanUpFn) {
+                    sub.cleanup = cleanUpFn;
+                }
             }
             return ok;
         }
@@ -41,21 +44,36 @@ const cleanup = (running: ICreateEffectRunning) => {
 
 const createEffect: ICreateEffect = (fn) => {
     const execute: ICreateEffectExecute = () => {
+        if (running.cleanup) {
+            running.cleanup();
+        }
         cleanup(running);
         context.push(running);
+        let retval;
         try {
-            fn();
+            retval = fn();
         } finally {
             context.pop();
         }
+        return retval;
     };
 
     const running: ICreateEffectRunning = {
         execute,
         dependencies: new Set()
     };
+    const cleanupFn = execute();
+    if (cleanupFn) {
+        running.cleanup = cleanupFn;
+    }
+};
 
-    execute();
+const untrack = (fn: () => any) => {
+    const oldContext = context;
+    context = [];
+    const retval = fn();
+    context = oldContext;
+    return retval;
 };
 
 const bindTextContent = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<string>) => {
@@ -63,6 +81,20 @@ const bindTextContent = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffe
     createEffect(() => {
         if (elem) {
             elem.textContent = fn();
+        }
+    });
+};
+
+const bindClass = (domElement: IStringOrDomElement<HTMLElement>, className: string, fn: IEffect<boolean>) => {
+    const elem = getDomElement(domElement);
+    createEffect(() => {
+        if (elem) {
+            const isPresent = fn();
+            if (isPresent) {
+                elem.classList.add(className);
+            } else {
+                elem.classList.remove(className);
+            }
         }
     });
 };
@@ -117,4 +149,4 @@ const bindChildrens = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect
     });
 };
 
-export { createEffect, createRef, createVariable, bindInputValue, bindTextContent, bindDom, bindStyle, bindChildrens };
+export { createEffect, untrack, createRef, createVariable, bindInputValue, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };

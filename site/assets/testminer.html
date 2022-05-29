@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .mining>#body {
+            animation: mine-body 1s infinite alternate linear;
+            transform-origin: bottom center;
+            transform-box: fill-box;
+        }
+
+        .mining>#arms {
+            animation: mine-arms 1s infinite alternate linear;
+            transform-origin: bottom right;
+            transform-box: fill-box;
+        }
+
+        @keyframes mine-body {
+            from {
+                transform: rotate(-10deg);
+            }
+
+            to {
+                transform: rotate(10deg)
+            }
+        }
+
+        @keyframes mine-arms {
+            from {
+                transform: rotate(-50deg);
+            }
+
+            to {
+                transform: rotate(20deg)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <svg class="mining" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+        <path
+            d="M 289.478 391.889 L 288.688 390.847 L 266.607 465.536 L 196.403 443.949 L 203.107 418.461 L 224.541 424.796 L 238.348 378.102 C 235.254 363.938 234.148 358.12 236.75 348.972 C 239.401 339.654 244.067 328.912 251.353 322.843 L 288.121 334.371 L 321.772 327.469 L 332.335 345.566 L 356.583 454.661 L 284.72 469.816 L 278.223 444.276 L 300.041 439.424 L 289.478 391.889 Z"
+            style="stroke: rgb(0, 0, 0); paint-order: fill;" />
+        <path id="body"
+            d="M 261.942 99.084 L 308.242 99.084 L 308.242 114.606 L 317.618 114.606 C 325.666 114.606 332.19 121.131 332.19 129.179 L 332.19 175.072 C 332.19 183.119 325.666 189.646 317.618 189.646 L 315.826 189.646 L 315.826 199.089 L 322.212 199.089 L 322.212 336.392 L 247.972 336.392 L 247.972 199.089 L 254.356 199.089 L 254.356 189.646 L 252.565 189.646 C 244.517 189.646 237.993 183.119 237.993 175.072 L 237.993 129.179 C 237.993 121.131 244.517 114.606 252.565 114.606 L 261.942 114.606 L 261.942 99.084 Z"
+            style="stroke: rgb(0, 0, 0); paint-order: fill;" />
+        <path id="arms" style="stroke: rgb(0, 0, 0); paint-order: fill;"
+            d="M 190.8 236.447 L 204.489 233.034 L 214.624 200.596 L 204.447 195.185 C 200.156 192.904 198.527 187.575 200.808 183.284 L 207.536 170.63 C 209.818 166.339 215.146 164.71 219.438 166.992 L 224.313 169.584 L 253.6 75.844 L 196.305 58.227 C 196.305 58.227 282.214 43.717 300.834 62.689 C 319.453 81.664 298.848 89.757 298.848 89.757 L 262.758 78.661 L 232.921 174.161 L 293.05 206.132 L 285.127 221.033 L 290.949 244.385 L 198.525 267.429 C 193.809 268.605 189.033 265.735 187.857 261.02 L 184.39 247.114 C 183.214 242.399 186.084 237.622 190.8 236.447 Z M 252.92 220.959 L 223.231 205.173 L 215.375 230.32 Z" />
+    </svg>
+</body>
+
+</html>

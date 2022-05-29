@@ -1,4 +1,4 @@
-import { createVariable, bindDom, bindTextContent, bindStyle } from "https://cdn.skypack.dev/sprinkle-js";
+import { createVariable, createEffect, bindDom, bindTextContent, bindStyle, untrack } from "https://cdn.skypack.dev/sprinkle-js";
 
 const state = createVariable({
     logoRotation: 0,
@@ -14,6 +14,30 @@ bindTextContent(".to-the-moon", () => state.title);
 bindStyle(".logo > img", () => ({
     "--logo-rotation": state.logoRotation,
 }));
+
+bindStyle(".footer", () => ({
+    "--animation-state": state.mineBitcoin ? "running" : "paused",
+}));
+
+let bitcoinInterval;
+
+createEffect(() => {
+    if (!state.mineBitcoin) clearInterval(bitcoinInterval);
+    bitcoinInterval = untrack(() => setInterval(() => {
+        const chance = Math.floor(Math.random() * 100);
+        if (chance <= state.bitcoinRate) {
+            const bitcoinElem = document.createElement("img");
+            bitcoinElem.src = "./assets/bitcoin.svg";
+            bitcoinElem.classList.add("bitcoin");
+            bitcoinElem.addEventListener("animationend", () => {
+                bitcoinElem.remove();
+            });
+            document.querySelector(".footer").append(bitcoinElem);
+        }
+    }, 2000));
+});
+
+
 
 window.addEventListener("scroll", (e) => {
     state.logoRotation = Math.floor(window.scrollY);
