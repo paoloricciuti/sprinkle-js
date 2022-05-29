@@ -3,23 +3,28 @@ import { findNext, updateDom, diff, getDomElement } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
 
-function subscribe(running: ICreateEffectRunning, subscriptions: ISubscription) {
+function subscribe(field: string | symbol, running: ICreateEffectRunning, subscriptionsMap: Map<string | symbol, ISubscription>) {
+    let subscriptions = subscriptionsMap.get(field);
+    if (!subscriptions) {
+        subscriptions = new Set<ICreateEffectRunning>();
+        subscriptionsMap.set(field, subscriptions);
+    }
     subscriptions.add(running);
     running.dependencies.add(subscriptions);
 }
 
 const createVariable = <T extends Object>(value: T) => {
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
-    const subscriptions: ISubscription = new Set<ICreateEffectRunning>();
+    const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
     const variable = new Proxy(value, {
         get: (...props) => {
             const running = context[context.length - 1];
-            if (running) subscribe(running, subscriptions);
+            if (running) subscribe(props[1], running, subscriptions);
             return Reflect.get(...props);
         },
         set: (...props) => {
             const ok = Reflect.set(...props);
-            for (const sub of [...subscriptions]) {
+            for (const sub of [...subscriptions.get(props[1]) || []]) {
                 const cleanUpFn = sub.execute();
                 if (cleanUpFn) {
                     sub.cleanup = cleanUpFn;
