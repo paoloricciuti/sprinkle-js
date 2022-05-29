@@ -19,23 +19,19 @@ bindStyle(".footer", () => ({
     "--animation-state": state.mineBitcoin ? "running" : "paused",
 }));
 
-let bitcoinInterval;
-
-createEffect(() => {
-    if (!state.mineBitcoin) clearInterval(bitcoinInterval);
-    bitcoinInterval = untrack(() => setInterval(() => {
-        const chance = Math.floor(Math.random() * 100);
-        if (chance <= state.bitcoinRate) {
-            const bitcoinElem = document.createElement("img");
-            bitcoinElem.src = "./assets/bitcoin.svg";
-            bitcoinElem.classList.add("bitcoin");
-            bitcoinElem.addEventListener("animationend", () => {
-                bitcoinElem.remove();
-            });
-            document.querySelector(".footer").append(bitcoinElem);
-        }
-    }, 2000));
-});
+setInterval(() => {
+    if (!state.mineBitcoin) return;
+    const chance = Math.floor(Math.random() * 100);
+    if (chance <= state.bitcoinRate) {
+        const bitcoinElem = document.createElement("img");
+        bitcoinElem.src = "./assets/bitcoin.svg";
+        bitcoinElem.classList.add("bitcoin");
+        bitcoinElem.addEventListener("animationend", () => {
+            bitcoinElem.remove();
+        });
+        document.querySelector(".footer").append(bitcoinElem);
+    }
+}, 2000);
 
 
 

@@ -283,7 +283,7 @@ code>div {
 
 .footer {
     height: 10rem;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     background-image: url('./assets/mine.svg');
     background-position: bottom left;
