@@ -28,16 +28,17 @@ describe("createEffect", () => {
     it("create a function that automatically reruns whenever a dependency (a createRef or createVariable) changes", () => {
         const ref = createRef(1);
         const variable = createVariable({ test: "a" });
-        let variableToUpdate: string = "";
-        createEffect(() => {
-            variableToUpdate = ref.value + variable.test;
-        });
-        expect(variableToUpdate).toBe("1a");
+        const logSpy = jest.spyOn(console, 'log');
+        const fnToRun = jest.fn(() => console.log(ref.value, variable.test));
+        createEffect(fnToRun);
+        expect(logSpy).toHaveBeenCalledWith(1, "a");
         ref.value++;
-        expect(variableToUpdate).toBe("2a");
+        expect(logSpy).toHaveBeenCalledWith(2, "a");
         variable.test = "b";
-        expect(variableToUpdate).toBe("2b");
+        expect(logSpy).toHaveBeenCalledWith(2, "b");
     });
+
+    it.todo("runs the cleanup function returned from the create effect before rerunning");
 });
 
 describe("DOM manipulation by bindind", () => {

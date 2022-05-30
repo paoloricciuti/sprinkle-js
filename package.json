@@ -9,7 +9,8 @@
         "publish:patch": "yarn build && yarn version --patch",
         "publish:minor": "yarn build && yarn version --minor",
         "publish:major": "yarn build && yarn version --major",
-        "test": "jest"
+        "test": "jest --verbose",
+        "coverage": "jest --coverage"
     },
     "repository": "git+https://github.com/paoloricciuti/sprinkle-js.git",
     "keywords": [
