@@ -1,5 +1,6 @@
 
 ![Logo](https://sprinkle-js.netlify.app/assets/sprinkle-js.svg)
+
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/sprinkle-js)
