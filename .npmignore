@@ -1,2 +1,9 @@
 /site
 /automation
+babel.config.json
+tsconfig.json
+/test
+/dist/*.cjs.*
+/coverage
+/src
+/.vscode

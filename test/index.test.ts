@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { createRef, bindTextContent, createVariable, createEffect } from "../dist/sprinkle-js.cjs";
+import { createRef, bindTextContent, createVariable, createEffect } from "../src/index";
 
 describe("createRef", () => {
     it("create a variable with a value property set to the passed in value", () => {

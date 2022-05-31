@@ -3,7 +3,7 @@
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
-![npm bundle size](https://img.shields.io/bundlephobia/min/sprinkle-js)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/sprinkle-js)
 
 ![npm](https://img.shields.io/npm/v/sprinkle-js)
 
