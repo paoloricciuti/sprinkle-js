@@ -1,6 +1,6 @@
 {
     "name": "sprinkle-js",
-    "version": "0.0.25",
+    "version": "0.1.0",
     "description": "A quick drop in reactive library to sprinkle reactivity in your web-app",
     "module": "dist/sprinkle-js.esm.js",
     "main": "dist/sprinkle-js.esm.js",
@@ -9,6 +9,9 @@
         "publish:patch": "yarn build && yarn version --patch",
         "publish:minor": "yarn build && yarn version --minor",
         "publish:major": "yarn build && yarn version --major",
+        "bump:patch": "yarn version --patch",
+        "bump:minor": "yarn version --minor",
+        "bump:major": "yarn version --major",
         "test": "jest --verbose",
         "coverage": "jest --coverage"
     },
