@@ -81,20 +81,20 @@ const untrack = (fn: () => any) => {
     return retval;
 };
 
-const bindTextContent = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<string>) => {
+const bindTextContent = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem) {
-            elem.textContent = fn();
+            elem.textContent = fn(elem);
         }
     });
 };
 
-const bindClass = (domElement: IStringOrDomElement<HTMLElement>, className: string, fn: IEffect<boolean>) => {
+const bindClass = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, className: string, fn: IEffect<boolean, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem) {
-            const isPresent = fn();
+            const isPresent = fn(elem);
             if (isPresent) {
                 elem.classList.add(className);
             } else {
@@ -104,31 +104,31 @@ const bindClass = (domElement: IStringOrDomElement<HTMLElement>, className: stri
     });
 };
 
-const bindInputValue = (domElement: IStringOrDomElement<HTMLInputElement>, fn: IEffect<string>) => {
+const bindInputValue = (domElement: IStringOrDomElement<HTMLInputElement>, fn: IEffect<string, HTMLInputElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem) {
-            elem.value = fn();
+            elem.value = fn(elem);
         }
     });
 };
 
-const bindDom = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<any>) => {
+const bindDom = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<any, TElement>) => {
     const elem = getDomElement(domElement);
-    createEffect(() => updateDom(elem, fn()));
+    createEffect(() => updateDom(elem, fn(elem)));
 };
 
-const bindStyle = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<any>) => {
+const bindStyle = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<any, TElement>) => {
     const elem = getDomElement(domElement);
     if (!elem) return;
-    bindDom(elem, () => ({ style: fn() }));
+    bindDom(elem, () => ({ style: fn(elem) }));
 };
 
-const bindChildrens = (domElement: IStringOrDomElement<HTMLElement>, fn: IEffect<NodeListOf<AppendNode>>) => {
+const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<NodeListOf<AppendNode>, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem === null) return;
-        const elements = fn();
+        const elements = fn(elem);
         if (elem.childNodes.length === 0) {
             elem.append(...Array.from(elements));
             return;

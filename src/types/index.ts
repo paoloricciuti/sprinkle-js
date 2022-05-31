@@ -1,4 +1,4 @@
-export type IEffect<T> = () => T;
+export type IEffect<TReturn, TElement extends HTMLElement = HTMLElement> = (elem?: TElement | null) => TReturn;
 
 export type ICreateEffect = (fn: IEffect<any>) => void;
 

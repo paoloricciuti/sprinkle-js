@@ -1,4 +1,4 @@
-export declare type IEffect<T> = () => T;
+export declare type IEffect<TReturn, TElement extends HTMLElement = HTMLElement> = (elem?: TElement | null) => TReturn;
 export declare type ICreateEffect = (fn: IEffect<any>) => void;
 export declare type ICreateEffectExecute = () => (() => void) | void;
 export declare type ISubscription = Set<ICreateEffectRunning>;
