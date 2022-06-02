@@ -88,6 +88,7 @@ const bindTextContent = <TElement extends HTMLElement = HTMLElement>(domElement:
             elem.textContent = fn(elem);
         }
     });
+    return elem;
 };
 
 const bindClass = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, className: string, fn: IEffect<boolean, TElement>) => {
@@ -102,6 +103,7 @@ const bindClass = <TElement extends HTMLElement = HTMLElement>(domElement: IStri
             }
         }
     });
+    return elem;
 };
 
 const bindInputValue = (domElement: IStringOrDomElement<HTMLInputElement>, fn: IEffect<string, HTMLInputElement>) => {
@@ -111,17 +113,20 @@ const bindInputValue = (domElement: IStringOrDomElement<HTMLInputElement>, fn: I
             elem.value = fn(elem);
         }
     });
+    return elem;
 };
 
 const bindDom = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<any, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => updateDom(elem, fn(elem)));
+    return elem;
 };
 
 const bindStyle = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<any, TElement>) => {
     const elem = getDomElement(domElement);
     if (!elem) return;
     bindDom(elem, () => ({ style: fn(elem) }));
+    return elem;
 };
 
 const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<NodeListOf<AppendNode>, TElement>) => {
@@ -152,6 +157,7 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
             index++;
         }
     });
+    return elem;
 };
 
 export { createEffect, untrack, createRef, createVariable, bindInputValue, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };

@@ -6,6 +6,7 @@
     --clr-primary-hue: 94;
     --clr-secondary-hue: 25;
     --clr-bg: hsl(var(--clr-bg-hue), var(--clr-saturation), var(--clr-lightness));
+    --clr-bg-dull: hsl(var(--clr-secondary-hue), var(--clr-saturation), 30%);
     --clr-primary: hsl(var(--clr-primary-hue), var(--clr-saturation), var(--clr-lightness));
     --clr-primary-dull: hsl(var(--clr-primary-hue), var(--clr-saturation), var(--clr-lightness-dull));
     --clr-secondary: hsl(var(--clr-secondary-hue), var(--clr-saturation), var(--clr-lightness));
@@ -91,6 +92,7 @@ body {
     background-color: var(--clr-bg);
     overflow-x: hidden;
     background-image: url(./assets/tiles.png);
+    font-family: system-ui;
 }
 
 button {
@@ -281,15 +283,48 @@ code>div {
     content: '........................................................................................................................';
 }
 
+.get-started-section {
+    --_skew-height: 4rem;
+    background-color: var(--clr-bg-dull);
+    color: white;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    margin-block: var(--_skew-height);
+    position: relative;
+}
+
+.get-started-section::before, .get-started-section::after {
+    content: '';
+    background-color: inherit;
+    height: var(--_skew-height);
+    position: absolute;
+    width: 100%;
+}
+
+.get-started-section::before {
+    top: 0;
+    transform: translateY(-99%);
+    clip-path: polygon(100% 27%, 100% 100%, 0% 100%);
+}
+
+.get-started-section::after {
+    bottom: 0;
+    transform: translateY(99%);
+    clip-path: polygon(0% 0%, 100% 0%, 0% 58%);
+}
+
+
 .footer {
     height: 10rem;
-    position: fixed;
-    bottom: 0;
     background-image: url('./assets/mine.svg');
     background-position: bottom left;
     background-repeat: repeat-x;
     width: 100%;
     background-size: auto;
+    pointer-events: none;
 }
 
 .footer>svg {
