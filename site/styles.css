@@ -325,6 +325,7 @@ code>div {
     width: 100%;
     background-size: auto;
     pointer-events: none;
+    line-height: 0;
 }
 
 .footer>svg {
