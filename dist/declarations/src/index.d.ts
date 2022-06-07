@@ -10,5 +10,5 @@ declare const bindClass: <TElement extends HTMLElement = HTMLElement>(domElement
 declare const bindInputValue: (domElement: IStringOrDomElement<HTMLInputElement>, fn: IEffect<string, HTMLInputElement>) => HTMLInputElement | null;
 declare const bindDom: <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<any, TElement>) => TElement | null;
 declare const bindStyle: <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<any, TElement>) => TElement | undefined;
-declare const bindChildrens: <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<NodeListOf<AppendNode<ChildNode>>, TElement>) => TElement | null;
+declare const bindChildrens: <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<NodeListOf<AppendNode<ChildNode>> | AppendNode<ChildNode>[], TElement>) => TElement | null;
 export { createEffect, untrack, createRef, createVariable, bindInputValue, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };

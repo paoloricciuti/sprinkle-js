@@ -7,9 +7,9 @@
 
 ![npm](https://img.shields.io/npm/v/sprinkle-js)
 
+![npm](https://img.shields.io/npm/dt/sprinkle-js)
+
 ![GitHub last commit](https://img.shields.io/github/last-commit/paoloricciuti/sprinkle-js)
-
-
 # Sprinkle JS
 
 Sprinkle JS is the open source alternative to...well nothing!
@@ -41,11 +41,6 @@ You can see this library in use [here](https://sprinkle-js.netlify.app).
 
 //⚠ WIP
 
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
-
-Please adhere to this project's `code of conduct`.
 
 
 ## Documentation
@@ -70,6 +65,10 @@ Sprinkle uses javascript [Proxyes](https://developer.mozilla.org/en-US/docs/Web/
 #### Why i need to wrap everything in a function to use Sprinkle JS?
 
 Sprinkle JS uses the same model of Vue or Solid to handle the reactivity. To keep track of the dependencies of a function it saves that function in a stack before calling it. This allows every variable accessed in that function to know that it's used in that function. This has some drawbacks. If you don't wrap everything inside a function the variable will be accessed before the effect can save himself into the stack. If you want to understand this better you can check [this article](https://dev.to/ryansolid/building-a-reactive-library-from-scratch-1i0p) from Ryan Carniato or watch [this video](https://www.youtube.com/watch?v=7Cjb7Xj8fEI) from VueMastery on Vue reactivity.
+
+#### Why my createEffect does not re-run? I've used a reactive variable inside it.
+
+It could be a lot of different things but probably is because you are running asynchronous code inside of it. You can run asynchronous code inside a createEffect but for it to track your dependencies you have to make sure to use them before the async part. You can even just access it just by writing `variablename.fieldname;` and it will be correctly tracked.
 ## Usage/Examples
 
 #### createRef
@@ -206,7 +205,117 @@ variable.whosCool="whoever uses Sprinkle JS"
 //the text content of the div with the id div-to-bind will be "1 you 2 you 2 whoever uses Sprinkle JS"
 ```
 
-//⚠ WIP
+If you need to have access to the selected element (to add event listeners for example), the element is returned from the function.
+
+```typescript
+//this will bind the variables to the textContent and you'll have access to the element itself inside the variable divToBind
+const divToBind=bindTextContent<HTMLDivElement>("#div-to-bind", (element:HTMLDivElement)=> `${element?.textContent} ${ref.value} ${variable.whosCool}`);
+```
+
+#### bindInputValue
+
+This function is used to bind a string value to the value of an input element. It takes an input dom element or a selector as the first argument and a function returning the value to bind to the input value as the second argument.
+
+The following code will bind the input value to the `variable.whosCool` field. Note that is a one-way binding so make sure to also add an event listener on the input to complete the flow. We are saving the return value of the function into `bindInputValue` to later add the event listener to it.
+
+```typescript
+const variable = createVariable({ whosCool: "you" });
+
+const inputToBind = bindInputValue("#input-to-bind", ()=> variable.whosCool);
+
+inputToBind.addEventListener("input", (e)=>{
+    variable.whosCool=e.target.value;
+})
+```
+
+The callback you pass in also takes the element as the first argument.
+
+```typescript
+const variable = createVariable({ whosCool: "you" });
+
+const inputToBind = bindInputValue("#input-to-bind", (element)=> element.innerText + " " +variable.whosCool);
+
+inputToBind.addEventListener("input", (e)=>{
+    variable.whosCool=e.target.value;
+})
+```
+
+#### bindDom
+
+This function is used to bind an object that describe some DOM properties to the actual DOM properties. It takes a dom element or a selector as the first argument and a function returning the object as the second argument.
+
+The following code will bind the ariaLabel value to the `variable.whosCool` field and the checked value for the checkbox.
+
+```typescript
+const variable = createVariable({ whosCool: "you" });
+
+bindDom("#checkbox", (element)=> ({
+    ariaLabel: variable.whosCool,
+    checked: variable.whosCool === "you",
+}));
+```
+
+#### bindStyle
+
+This function is used to bind an object that describe the style of an element to the actual element style. It takes a dom element or a selector as the first argument and a function returning the object as the second argument.
+
+The following code will bind color property and the backgroundColor property value to the `variable.color` and `variable.bg` field.
+
+```typescript
+const variable = createVariable({ color: "black", bg: "#BADA55" });
+
+bindStyle("#div-to-bind", (element)=> ({
+    color: variable.color,
+    backgroundColor: variable.bg,
+}));
+
+variable.bg="#C0FFEE"; //the div will now have #C0FFEE as backgroundColor
+variable.color="white"; //the div will now have white as the color
+
+```
+
+#### bindChildrens
+
+This function is used to bind an array of childrens to a dom element. It takes a dom element or a selector as the first argument and a function returning an array of `AppendNode<T>` or a `NodeListOf<AppendNode<T>>` (the type is declared in the library) as the second argument.
+
+The type `AppendNode<T>` is defined as such
+
+```typescript
+type AppendNode<T extends ChildNode = ChildNode> = T & { key?: any };
+```
+and basically it expect the return value to be an extension of ChildNode and you can pass a key parameter optionally.
+
+In typescript you can declare the variable like this
+```typescript
+const elementToReturn: AppendNode<LiElement> = document.createElement("li") as AppendNode<LiElement>;
+```
+This will give you intellisense for the LiElement you have created and will not yell at you if you try to assign the key field.
+
+If you want to return a `NodeListOf<AppendNode<T>>` you can create a document fragment and append the newly created element to it before returning documentFragment.childNodes.
+```typescript
+const variable = createVariable({
+    listOfCoolThings: [
+        "you",
+        "sprinkle-js",
+        "javascript",
+    ]
+});
+
+bindChildrens("#ul-to-bind", (element)=> {
+    const retval = [];
+    for(let coolThing of variable.listOfCoolThings){
+        const li = document.createElement("li");
+        li.innerText = coolThing;
+        li.key = coolThing;
+    }
+    return retval;
+};
+
+variable.listOfCoolThings = [...variable.listOfCoolThings, "npm"]; //this will add a new li element to the ul
+```
+The key field it's very important and it should be unique for each element: if an element the same key is already present in the father element it will be (when possible) just be moved around without actually recreating a new element.
+
+Another intresting thing to note is that arrays works assignements. You can't push into an array but you need to reassign it to let the reactivity system react to it.
 ## Running Tests
 
 To run tests, run the following command

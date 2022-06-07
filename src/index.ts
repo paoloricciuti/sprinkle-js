@@ -129,7 +129,7 @@ const bindStyle = <TElement extends HTMLElement = HTMLElement>(domElement: IStri
     return elem;
 };
 
-const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<NodeListOf<AppendNode>, TElement>) => {
+const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<NodeListOf<AppendNode> | AppendNode[], TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem === null) return;
