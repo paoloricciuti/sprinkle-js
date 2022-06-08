@@ -91,6 +91,18 @@ console.log(variable.whosCool) // you
 
 if you use this variable inside a createEffect or inside another method whenever you'll update the value the method will re-run.
 
+#### createStored
+This method is used to create a reactive variable for an object also persisting it in localStorage or sessionStorage. It'll throw if you try to pass a primitive value to it. It will also automatically add a listener for the storage to update the variable whenever the storage changes. It will take a key and an initial value as input but will discard the initial value if the key is already present in the storage. It will also throw if the object in the storage is not Object-like
+
+```typescript
+const variable = createStored("cool-stored",{ whosCool: "you" });
+console.log(variable.whosCool) // you
+console.log(window.localStorage.getItem("cool-stored"))// '{ "whosCool": "you" }'
+```
+
+if you use this variable inside a createEffect or inside another method whenever you'll update the value the method will re-run.
+
+
 #### createEffect
 This method is used to create an effect that will keep track of it's dependencies and re-run every time they changed
 

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { createRef, bindTextContent, createVariable, createEffect } from "../src/index";
+import { createRef, bindTextContent, createVariable, createStored, createEffect } from "../src/index";
 
 describe("createRef", () => {
     it("create a variable with a value property set to the passed in value", () => {
@@ -24,18 +24,58 @@ describe("createVariable", () => {
     });
 });
 
+describe("createStored", () => {
+    it("throws if you try to pass a non-object like element", () => {
+        expect(() => {
+            createStored("key", 1);
+        }).toThrow();
+    });
+    it("create a variable with the same properties as the passed in object and it store it in the local storage if the storage had no object with the same key", () => {
+        expect(window.localStorage.getItem("key")).toBeNull();
+        const ref = createStored("key", { testOne: "one", testTwo: 2, testThree: true });
+        expect(ref).toMatchObject({ testOne: "one", testTwo: 2, testThree: true });
+        expect(window.localStorage.getItem("key")).toBe(JSON.stringify(ref));
+    });
+    it("load the variable from the localstorage if there's an object with the same key ignoring the passed in value", () => {
+        window.localStorage.setItem("key", JSON.stringify({ testOne: "new-item", testTwo: 5, testThree: false, testFour: "from-storage" }));
+        expect(window.localStorage.getItem("key")).not.toBeNull();
+        const ref = createStored("key", { testOne: "one", testTwo: 2, testThree: true });
+        expect(ref).not.toMatchObject({ testOne: "one", testTwo: 2, testThree: true });
+        expect(ref).toMatchObject({ testOne: "new-item", testTwo: 5, testThree: false, testFour: "from-storage" });
+        expect(window.localStorage.getItem("key")).toBe(JSON.stringify(ref));
+    });
+    it("update the storage when the variable get's updated", () => {
+        const ref = createStored("key", { testOne: "one", testTwo: 2, testThree: true });
+        expect(window.localStorage.getItem("key")).toBe(JSON.stringify(ref));
+        ref.testOne = "new-item";
+        expect(window.localStorage.getItem("key")).toBe(JSON.stringify(ref));
+    });
+    it("update the variable when the storage get's updated", () => {
+        const ref = createStored("key", { testOne: "one", testTwo: 2, testThree: true });
+        expect(window.localStorage.getItem("key")).toBe(JSON.stringify(ref));
+        let currentValue = window.localStorage.getItem("key") as string;
+        const objectValue = JSON.parse(currentValue);
+        objectValue.testOne = "new-item";
+        window.localStorage.setItem("key", JSON.stringify(objectValue));
+        expect(window.localStorage.getItem("key")).toBe(JSON.stringify(ref));
+    });
+});
+
 describe("createEffect", () => {
-    it("create a function that automatically reruns whenever a dependency (a createRef or createVariable) changes", () => {
+    it("create a function that automatically reruns whenever a dependency (a createRef or createVariable or createSTored) changes", () => {
         const ref = createRef(1);
         const variable = createVariable({ test: "a" });
+        const stored = createStored("stored", { testStored: "stored" });
         const logSpy = jest.spyOn(console, 'log');
-        const fnToRun = jest.fn(() => console.log(ref.value, variable.test));
+        const fnToRun = jest.fn(() => console.log(ref.value, variable.test, stored.testStored));
         createEffect(fnToRun);
-        expect(logSpy).toHaveBeenCalledWith(1, "a");
+        expect(logSpy).toHaveBeenCalledWith(1, "a", "stored");
         ref.value++;
-        expect(logSpy).toHaveBeenCalledWith(2, "a");
+        expect(logSpy).toHaveBeenCalledWith(2, "a", "stored");
         variable.test = "b";
-        expect(logSpy).toHaveBeenCalledWith(2, "b");
+        expect(logSpy).toHaveBeenCalledWith(2, "b", "stored");
+        stored.testStored = "stored changed";
+        expect(logSpy).toHaveBeenCalledWith(2, "b", "stored changed");
     });
 
     it.todo("runs the cleanup function returned from the create effect before rerunning");

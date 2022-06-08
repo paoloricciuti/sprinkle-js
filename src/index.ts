@@ -22,15 +22,64 @@ const createVariable = <T extends Object>(value: T) => {
             if (running) subscribe(props[1], running, subscriptions);
             return Reflect.get(...props);
         },
-        set: (...props) => {
-            const ok = Reflect.set(...props);
-            for (const sub of [...subscriptions.get(props[1]) || []]) {
+        set: (target, field, value) => {
+            const ok = Reflect.set(target, field, value);
+            for (const sub of [...subscriptions.get(field) || []]) {
                 const cleanUpFn = sub.execute();
                 if (cleanUpFn) {
                     sub.cleanup = cleanUpFn;
                 }
             }
             return ok;
+        }
+    });
+    return variable;
+};
+
+const createStored = <T extends Object>(key: string, value: T, storage: Storage = window.localStorage) => {
+    if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
+    const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
+    let existingValue: T | null = null;
+    try {
+        const storedValue = storage.getItem(key);
+        if (storedValue) {
+            existingValue = JSON.parse(storedValue);
+        } else {
+            storage.setItem(key, JSON.stringify(value));
+        }
+    } catch (e) {
+        throw new Error("The specified key is associated with a non Object-like element");
+    }
+    const variable = new Proxy(existingValue ?? value, {
+        get: (...props) => {
+            const running = context[context.length - 1];
+            if (running) subscribe(props[1], running, subscriptions);
+            return Reflect.get(...props);
+        },
+        set: (target, field, value) => {
+            const ok = Reflect.set(target, field, value);
+            storage.setItem(key, JSON.stringify(target));
+            for (const sub of [...subscriptions.get(field) || []]) {
+                const cleanUpFn = sub.execute();
+                if (cleanUpFn) {
+                    sub.cleanup = cleanUpFn;
+                }
+            }
+            return ok;
+        }
+    });
+    window.addEventListener("storage", (e) => {
+        if (e.storageArea === storage && e.key === key) {
+            try {
+                if (e.newValue) {
+                    const newObj: T = JSON.parse(e.newValue);
+                    for (let key in newObj) {
+                        variable[key] = newObj[key];
+                    }
+                }
+            } catch (e) {
+                console.warn("The storage was modified but the resulting object is not parsable...the variable was not updated.");
+            }
         }
     });
     return variable;
@@ -160,4 +209,4 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
     return elem;
 };
 
-export { createEffect, untrack, createRef, createVariable, bindInputValue, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };
+export { createEffect, untrack, createRef, createVariable, createStored, bindInputValue, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };
