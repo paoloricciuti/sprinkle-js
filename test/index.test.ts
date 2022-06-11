@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { createRef, bindTextContent, createVariable, createStored, createEffect } from "../src/index";
+import { createRef, bindTextContent, createVariable, createStored, createEffect, createComputed } from "../src/index";
 
 describe("createRef", () => {
     it("create a variable with a value property set to the passed in value", () => {
@@ -21,6 +21,23 @@ describe("createVariable", () => {
     it("create a variable with the same properties as the passed in object", () => {
         const ref = createVariable({ testOne: "one", testTwo: 2, testThree: true });
         expect(ref).toMatchObject({ testOne: "one", testTwo: 2, testThree: true });
+    });
+});
+
+describe("createComputed", () => {
+    it("create a variable with the same properties as the return value of the function passed in as second argument", () => {
+        const variable = createVariable({ testOne: "one", testTwo: 2, testThree: true });
+        const computed = createComputed(() => `${variable.testOne} ${variable.testTwo}`);
+        expect(computed.value).toBe("one 2");
+    });
+    it("update it's value whenever one of the variables used in the init function changes", () => {
+        const variable = createVariable({ testOne: "one", testTwo: 2, testThree: true });
+        const computed = createComputed(() => `${variable.testOne} ${variable.testTwo}`);
+        expect(computed.value).toBe("one 2");
+        variable.testOne = "changed";
+        expect(computed.value).toBe("changed 2");
+        variable.testTwo++;
+        expect(computed.value).toBe("changed 3");
     });
 });
 
@@ -62,20 +79,21 @@ describe("createStored", () => {
 });
 
 describe("createEffect", () => {
-    it("create a function that automatically reruns whenever a dependency (a createRef or createVariable or createSTored) changes", () => {
+    it("create a function that automatically reruns whenever a dependency (a createRef or createVariable or createStored or createComputed) changes", () => {
         const ref = createRef(1);
         const variable = createVariable({ test: "a" });
         const stored = createStored("stored", { testStored: "stored" });
+        const computed = createComputed(() => `${ref.value} ${variable.test} ${stored.testStored}`);
         const logSpy = jest.spyOn(console, 'log');
-        const fnToRun = jest.fn(() => console.log(ref.value, variable.test, stored.testStored));
+        const fnToRun = jest.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
         createEffect(fnToRun);
-        expect(logSpy).toHaveBeenCalledWith(1, "a", "stored");
+        expect(logSpy).toHaveBeenCalledWith(1, "a", "stored", "1 a stored");
         ref.value++;
-        expect(logSpy).toHaveBeenCalledWith(2, "a", "stored");
+        expect(logSpy).toHaveBeenCalledWith(2, "a", "stored", "2 a stored");
         variable.test = "b";
-        expect(logSpy).toHaveBeenCalledWith(2, "b", "stored");
+        expect(logSpy).toHaveBeenCalledWith(2, "b", "stored", "2 b stored");
         stored.testStored = "stored changed";
-        expect(logSpy).toHaveBeenCalledWith(2, "b", "stored changed");
+        expect(logSpy).toHaveBeenCalledWith(2, "b", "stored changed", "2 b stored changed");
     });
 
     it.todo("runs the cleanup function returned from the create effect before rerunning");
@@ -90,7 +108,7 @@ describe("DOM manipulation by bindind", () => {
     describe("bindTextContent ", () => {
         it("bind a value of a ref or a variable to the textContent of an input element", () => {
             const ref = createRef(1);
-            bindTextContent("#to-bind", () => ref.value);
+            bindTextContent("#to-bind", () => ref.value.toString());
             expect(toBindDiv.textContent).toBe("1");
             ref.value++;
             expect(toBindDiv.textContent).toBe("2");

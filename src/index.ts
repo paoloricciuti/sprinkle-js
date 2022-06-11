@@ -36,6 +36,14 @@ const createVariable = <T extends Object>(value: T) => {
     return variable;
 };
 
+const createComputed = <T extends Object>(fn: IEffect<T>) => {
+    const computed = createRef(fn());
+    createEffect(() => {
+        computed.value = fn();
+    });
+    return computed;
+};
+
 const createStored = <T extends Object>(key: string, value: T, storage: Storage = window.localStorage) => {
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
@@ -85,7 +93,7 @@ const createStored = <T extends Object>(key: string, value: T, storage: Storage 
     return variable;
 };
 
-const createRef = (ref: any) => {
+const createRef = <T>(ref: T) => {
     return createVariable({ value: ref });
 };
 
@@ -209,4 +217,4 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
     return elem;
 };
 
-export { createEffect, untrack, createRef, createVariable, createStored, bindInputValue, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };
+export { createEffect, untrack, createRef, createVariable, createComputed, createStored, bindInputValue, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };

@@ -102,6 +102,18 @@ console.log(window.localStorage.getItem("cool-stored"))// '{ "whosCool": "you" }
 
 if you use this variable inside a createEffect or inside another method whenever you'll update the value the method will re-run.
 
+#### createComputed
+This method is used to create a reactive computed variable. You need to pass a function that will return a value. The return value of the function will be inside of the `.value` field of the returned computed. If you use some other variable to compute the this value it will always be in sync.
+
+```typescript
+const variable = createVariable({ whosCool: "you" });
+const computed = createComputed(()=> `${variable.whosCool} is cool!`);
+console.log(computed.value) // you is cool!
+variable.whosCool = "whoever uses SprinkleJS";
+console.log(computed.value) // whoever uses SprinkleJS is cool!
+```
+
+if you use this variable inside a createEffect or inside another method it will be rerunned whenever this computed changes. You could in theory set the variable yourself but this is not recommended since it will be overwritten whenever a dependency changes and could lead to some unexpected behavior.
 
 #### createEffect
 This method is used to create an effect that will keep track of it's dependencies and re-run every time they changed
