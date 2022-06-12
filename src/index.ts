@@ -3,7 +3,7 @@ import { findNext, updateDom, diff, getDomElement } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
 
-function subscribe(field: string | symbol, running: ICreateEffectRunning, subscriptionsMap: Map<string | symbol, ISubscription>) {
+const subscribe = (field: string | symbol, running: ICreateEffectRunning, subscriptionsMap: Map<string | symbol, ISubscription>) => {
     let subscriptions = subscriptionsMap.get(field);
     if (!subscriptions) {
         subscriptions = new Set<ICreateEffectRunning>();
@@ -11,7 +11,16 @@ function subscribe(field: string | symbol, running: ICreateEffectRunning, subscr
     }
     subscriptions.add(running);
     running.dependencies.add(subscriptions);
-}
+};
+
+const runRupdates = (subscriptions: Map<string | symbol, ISubscription>, field: string | symbol) => {
+    for (const sub of [...subscriptions.get(field) || []]) {
+        const cleanUpFn = sub.execute();
+        if (cleanUpFn) {
+            sub.cleanup = cleanUpFn;
+        }
+    }
+};
 
 const createVariable = <T extends Object>(value: T) => {
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
@@ -24,22 +33,34 @@ const createVariable = <T extends Object>(value: T) => {
         },
         set: (target, field, value) => {
             const ok = Reflect.set(target, field, value);
-            for (const sub of [...subscriptions.get(field) || []]) {
-                const cleanUpFn = sub.execute();
-                if (cleanUpFn) {
-                    sub.cleanup = cleanUpFn;
-                }
-            }
+            runRupdates(subscriptions, field);
             return ok;
         }
     });
     return variable;
 };
 
-const createComputed = <T extends Object>(fn: IEffect<T>) => {
-    const computed = createRef(fn());
+const createComputed = <T>(fn: () => T) => {
+    const value = { value: fn() };
+    let canWrite = false;
+    const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
+    const computed = new Proxy(value, {
+        get: (...props) => {
+            const running = context[context.length - 1];
+            if (running) subscribe(props[1], running, subscriptions);
+            return Reflect.get(...props);
+        },
+        set: (target, field, value) => {
+            if (!canWrite) return true;
+            const ok = Reflect.set(target, field, value);
+            runRupdates(subscriptions, field);
+            return ok;
+        }
+    });
     createEffect(() => {
+        canWrite = true;
         computed.value = fn();
+        canWrite = false;
     });
     return computed;
 };
@@ -67,12 +88,7 @@ const createStored = <T extends Object>(key: string, value: T, storage: Storage 
         set: (target, field, value) => {
             const ok = Reflect.set(target, field, value);
             storage.setItem(key, JSON.stringify(target));
-            for (const sub of [...subscriptions.get(field) || []]) {
-                const cleanUpFn = sub.execute();
-                if (cleanUpFn) {
-                    sub.cleanup = cleanUpFn;
-                }
-            }
+            runRupdates(subscriptions, field);
             return ok;
         }
     });

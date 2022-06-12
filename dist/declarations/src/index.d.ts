@@ -1,6 +1,6 @@
 import { AppendNode, ICreateEffect, IEffect, IStringOrDomElement } from "./types/index";
 declare const createVariable: <T extends Object>(value: T) => T;
-declare const createComputed: <T extends Object>(fn: IEffect<T, HTMLElement>) => {
+declare const createComputed: <T>(fn: () => T) => {
     value: T;
 };
 declare const createStored: <T extends Object>(key: string, value: T, storage?: Storage) => T;

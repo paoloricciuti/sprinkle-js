@@ -113,7 +113,7 @@ variable.whosCool = "whoever uses SprinkleJS";
 console.log(computed.value) // whoever uses SprinkleJS is cool!
 ```
 
-if you use this variable inside a createEffect or inside another method it will be rerunned whenever this computed changes. You could in theory set the variable yourself but this is not recommended since it will be overwritten whenever a dependency changes and could lead to some unexpected behavior.
+if you use this variable inside a createEffect or inside another method it will be rerunned whenever this computed changes. You can't set the value of a computed value and trying would still result in the same value being inside that computed.
 
 #### createEffect
 This method is used to create an effect that will keep track of it's dependencies and re-run every time they changed

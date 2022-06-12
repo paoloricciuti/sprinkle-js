@@ -39,6 +39,13 @@ describe("createComputed", () => {
         variable.testTwo++;
         expect(computed.value).toBe("changed 3");
     });
+    it("cannot be updated directly", () => {
+        const variable = createVariable({ testOne: "one", testTwo: 2, testThree: true });
+        const computed = createComputed(() => `${variable.testOne} ${variable.testTwo}`);
+        expect(computed.value).toBe("one 2");
+        computed.value = "something else";
+        expect(computed.value).toBe("one 2");
+    });
 });
 
 describe("createStored", () => {
