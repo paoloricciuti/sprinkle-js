@@ -1,10 +1,10 @@
-import { AppendNode, ICreateEffect, IEffect, IStringOrDomElement } from "./types/index";
-declare const createVariable: <T extends Object>(value: T) => T;
-declare const createComputed: <T>(fn: () => T) => {
+import { AppendNode, ICreateEffect, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement } from "./types/index";
+declare const createVariable: <T extends Object>(value: T, eq?: IEqualFunctionMap<T> | undefined) => T;
+declare const createComputed: <T>(fn: () => T, eq?: IEqualFunction<T> | undefined) => {
     value: T;
 };
-declare const createStored: <T extends Object>(key: string, value: T, storage?: Storage) => T;
-declare const createRef: <T>(ref: T) => {
+declare const createStored: <T extends Object>(key: string, value: T, eq?: IEqualFunctionMap<T> | undefined, storage?: Storage) => T;
+declare const createRef: <T>(ref: T, eq?: IEqualFunction<T> | undefined) => {
     value: T;
 };
 declare const createEffect: ICreateEffect;

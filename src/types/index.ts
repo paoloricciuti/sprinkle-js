@@ -1,5 +1,11 @@
 export type IEffect<TReturn, TElement extends HTMLElement = HTMLElement> = (elem?: TElement | null) => TReturn;
 
+export type IEqualFunction<T> = (before: T, after: T) => boolean;
+
+export type IEqualFunctionMap<T extends Object> = {
+    [key in keyof T]?: IEqualFunction<T[key]>;
+};
+
 export type ICreateEffect = (fn: IEffect<any>) => void;
 
 export type ICreateEffectExecute = () => (() => void) | void;

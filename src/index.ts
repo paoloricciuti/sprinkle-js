@@ -1,4 +1,4 @@
-import { AppendNode, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IStringOrDomElement, ISubscription } from "./types/index";
+import { AppendNode, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription } from "./types/index";
 import { findNext, updateDom, diff, getDomElement } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
@@ -22,7 +22,7 @@ const runRupdates = (subscriptions: Map<string | symbol, ISubscription>, field: 
     }
 };
 
-const createVariable = <T extends Object>(value: T) => {
+const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) => {
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
     const variable = new Proxy(value, {
@@ -32,15 +32,25 @@ const createVariable = <T extends Object>(value: T) => {
             return Reflect.get(...props);
         },
         set: (target, field, value) => {
+            //cast the field to a keyof T
+            const fieldCast = field as keyof T;
+            //get the equality function, if it's not defined default it to Object.is
+            const equality = eq?.[fieldCast] ?? Object.is as any;
+            //check if the current value is equal to the new value
+            const isEqual = equality(target[fieldCast], value);
+            //update the value
             const ok = Reflect.set(target, field, value);
-            runRupdates(subscriptions, field);
+            //if it's not equal run the updates
+            if (!isEqual) {
+                runRupdates(subscriptions, field);
+            }
             return ok;
         }
     });
     return variable;
 };
 
-const createComputed = <T>(fn: () => T) => {
+const createComputed = <T>(fn: () => T, eq?: IEqualFunction<T>) => {
     const value = { value: fn() };
     let canWrite = false;
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
@@ -52,8 +62,17 @@ const createComputed = <T>(fn: () => T) => {
         },
         set: (target, field, value) => {
             if (!canWrite) return true;
+            //cast the field to the const value since it's the only field it can have
+            const fieldCast = field as "value";
+            //get the equality function, if it's not defined default it to Object.is
+            const equality = eq ?? Object.is as any;
+            //check if the current value is equal to the new value
+            const isEqual = equality(target[fieldCast], value);
+            //update the value
             const ok = Reflect.set(target, field, value);
-            runRupdates(subscriptions, field);
+            if (!isEqual) {
+                runRupdates(subscriptions, field);
+            }
             return ok;
         }
     });
@@ -65,7 +84,7 @@ const createComputed = <T>(fn: () => T) => {
     return computed;
 };
 
-const createStored = <T extends Object>(key: string, value: T, storage: Storage = window.localStorage) => {
+const createStored = <T extends Object>(key: string, value: T, eq?: IEqualFunctionMap<T>, storage: Storage = window.localStorage) => {
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
     let existingValue: T | null = null;
@@ -86,9 +105,18 @@ const createStored = <T extends Object>(key: string, value: T, storage: Storage 
             return Reflect.get(...props);
         },
         set: (target, field, value) => {
+            //cast the field to a keyof T
+            const fieldCast = field as keyof T;
+            //get the equality function, if it's not defined default it to Object.is
+            const equality = eq?.[fieldCast] ?? Object.is as any;
+            //check if the current value is equal to the new value
+            const isEqual = equality(target[fieldCast], value);
+            //update the value
             const ok = Reflect.set(target, field, value);
             storage.setItem(key, JSON.stringify(target));
-            runRupdates(subscriptions, field);
+            if (!isEqual) {
+                runRupdates(subscriptions, field);
+            }
             return ok;
         }
     });
@@ -109,8 +137,8 @@ const createStored = <T extends Object>(key: string, value: T, storage: Storage 
     return variable;
 };
 
-const createRef = <T>(ref: T) => {
-    return createVariable({ value: ref });
+const createRef = <T>(ref: T, eq?: IEqualFunction<T>) => {
+    return createVariable({ value: ref }, eq ? { value: eq } : undefined);
 };
 
 const cleanup = (running: ICreateEffectRunning) => {

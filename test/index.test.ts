@@ -86,6 +86,11 @@ describe("createStored", () => {
 });
 
 describe("createEffect", () => {
+
+    afterEach(() => {
+        window.localStorage.removeItem("stored");
+    });
+
     it("create a function that automatically reruns whenever a dependency (a createRef or createVariable or createStored or createComputed) changes", () => {
         const ref = createRef(1);
         const variable = createVariable({ test: "a" });
@@ -101,6 +106,61 @@ describe("createEffect", () => {
         expect(logSpy).toHaveBeenCalledWith(2, "b", "stored", "2 b stored");
         stored.testStored = "stored changed";
         expect(logSpy).toHaveBeenCalledWith(2, "b", "stored changed", "2 b stored changed");
+    });
+
+    it("not re-run if the value is set but is equal to the old value without passing an object of equalities functions", () => {
+        const ref = createRef(1);
+        const variable = createVariable({ test: "a" });
+        const stored = createStored("stored", { testStored: "stored" });
+        const computed = createComputed(() => `${ref.value} ${variable.test} ${stored.testStored}`);
+        const fnToRun = jest.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
+        createEffect(fnToRun);
+        expect(fnToRun).toHaveBeenCalledTimes(1);
+        ref.value = 1;
+        expect(fnToRun).toHaveBeenCalledTimes(1);
+        variable.test = "a";
+        expect(fnToRun).toHaveBeenCalledTimes(1);
+        stored.testStored = "stored";
+        expect(fnToRun).toHaveBeenCalledTimes(1);
+    });
+
+    it("not re-run if the value is set but is equal to the old value passing an object of equalities functions", () => {
+        //custom equality check, before has to be lower than after
+        const ref = createRef(1, (before, after) => {
+            return after > before;
+        });
+        const variable = createVariable({ test: "a" }, {
+            //custom equality check, is equal if they have the same length
+            test: (before, after) => before.length === after.length
+        });
+        const stored = createStored("stored", { testStored: "stored" }, {
+            //custom equality check, is equal but case insensitive
+            testStored: (before, after) => {
+                console.log(before, after, before.toLowerCase() === after.toLowerCase());
+                return before.toLowerCase() === after.toLowerCase();
+            }
+        });
+        const computed = createComputed(() => `${ref.value} ${variable.test} ${stored.testStored}`, (before, after) => {
+            //custom equality for computed value, only if it's the same starting character
+            return before.charAt(0) === after.charAt(0);
+        });
+        const fnToRun = jest.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
+        createEffect(fnToRun);
+        expect(fnToRun).toHaveBeenCalledTimes(1);
+        ref.value = 2;
+        expect(fnToRun).toHaveBeenCalledTimes(1);
+        ref.value = 1;
+        expect(fnToRun).toHaveBeenCalledTimes(2);
+        variable.test = "b";
+        //no rerun since it has the same lenght
+        expect(fnToRun).toHaveBeenCalledTimes(2);
+        variable.test = "bb";
+        expect(fnToRun).toHaveBeenCalledTimes(3);
+        stored.testStored = "STORED";
+        //no rerun since it's the same in uppercase
+        expect(fnToRun).toHaveBeenCalledTimes(3);
+        stored.testStored = "stored changed";
+        expect(fnToRun).toHaveBeenCalledTimes(4);
     });
 
     it.todo("runs the cleanup function returned from the create effect before rerunning");
