@@ -11,6 +11,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Permanent+Marker&display=swap"
         rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.5.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.5.0/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.5.0/mode/xml/xml.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.5.0/codemirror.min.css">
 </head>
 
 <body>
@@ -26,12 +31,21 @@
         <pre class="board"><div class="paper"><code></code></div></pre>
     </section>
     <section class="get-started-section">
-        The fastest way to get started is by clicking this
-        <form action="https://codepen.io/pen/define" method="POST" target="_blank">
-            <input type="hidden" name="data"
-                value="{&quot;title&quot;:&quot;Sprinkle JS - First example&quot;,&quot;description&quot;:&quot;The fastest way to get started with sprinkle js&quot;,&quot;tags&quot;:[&quot;sprinkle-js&quot;,&quot;javascript&quot;,&quot;reactive&quot;],&quot;editors&quot;:&quot;0010&quot;,&quot;layout&quot;:&quot;left&quot;,&quot;html&quot;:&quot;<div id=&bsol;&quot;app&bsol;&quot;/>&quot;,&quot;css&quot;:&quot;&quot;,&quot;js&quot;:&quot;import { createVariable, bindTextContent } from &bsol;&quot;https://cdn.skypack.dev/sprinkle-js&bsol;&quot;;\n\nconst variable = createVariable({isCool: true});\n\nbindTextContent(&bsol;&quot;#app&bsol;&quot;, ()=>variable.isCool?'😎':'😢');\n\nwindow.addEventListener(&bsol;&quot;click&bsol;&quot;, ()=> variable.isCool = !variable.isCool);&quot;}">
-            <button type="submit">Go on Codepen</button>
-        </form>
+        <article>
+            The fastest way to get started is by clicking this
+            <form action="https://codepen.io/pen/define" method="POST" target="_blank">
+                <input type="hidden" name="data"
+                    value="{&quot;title&quot;:&quot;Sprinkle JS - First example&quot;,&quot;description&quot;:&quot;The fastest way to get started with sprinkle js&quot;,&quot;tags&quot;:[&quot;sprinkle-js&quot;,&quot;javascript&quot;,&quot;reactive&quot;],&quot;editors&quot;:&quot;0010&quot;,&quot;layout&quot;:&quot;left&quot;,&quot;html&quot;:&quot;<div id=&bsol;&quot;app&bsol;&quot;/>&quot;,&quot;css&quot;:&quot;&quot;,&quot;js&quot;:&quot;import { createVariable, bindTextContent } from &bsol;&quot;https://cdn.skypack.dev/sprinkle-js&bsol;&quot;;\n\nconst variable = createVariable({isCool: true});\n\nbindTextContent(&bsol;&quot;#app&bsol;&quot;, ()=>variable.isCool?'😎':'😢');\n\nwindow.addEventListener(&bsol;&quot;click&bsol;&quot;, ()=> variable.isCool = !variable.isCool);&quot;}">
+                <button type="submit">Go on Codepen</button>
+            </form>
+        </article>
+        <div class="files-wrapper">
+            <ul class="CodeMirror cm-s-dracula files">
+                <li><button id="starter-index-js">index.js</button></li>
+                <li><button id="starter-index-html">index.html</button></li>
+            </ul>
+            <div id="sprinkle-code-starter"></div>
+        </div>
     </section>
     <footer class="footer">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">

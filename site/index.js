@@ -1,4 +1,5 @@
-import { createVariable, createEffect, bindDom, bindTextContent, bindStyle, untrack } from "https://cdn.skypack.dev/sprinkle-js";
+import { createVariable, bindClass, bindDom, bindTextContent, bindStyle, createEffect } from "https://cdn.skypack.dev/sprinkle-js";
+import { documents } from "./documents.js";
 
 const state = createVariable({
     logoRotation: 0,
@@ -6,7 +7,14 @@ const state = createVariable({
     theme: "auto",
     mineBitcoin: true,
     bitcoinRate: 10,
+    currentStarterDoc: 0,
 });
+
+const stateModifiers = {
+    currentStarterDoc: (val) => {
+        return val % 2;
+    }
+};
 
 window.state = state;
 
@@ -67,7 +75,8 @@ for (let key of keys) {
             }
         }));
         input.addEventListener("input", (e) => {
-            state[key] = type === "string" ? e.target.value : +e.target.value;
+            const modifier = stateModifiers[key] ?? ((val) => val);
+            state[key] = type === "string" ? modifier(e.target.value) : modifier(+e.target.value);
         });
         if (type === "string") {
             spanVal.append(first, input, last);
@@ -95,3 +104,24 @@ for (let key of keys) {
 const closePar = document.createTextNode("}");
 df.append(closePar);
 document.querySelector("code").append(df);
+
+const code = CodeMirror(document.querySelector("#sprinkle-code-starter"), {
+    readOnly: true,
+    lineNumbers: true,
+    theme: "dracula",
+    lineWrapping: true,
+});
+
+const indexJsBtn = bindClass("#starter-index-js", "open-file", () => state.currentStarterDoc === 0);
+const indexHtmlBtn = bindClass("#starter-index-html", "open-file", () => state.currentStarterDoc === 1);
+
+indexJsBtn.addEventListener("click", () => state.currentStarterDoc = 0);
+indexHtmlBtn.addEventListener("click", () => state.currentStarterDoc = 1);
+
+createEffect(() => {
+    if (state.currentStarterDoc === 0) {
+        code.swapDoc(documents.starter_index_js);
+    } else {
+        code.swapDoc(documents.starter_index_html);
+    }
+});

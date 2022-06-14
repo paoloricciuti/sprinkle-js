@@ -287,13 +287,16 @@ code>div {
     --_skew-height: 4rem;
     background-color: var(--clr-bg-dull);
     color: white;
+    padding: 1rem;
+    margin-block: var(--_skew-height);
+    position: relative;
+}
+
+.get-started-section>article {
     display: flex;
     gap: 1rem;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
-    margin-block: var(--_skew-height);
-    position: relative;
 }
 
 .get-started-section::before, .get-started-section::after {
@@ -302,6 +305,7 @@ code>div {
     height: var(--_skew-height);
     position: absolute;
     width: 100%;
+    left: 0;
 }
 
 .get-started-section::before {
@@ -353,6 +357,43 @@ code>div {
     animation: fade-away 1s;
     width: 3rem;
     height: 3rem;
+}
+
+.files-wrapper {
+    margin-block: 1rem;
+}
+
+.CodeMirror:not(.files) {
+    border-radius: .5rem;
+    border-top-left-radius: 0;
+    filter: drop-shadow(0px 5px 8px rgba(0 0 0 / .5));
+}
+
+.files.files {
+    display: inline-flex;
+    list-style: none;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border-top-right-radius: .5rem;
+    border-top-left-radius: .5rem;
+}
+
+.files>li:not(:last-of-type) {
+    border-right: 1px solid #C1CADA;
+}
+
+.files button {
+    all: inherit;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: .3rem;
+    cursor: pointer;
+}
+
+.files button.open-file {
+    background-color: rgba(255 255 255 / .3);
 }
 
 @keyframes fade-away {
