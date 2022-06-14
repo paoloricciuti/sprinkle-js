@@ -1,4 +1,4 @@
-import { createVariable, bindClass, bindDom, bindTextContent, bindStyle, createEffect } from "https://cdn.skypack.dev/sprinkle-js";
+import { createVariable, bindInputValue, bindClass, bindDom, bindTextContent, bindStyle, createEffect } from "https://cdn.skypack.dev/sprinkle-js";
 import { documents } from "./documents.js";
 
 const state = createVariable({
@@ -8,12 +8,14 @@ const state = createVariable({
     mineBitcoin: true,
     bitcoinRate: 10,
     currentStarterDoc: 0,
+}, {
+    bitcoinRate: () => false,
+    currentStarterDoc: () => false
 });
 
 const stateModifiers = {
-    currentStarterDoc: (val) => {
-        return val % 2;
-    }
+    currentStarterDoc: (val) => Math.abs(val % 2),
+    bitcoinRate: (val) => Math.min(Math.max(val, 0), 100),
 };
 
 window.state = state;
@@ -91,7 +93,8 @@ for (let key of keys) {
             checked: state[key],
         }));
         checkbox.addEventListener("change", (e) => {
-            state[key] = e.target.checked;
+            const modifier = stateModifiers[key] ?? ((val) => val);
+            state[key] = modifier(e.target.checked);
         });
         spanVal.append(checkbox);
     }
