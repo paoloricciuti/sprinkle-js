@@ -330,6 +330,7 @@ code>div {
     background-size: auto;
     pointer-events: none;
     line-height: 0;
+    position: relative;
 }
 
 .footer>svg {
