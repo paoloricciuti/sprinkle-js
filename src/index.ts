@@ -1,4 +1,4 @@
-import { AppendNode, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription } from "./types/index";
+import { AppendNode, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
 import { findNext, updateDom, diff, getDomElement } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
@@ -24,6 +24,13 @@ const runRupdates = (subscriptions: Map<string | symbol, ISubscription>, field: 
 
 const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) => {
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
+    const keys = Object.keys(value);
+    for (let keyString of keys) {
+        const key = keyString as keyof T;
+        if (typeof value[key] === "object") {
+            value[key] = createVariable(value[key], (eq?.[key] as any as IEqualFunctionMap<T[keyof T]>));
+        }
+    }
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
     const variable = new Proxy(value, {
         get: (...props) => {
@@ -137,7 +144,7 @@ const createStored = <T extends Object>(key: string, value: T, eq?: IEqualFuncti
     return variable;
 };
 
-const createRef = <T>(ref: T, eq?: IEqualFunction<T>) => {
+const createRef = <T extends Primitive>(ref: T, eq?: IEqualFunction<T>) => {
     return createVariable({ value: ref }, eq ? { value: eq } : undefined);
 };
 

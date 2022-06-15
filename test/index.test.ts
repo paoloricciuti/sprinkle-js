@@ -124,9 +124,54 @@ describe("createEffect", () => {
         expect(fnToRun).toHaveBeenCalledTimes(1);
     });
 
+    it("rerun if a nested object in a variable changes [no equality functions]", () => {
+        const variable = createVariable({ nested: { test: "a" } });
+        const logSpy = jest.spyOn(console, 'log');
+        createEffect(() => console.log(variable.nested.test));
+        expect(logSpy).toHaveBeenCalledWith("a");
+        variable.nested.test = "b";
+        expect(logSpy).toHaveBeenCalledWith("b");
+    });
+
+    it("rerun if a nested object in a variable changes [with partial equality functions]", () => {
+        const variable = createVariable({ test: "a", nested: { test: "a" } }, {
+            test: (before: string, after: string) => before.length === after.length,
+        });
+        const logSpy = jest.spyOn(console, 'log');
+        const fnToRun = jest.fn(() => console.log(variable.test, variable.nested.test));
+        createEffect(fnToRun);
+        expect(logSpy).toHaveBeenCalledWith("a", "a");
+        variable.test = "b";
+        //it will not be called again because b has the same length
+        expect(fnToRun).toBeCalledTimes(1);
+        variable.test = "bb";
+        expect(logSpy).toHaveBeenCalledWith("bb", "a");
+        variable.nested.test = "b";
+        //it will be called because nested doesn't have a particular equality specified
+        expect(logSpy).toHaveBeenCalledWith("bb", "b");
+    });
+
+    it("rerun if a nested object in a variable changes [with equality functions]", () => {
+        const variable = createVariable({ nested: { test: "a" } }, {
+            nested: {
+                //it will be equal if the leght is the same
+                test: (before: string, after: string) => before.length === after.length
+            }
+        });
+        const logSpy = jest.spyOn(console, 'log');
+        const fnToRun = jest.fn(() => console.log(variable.nested.test));
+        createEffect(fnToRun);
+        expect(logSpy).toHaveBeenCalledWith("a");
+        variable.nested.test = "b";
+        //it will not be called again because b has the same length
+        expect(fnToRun).toBeCalledTimes(1);
+        variable.nested.test = "bb";
+        expect(logSpy).toHaveBeenCalledWith("bb");
+    });
+
     it("not re-run if the value is set but is equal to the old value passing an object of equalities functions", () => {
         //custom equality check, before has to be lower than after
-        const ref = createRef(1, (before, after) => {
+        const ref = createRef<number>(1, (before, after) => {
             return after > before;
         });
         const variable = createVariable({ test: "a" }, {
@@ -136,7 +181,6 @@ describe("createEffect", () => {
         const stored = createStored("stored", { testStored: "stored" }, {
             //custom equality check, is equal but case insensitive
             testStored: (before, after) => {
-                console.log(before, after, before.toLowerCase() === after.toLowerCase());
                 return before.toLowerCase() === after.toLowerCase();
             }
         });

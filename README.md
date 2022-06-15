@@ -89,6 +89,8 @@ console.log(ref.value) // 1
 ```
 The above ref will not trigger an effect re-run if the previous value is greater than the new value.
 
+Please note: if you are using typescript you can't pass something different than a primitive value to the ref and if you pass an equality function is recommended to also use the generic version of the fucntion `createRef<number>(1, (before, after)=> before > after)` otherwise Typescript will narrow the type to a constant. If you are using this in Javascript you are allowed to pass object to the ref (although is not recommended since you'll have to access it unnecessarly via the `.value` property), the object passed will be deeply reactive.
+
 #### createVariable
 This method is used to create a reactive variable for an object. It'll throw if you try to pass a primitive value to it.
 
@@ -104,6 +106,14 @@ const variable = createVariable({ whosCool: "you" }, { whosCool: (before, after)
 console.log(variable.whosCool) // you
 ```
 The above variable will not trigger an effect re-run if the previous value has the same length as the new value.
+
+createVariable works with nested property too. You can pass object inside objects and updating a values inside those object will trigger the rerun of the effects where it's been used. To pass an equality function relative to a nested object you should pass an object containing the properties of the object you want a particular equality function.
+
+```typescript
+const variable = createVariable({ whosCool: { pronoun: "you" } }, { whosCool: { pronoun: (before, after) => before.length === after.length }});
+console.log(variable.whosCool.pronoun) // you
+```
+in the above example `variable.whosCool.pronoun` is still reactive.
 
 #### createStored
 This method is used to create a reactive variable for an object also persisting it in localStorage or sessionStorage. It'll throw if you try to pass a primitive value to it. It will also automatically add a listener for the storage to update the variable whenever the storage changes. It will take a key and an initial value as input but will discard the initial value if the key is already present in the storage. It will also throw if the object in the storage is not Object-like
@@ -121,6 +131,8 @@ const variable = createStored("cool-stored",{ whosCool: "you" }, { whosCool: (be
 console.log(variable.whosCool) // you
 ```
 The above variable will not trigger an effect re-run if the previous value has the same length as the new value.
+
+Differently from `createVariable` a stored object is not deeply reactive.
 
 #### createComputed
 This method is used to create a reactive computed variable. You need to pass a function that will return a value. The return value of the function will be inside of the `.value` field of the returned computed. If you use some other variable to compute the this value it will always be in sync.
