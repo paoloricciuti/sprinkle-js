@@ -20,3 +20,7 @@ export declare type IGetDomElementFn = <T extends HTMLElement>(domElement: IStri
 export declare type AppendNode<T extends ChildNode = ChildNode> = T & {
     key?: any;
 };
+export declare type DOMUpdate<T extends HTMLElement = HTMLElement> = {
+    [key in keyof T]?: Partial<T[key]> | Omit<T[key], any>;
+};
+export declare type CSSStyles<T extends HTMLElement = HTMLElement> = Partial<T["style"]> | Omit<Partial<T["style"]>, any>;

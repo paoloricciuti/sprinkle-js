@@ -1,4 +1,4 @@
-import { AppendNode, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
+import { AppendNode, CSSStyles, DOMUpdate, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
 import { findNext, updateDom, diff, getDomElement } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
@@ -224,16 +224,16 @@ const bindInputValue = (domElement: IStringOrDomElement<HTMLInputElement>, fn: I
     return elem;
 };
 
-const bindDom = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<any, TElement>) => {
+const bindDom = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<DOMUpdate<TElement>, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => updateDom(elem, fn(elem)));
     return elem;
 };
 
-const bindStyle = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<any, TElement>) => {
+const bindStyle = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<CSSStyles<TElement>, TElement>) => {
     const elem = getDomElement(domElement);
     if (!elem) return;
-    bindDom(elem, () => ({ style: fn(elem) }));
+    bindDom(elem, () => ({ style: fn(elem) as any }));
     return elem;
 };
 
