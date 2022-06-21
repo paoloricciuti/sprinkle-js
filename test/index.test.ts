@@ -22,6 +22,19 @@ describe("createVariable", () => {
         const ref = createVariable({ testOne: "one", testTwo: 2, testThree: true });
         expect(ref).toMatchObject({ testOne: "one", testTwo: 2, testThree: true });
     });
+    it("is still reactive if i reassign a nested object with an object like value", () => {
+        const variable = createVariable({ nested: [[0, 1, 2], [3, 4, 5]] });
+        expect(variable).toMatchObject({ nested: [[0, 1, 2], [3, 4, 5]] });
+        const logSpy = jest.spyOn(console, 'log');
+        createEffect(() => console.log(variable.nested[0][0]));
+        expect(logSpy).toHaveBeenCalledWith(0);
+        variable.nested = [[6, 7, 8], [9, 10, 11]];
+        expect(logSpy).toHaveBeenCalledWith(6);
+        variable.nested[0] = [12, 13, 14];
+        expect(logSpy).toHaveBeenCalledWith(12);
+        variable.nested[0][0] = 15;
+        expect(logSpy).toHaveBeenCalledWith(15);
+    });
 });
 
 describe("createComputed", () => {

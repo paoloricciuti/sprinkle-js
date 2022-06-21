@@ -43,10 +43,14 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
             const fieldCast = field as keyof T;
             //get the equality function, if it's not defined default it to Object.is
             const equality = eq?.[fieldCast] ?? Object.is as any;
+            let varValue = value;
+            if (typeof target[fieldCast] === "object") {
+                varValue = createVariable(value, equality);
+            }
             //check if the current value is equal to the new value
             const isEqual = equality(target[fieldCast], value);
             //update the value
-            const ok = Reflect.set(target, field, value);
+            const ok = Reflect.set(target, field, varValue);
             //if it's not equal run the updates
             if (!isEqual) {
                 runRupdates(subscriptions, field);
