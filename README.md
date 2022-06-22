@@ -45,7 +45,7 @@ You can see this library in use [here](https://sprinkle-js.netlify.app).
 
 ## Documentation
 
-//⚠ WIP
+//⚠ WIP For the moment you can refer to the **Usage/Examples** section of this README
 
 
 ## FAQ
@@ -179,15 +179,12 @@ const ref = createRef(1);
 createEffect(()=>{
     console.log(variable.whosCool, ref.value);
 }) 
-
 //will log (you, 1) the first time
 
 ref.value++;
-
 //the effect run again logging (you, 2)
 
 variable.whosCool="whoever uses Sprinkle JS"
-
 //the effect run again logging (whoever uses Sprinkle JS, 2)
 
 ```
@@ -205,15 +202,12 @@ createEffect(()=>{
         console.log("cleaning up");
     }
 }) 
-
 //will log (you, 1) the first time
 
 ref.value++;
-
 //the effect run again logging first "cleaning up" and then (you, 2)
 
 variable.whosCool="whoever uses Sprinkle JS"
-
 //the effect run again logging first "cleaning up" and then (whoever uses Sprinkle JS, 2)
 
 ```
@@ -230,15 +224,12 @@ createEffect(()=>{
     const refValue = untrack(()=>ref.value);
     console.log(variable.whosCool, refValue);
 }) 
-
 //will log (you, 1) the first time
 
 ref.value++;
-
 //the effect will not run again because ref.value has been accessed inside the untrack
 
 variable.whosCool="whoever uses Sprinkle JS"
-
 //the effect run again logging  (whoever uses Sprinkle JS, 2)
 
 ```
@@ -252,15 +243,12 @@ const variable = createVariable({ whosCool: "you" });
 const ref = createRef(1);
 
 bindTextContent("#div-to-bind", ()=> `${ref.value} ${variable.whosCool}`); 
-
 //the text content of the div with the id div-to-bind will be "1 you"
 
 ref.value++;
-
 //the text content of the div with the id div-to-bind will be "2 you"
 
 variable.whosCool="whoever uses Sprinkle JS"
-
 //the text content of the div with the id div-to-bind will be "2 whoever uses Sprinkle JS"
 ```
 
@@ -271,15 +259,12 @@ const variable = createVariable({ whosCool: "you" });
 const ref = createRef(1);
 
 bindTextContent<HTMLDivElement>("#div-to-bind", (element:HTMLDivElement)=> `${element?.textContent} ${ref.value} ${variable.whosCool}`); 
-
 //the text content of the div with the id div-to-bind will be "1 you"
 
 ref.value++;
-
 //the text content of the div with the id div-to-bind will be "1 you 2 you"
 
 variable.whosCool="whoever uses Sprinkle JS"
-
 //the text content of the div with the id div-to-bind will be "1 you 2 you 2 whoever uses Sprinkle JS"
 ```
 
@@ -288,6 +273,47 @@ If you need to have access to the selected element (to add event listeners for e
 ```typescript
 //this will bind the variables to the textContent and you'll have access to the element itself inside the variable divToBind
 const divToBind=bindTextContent<HTMLDivElement>("#div-to-bind", (element:HTMLDivElement)=> `${element?.textContent} ${ref.value} ${variable.whosCool}`);
+```
+#### bindInnerHTML
+> **Warning**
+> Sprinkle JS does not sanitize the content of the innerHTML. If you use this function with user input make sure to sanitize it first to avoid expose yourself to XSS attacks.
+This function is used to bind a string value to the innerHTML of an element. It takes a dom element or a selector as the first argument and a function returning the value to bind to the innerHTML as the second argument.
+
+```typescript
+const variable = createVariable({ whosCool: "you" });
+const ref = createRef(1);
+
+bindInnerHTML("#div-to-bind", ()=> `<span>${ref.value} <strong>${variable.whosCool}</strong></span>`); 
+//the innerhtml of the div with the id div-to-bind will be "<span>1 <strong>you</strong></span>"
+
+ref.value++;
+//the innerhtml of the div with the id div-to-bind will be "<span>2 <strong>you</strong></span>"
+
+variable.whosCool="whoever uses Sprinkle JS"
+//the innerhtml of the div with the id div-to-bind will be "<span>2 <strong>whoever uses Sprinkle JS</strong></span>"
+```
+
+The callback you pass in also takes the element as the first argument, in Typescript you can pass a generic type specifying what kind of element you are expecting
+
+```typescript
+const variable = createVariable({ whosCool: "you" });
+const ref = createRef(1);
+
+bindInnerHTML<HTMLDivElement>("#div-to-bind", (element:HTMLDivElement)=> `<span>${element?.textContent} ${ref.value} <strong>${variable.whosCool}</strong></span>`); 
+//the innerhtml of the div with the id div-to-bind will be "<span>1 <strong>you</strong></span>"
+
+ref.value++;
+//the innerhtml of the div with the id div-to-bind will be "<span>1 you 2 <strong>you</strong></span>"
+
+variable.whosCool="whoever uses Sprinkle JS"
+//the innerhtml of the div with the id div-to-bind will be "<span>1 you 2 you 2 <strong>whoever uses Sprinkle JS</strong></span>"
+```
+
+If you need to have access to the selected element (to add event listeners for example), the element is returned from the function.
+
+```typescript
+//this will bind the variables to the textContent and you'll have access to the element itself inside the variable divToBind
+const divToBind=bindInnerHTML<HTMLDivElement>("#div-to-bind", (element:HTMLDivElement)=> `${element?.textContent} ${ref.value} ${variable.whosCool}`);
 ```
 
 #### bindInputValue

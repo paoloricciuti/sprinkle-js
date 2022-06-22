@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { createRef, bindTextContent, createVariable, createStored, createEffect, createComputed } from "../src/index";
+import { createRef, bindTextContent, createVariable, createStored, createEffect, createComputed, bindInnerHTML } from "../src/index";
 
 describe("createRef", () => {
     it("create a variable with a value property set to the passed in value", () => {
@@ -236,6 +236,18 @@ describe("DOM manipulation by bindind", () => {
             expect(toBindDiv.textContent).toBe("1");
             ref.value++;
             expect(toBindDiv.textContent).toBe("2");
+        });
+    });
+
+    describe("bindInnerHTML ", () => {
+        it("bind a value of a ref or a variable to the innerHTML of an input element", () => {
+            const ref = createRef(1);
+            bindInnerHTML("#to-bind", () => `<span>${ref.value.toString()}</span>`);
+            expect(toBindDiv.firstChild).toBeInstanceOf(HTMLSpanElement);
+            expect(toBindDiv.firstChild?.textContent).toBe("1");
+            ref.value++;
+            expect(toBindDiv.firstChild).toBeInstanceOf(HTMLSpanElement);
+            expect(toBindDiv.firstChild?.textContent).toBe("2");
         });
     });
 });

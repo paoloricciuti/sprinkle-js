@@ -203,6 +203,16 @@ const bindTextContent = <TElement extends HTMLElement = HTMLElement>(domElement:
     return elem;
 };
 
+const bindInnerHTML = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>) => {
+    const elem = getDomElement(domElement);
+    createEffect(() => {
+        if (elem) {
+            elem.innerHTML = fn(elem);
+        }
+    });
+    return elem;
+};
+
 const bindClass = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, className: string, fn: IEffect<boolean, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
@@ -272,4 +282,4 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
     return elem;
 };
 
-export { createEffect, untrack, createRef, createVariable, createComputed, createStored, bindInputValue, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };
+export { createEffect, untrack, createRef, createVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };
