@@ -265,6 +265,10 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
         let index = 0;
         for (let element of differentElements) {
             if (element.type === "+") {
+                const nextRemoved = findNext(differentElements, (el) => el.type === "-" && el.value.key === element.value.key, index);
+                if (nextRemoved) {
+                    element.value = nextRemoved.value;
+                }
                 if (!nextEqual) {
                     elem.append(element.value);
                     index++;
@@ -273,6 +277,10 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
                 nextEqual.value.before(element.value);
             } else if (element.type === "-") {
                 elem.removeChild(element.value);
+                const nextAdded = findNext(differentElements, (el) => el.type === "+" && el.value.key === element.value.key, index);
+                if (nextAdded) {
+                    nextAdded.value = element.value;
+                }
             } else {
                 nextEqual = findNext(differentElements, (element) => element.type === "=", index);
             }
