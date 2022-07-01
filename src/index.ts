@@ -27,7 +27,7 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
     const keys = Object.keys(value);
     for (let keyString of keys) {
         const key = keyString as keyof T;
-        if (typeof value[key] === "object") {
+        if (!!value[key] && typeof value[key] === "object") {
             value[key] = createVariable(value[key], (eq?.[key] as any as IEqualFunctionMap<T[keyof T]>));
         }
     }
@@ -44,7 +44,7 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
             //get the equality function, if it's not defined default it to Object.is
             const equality = eq?.[fieldCast] ?? Object.is as any;
             let varValue = value;
-            if (typeof target[fieldCast] === "object") {
+            if (!!target[fieldCast] && typeof target[fieldCast] === "object") {
                 varValue = createVariable(value, equality);
             }
             //check if the current value is equal to the new value
