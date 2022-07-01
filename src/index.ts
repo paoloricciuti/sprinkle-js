@@ -44,7 +44,7 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
             //get the equality function, if it's not defined default it to Object.is
             const equality = eq?.[fieldCast] ?? Object.is as any;
             let varValue = value;
-            if (!!target[fieldCast] && typeof target[fieldCast] === "object") {
+            if (!!value && typeof value === "object") {
                 varValue = createVariable(value, equality);
             }
             //check if the current value is equal to the new value
