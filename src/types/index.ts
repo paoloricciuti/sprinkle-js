@@ -4,7 +4,7 @@ export type Primitive = string | number | boolean;
 
 export type OnlyNonPrimitiveKey<T> = keyof { [P in keyof T as T[P] extends Primitive ? never : P]: T[P] };
 
-export type IEqualFunction<T> = T extends Primitive | Array<Primitive> ? (before: T, after: T) => boolean : IEqualFunctionMap<T>;
+export type IEqualFunction<T> = T extends Primitive | Array<Primitive> ? (before: T, after: T) => boolean : IEqualFunctionMap<T> | ((before: T, after: T) => boolean);
 
 export type IEqualFunctionMap<T extends Object> = {
     [key in keyof T]?: IEqualFunction<T[key]>;

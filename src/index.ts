@@ -1,5 +1,5 @@
 import { AppendNode, CSSStyles, DOMUpdate, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
-import { findNext, updateDom, diff, getDomElement } from "./utils";
+import { findNext, updateDom, diff, getDomElement, getRawType } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
 
@@ -27,7 +27,7 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
     const keys = Object.keys(value);
     for (let keyString of keys) {
         const key = keyString as keyof T;
-        if (!!value[key] && typeof value[key] === "object") {
+        if (!!value[key] && typeof value[key] === "object" && (getRawType(value[key]) === "Object" || Array.isArray(value[key]))) {
             value[key] = createVariable(value[key], (eq?.[key] as any as IEqualFunctionMap<T[keyof T]>));
         }
     }
@@ -44,7 +44,7 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
             //get the equality function, if it's not defined default it to Object.is
             const equality = eq?.[fieldCast] ?? Object.is as any;
             let varValue = value;
-            if (!!value && typeof value === "object") {
+            if (!!value && typeof value === "object" && (getRawType(value) === "Object" || Array.isArray(value))) {
                 varValue = createVariable(value, equality);
             }
             //check if the current value is equal to the new value

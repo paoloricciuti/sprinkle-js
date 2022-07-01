@@ -84,9 +84,12 @@ const diff = <T>(arr: T[] = [], arr2: T[] = [], eq = ((a: T, b: T) => a === b)) 
 
 const findNext = <T>(arr: T[], eq: (element: T, index: number, array: T[]) => boolean, index: number = 0) => arr.find((element, i, ...props) => i > index && eq(element, i, ...props));
 
+const getRawType = (obj: unknown) => Object.prototype.toString.call(obj).slice(8, -1);
+
 export {
     getDomElement,
     findNext,
     diff,
     updateDom,
+    getRawType,
 };

@@ -164,6 +164,27 @@ describe("createEffect", () => {
         expect(logSpy).toHaveBeenCalledWith("bb", "b");
     });
 
+    it("rerun if a nested object in a variable changes [with non reactive variables at the end] [with custom equality functions]", () => {
+        const variable = createVariable<{ test: string, nested: HTMLElement; }>({ test: "a", nested: document.createElement("div") }, {
+            test: (before: string, after: string) => before.length === after.length,
+            nested: (before, after) => before.tagName === after.tagName,
+        });
+        const logSpy = jest.spyOn(console, 'log');
+        const fnToRun = jest.fn(() => console.log(variable.test, variable.nested.tagName));
+        createEffect(fnToRun);
+        expect(logSpy).toHaveBeenCalledWith("a", "DIV");
+        variable.test = "b";
+        //it will not be called again because b has the same length
+        expect(fnToRun).toBeCalledTimes(1);
+        variable.test = "bb";
+        expect(logSpy).toHaveBeenCalledWith("bb", "DIV");
+        variable.nested = document.createElement("div");
+        //it will not be called again because the two divs have the same tagName
+        expect(fnToRun).toBeCalledTimes(2);
+        variable.nested = document.createElement("span");
+        expect(logSpy).toHaveBeenCalledWith("bb", "SPAN");
+    });
+
     it("rerun if a nested object in a variable changes [with equality functions]", () => {
         const variable = createVariable({ nested: { test: "a" } }, {
             nested: {
