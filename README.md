@@ -107,7 +107,15 @@ console.log(variable.whosCool) // you
 ```
 The above variable will not trigger an effect re-run if the previous value has the same length as the new value.
 
-createVariable works with nested property too. You can pass object inside objects and updating a values inside those object will trigger the rerun of the effects where it's been used. To pass an equality function relative to a nested object you should pass an object containing the properties of the object you want a particular equality function.
+createVariable works with nested property too. You can pass object inside objects and updating a values inside those object will trigger the rerun of the effects where it's been used. To pass an equality function relative to a nested object you should pass an object containing the properties of the object you want a particular equality function. If you pass a built in object tho (like Set, Map or HTMLElement) it will not become reactive.
+If you use a nested object you can pass an object with the same structure to the equality functions object to specify an equality function for every field. If you pass a function the equality function will not be applied to the nested object.
+```typescript
+//here the name field will use the custom equality function
+const variable = createVariable({ whosCool: { name: "you" } }, { whosCool: { name: (before, after) => before.length === after.length } });
+
+//here the equality function will be applied only to the whosCool object
+const variable = createVariable({ whosCool: { name: "you" } }, { whosCool: (before, after) => before.length === after.length });
+```
 
 ```typescript
 const variable = createVariable({ whosCool: { pronoun: "you" } }, { whosCool: { pronoun: (before, after) => before.length === after.length }});
@@ -357,6 +365,51 @@ bindDom("#checkbox", (element)=> ({
     ariaLabel: variable.whosCool,
     checked: variable.whosCool === "you",
 }));
+```
+#### bindClass
+
+This function is used to bind a class to the actual element. It takes a dom element or a selector as the first argument, the class that you want to apply and a function returning a boolean as the third argument.
+
+```typescript
+const variable = createVariable({ count: 0 });
+
+bindClass("#div-to-bind", "dark", (element)=> variable.count % 2 === 0);
+//the div will have the dark class set by default
+
+//this will remove the class;
+variable.count++;
+
+//this will add the class again;
+variable.count++;
+
+```
+#### bindClasses
+
+This function is used to bind multiple classes to the actual element. It takes a dom element or a selector as the first argument, and an object containing the classes that you want to apply as the keys and a boolean as the value. Each class will be applied only if the corrispondent value is true.
+
+```typescript
+const variable = createVariable({ count: 1 });
+
+bindClasses("#to-bind", () => ({
+    one: variable.count === 1,
+    two: variable.count === 2,
+    three: variable.count === 3,
+    lessThanFive: variable.count < 5,
+}));
+//the div will have the classes one and lessThanFive
+
+//the div will have the classes two and lessThanFive
+variable.count++;
+
+//the div will have the classes three and lessThanFive
+variable.count++;
+
+//the div will have the class lessThanFive
+variable.count++;
+
+//the div will have no classes
+variable.count++;
+
 ```
 
 #### bindStyle

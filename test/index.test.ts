@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { createRef, bindTextContent, createVariable, createStored, createEffect, createComputed, bindInnerHTML } from "../src/index";
+import { createRef, bindTextContent, createVariable, createStored, createEffect, createComputed, bindInnerHTML, bindClasses } from "../src/index";
 
 describe("createRef", () => {
     it("create a variable with a value property set to the passed in value", () => {
@@ -269,6 +269,42 @@ describe("DOM manipulation by bindind", () => {
             ref.value++;
             expect(toBindDiv.firstChild).toBeInstanceOf(HTMLSpanElement);
             expect(toBindDiv.firstChild?.textContent).toBe("2");
+        });
+    });
+
+    describe("bindClasses ", () => {
+        it("bind a set of classes represented by an object of booleans to the classname of an element", () => {
+            const ref = createRef<number>(1);
+            bindClasses("#to-bind", () => ({
+                one: ref.value === 1,
+                two: ref.value === 2,
+                three: ref.value === 3,
+                lessThanFive: ref.value < 5,
+            }));
+            expect(toBindDiv.classList.contains("one")).toBe(true);
+            expect(toBindDiv.classList.contains("two")).toBe(false);
+            expect(toBindDiv.classList.contains("three")).toBe(false);
+            expect(toBindDiv.classList.contains("lessThanFive")).toBe(true);
+            ref.value++;
+            expect(toBindDiv.classList.contains("one")).toBe(false);
+            expect(toBindDiv.classList.contains("two")).toBe(true);
+            expect(toBindDiv.classList.contains("three")).toBe(false);
+            expect(toBindDiv.classList.contains("lessThanFive")).toBe(true);
+            ref.value++;
+            expect(toBindDiv.classList.contains("one")).toBe(false);
+            expect(toBindDiv.classList.contains("two")).toBe(false);
+            expect(toBindDiv.classList.contains("three")).toBe(true);
+            expect(toBindDiv.classList.contains("lessThanFive")).toBe(true);
+            ref.value++;
+            expect(toBindDiv.classList.contains("one")).toBe(false);
+            expect(toBindDiv.classList.contains("two")).toBe(false);
+            expect(toBindDiv.classList.contains("three")).toBe(false);
+            expect(toBindDiv.classList.contains("lessThanFive")).toBe(true);
+            ref.value++;
+            expect(toBindDiv.classList.contains("one")).toBe(false);
+            expect(toBindDiv.classList.contains("two")).toBe(false);
+            expect(toBindDiv.classList.contains("three")).toBe(false);
+            expect(toBindDiv.classList.contains("lessThanFive")).toBe(false);
         });
     });
 });

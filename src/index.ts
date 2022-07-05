@@ -24,7 +24,7 @@ const runRupdates = (subscriptions: Map<string | symbol, ISubscription>, field: 
 
 const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) => {
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
-    const keys = Object.keys(value);
+    const keys = Object.keys(value || {});
     for (let keyString of keys) {
         const key = keyString as keyof T;
         if (!!value[key] && typeof value[key] === "object" && (getRawType(value[key]) === "Object" || Array.isArray(value[key]))) {
@@ -228,6 +228,18 @@ const bindClass = <TElement extends HTMLElement = HTMLElement>(domElement: IStri
     return elem;
 };
 
+const bindClasses = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<{ [key: string]: boolean; }, TElement>) => {
+    const elem = getDomElement(domElement);
+    createEffect(() => {
+        if (elem) {
+            const classesObj = fn(elem);
+            const classList = Object.keys(classesObj || {}).filter(className => classesObj[className]);
+            elem.className = classList.join(" ");
+        }
+    });
+    return elem;
+};
+
 const bindInputValue = (domElement: IStringOrDomElement<HTMLInputElement>, fn: IEffect<string, HTMLInputElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
@@ -290,4 +302,4 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
     return elem;
 };
 
-export { createEffect, untrack, createRef, createVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindStyle, bindChildrens };
+export { createEffect, untrack, createRef, createVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens };
