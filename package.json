@@ -12,8 +12,8 @@
         "bump:patch": "yarn version --patch",
         "bump:minor": "yarn version --minor",
         "bump:major": "yarn version --major",
-        "test": "jest --verbose",
-        "coverage": "jest --coverage"
+        "test": "vitest",
+        "coverage": "vitest run --coverage"
     },
     "repository": "git+https://github.com/paoloricciuti/sprinkle-js.git",
     "keywords": [
@@ -36,9 +36,10 @@
         "babel-jest": "^28.1.0",
         "babel-minify": "^0.5.2",
         "babel-preset-minify": "^0.5.2",
-        "jest": "^28.1.0",
-        "jest-environment-jsdom": "^28.1.0",
-        "typescript": "^4.6.4"
+        "c8": "^7.11.3",
+        "jsdom": "^20.0.0",
+        "typescript": "^4.6.4",
+        "vitest": "^0.17.0"
     },
     "volta": {
         "node": "17.0.1"

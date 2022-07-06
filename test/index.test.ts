@@ -1,8 +1,9 @@
 /**
- * @jest-environment jsdom
+ * @vitest-environment jsdom
  */
 
 import { createRef, bindTextContent, createVariable, createStored, createEffect, createComputed, bindInnerHTML, bindClasses } from "../src/index";
+import { expect, it, describe, afterEach, beforeEach, vi } from 'vitest';
 
 describe("createRef", () => {
     it("create a variable with a value property set to the passed in value", () => {
@@ -25,7 +26,7 @@ describe("createVariable", () => {
     it("is still reactive if i reassign a nested object with an object like value", () => {
         const variable = createVariable({ nested: [[0, 1, 2], [3, 4, 5]] });
         expect(variable).toMatchObject({ nested: [[0, 1, 2], [3, 4, 5]] });
-        const logSpy = jest.spyOn(console, 'log');
+        const logSpy = vi.spyOn(console, 'log');
         createEffect(() => console.log(variable.nested[0][0]));
         expect(logSpy).toHaveBeenCalledWith(0);
         variable.nested = [[6, 7, 8], [9, 10, 11]];
@@ -109,8 +110,8 @@ describe("createEffect", () => {
         const variable = createVariable({ test: "a" });
         const stored = createStored("stored", { testStored: "stored" });
         const computed = createComputed(() => `${ref.value} ${variable.test} ${stored.testStored}`);
-        const logSpy = jest.spyOn(console, 'log');
-        const fnToRun = jest.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
+        const logSpy = vi.spyOn(console, 'log');
+        const fnToRun = vi.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
         createEffect(fnToRun);
         expect(logSpy).toHaveBeenCalledWith(1, "a", "stored", "1 a stored");
         ref.value++;
@@ -126,7 +127,7 @@ describe("createEffect", () => {
         const variable = createVariable({ test: "a" });
         const stored = createStored("stored", { testStored: "stored" });
         const computed = createComputed(() => `${ref.value} ${variable.test} ${stored.testStored}`);
-        const fnToRun = jest.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
+        const fnToRun = vi.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
         createEffect(fnToRun);
         expect(fnToRun).toHaveBeenCalledTimes(1);
         ref.value = 1;
@@ -139,7 +140,7 @@ describe("createEffect", () => {
 
     it("rerun if a nested object in a variable changes [no equality functions]", () => {
         const variable = createVariable({ nested: { test: "a" } });
-        const logSpy = jest.spyOn(console, 'log');
+        const logSpy = vi.spyOn(console, 'log');
         createEffect(() => console.log(variable.nested.test));
         expect(logSpy).toHaveBeenCalledWith("a");
         variable.nested.test = "b";
@@ -150,8 +151,8 @@ describe("createEffect", () => {
         const variable = createVariable({ test: "a", nested: { test: "a" } }, {
             test: (before: string, after: string) => before.length === after.length,
         });
-        const logSpy = jest.spyOn(console, 'log');
-        const fnToRun = jest.fn(() => console.log(variable.test, variable.nested.test));
+        const logSpy = vi.spyOn(console, 'log');
+        const fnToRun = vi.fn(() => console.log(variable.test, variable.nested.test));
         createEffect(fnToRun);
         expect(logSpy).toHaveBeenCalledWith("a", "a");
         variable.test = "b";
@@ -169,8 +170,8 @@ describe("createEffect", () => {
             test: (before: string, after: string) => before.length === after.length,
             nested: (before, after) => before.tagName === after.tagName,
         });
-        const logSpy = jest.spyOn(console, 'log');
-        const fnToRun = jest.fn(() => console.log(variable.test, variable.nested.tagName));
+        const logSpy = vi.spyOn(console, 'log');
+        const fnToRun = vi.fn(() => console.log(variable.test, variable.nested.tagName));
         createEffect(fnToRun);
         expect(logSpy).toHaveBeenCalledWith("a", "DIV");
         variable.test = "b";
@@ -192,8 +193,8 @@ describe("createEffect", () => {
                 test: (before: string, after: string) => before.length === after.length
             }
         });
-        const logSpy = jest.spyOn(console, 'log');
-        const fnToRun = jest.fn(() => console.log(variable.nested.test));
+        const logSpy = vi.spyOn(console, 'log');
+        const fnToRun = vi.fn(() => console.log(variable.nested.test));
         createEffect(fnToRun);
         expect(logSpy).toHaveBeenCalledWith("a");
         variable.nested.test = "b";
@@ -222,7 +223,7 @@ describe("createEffect", () => {
             //custom equality for computed value, only if it's the same starting character
             return before.charAt(0) === after.charAt(0);
         });
-        const fnToRun = jest.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
+        const fnToRun = vi.fn(() => console.log(ref.value, variable.test, stored.testStored, computed.value));
         createEffect(fnToRun);
         expect(fnToRun).toHaveBeenCalledTimes(1);
         ref.value = 2;

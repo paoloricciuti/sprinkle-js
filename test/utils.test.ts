@@ -1,4 +1,5 @@
 import { diff } from "../src/utils";
+import { expect, it, describe } from 'vitest';
 
 describe("the diff function is present in utils and works as expected", () => {
 
