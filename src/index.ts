@@ -233,8 +233,14 @@ const bindClasses = <TElement extends HTMLElement = HTMLElement>(domElement: ISt
     createEffect(() => {
         if (elem) {
             const classesObj = fn(elem);
-            const classList = Object.keys(classesObj || {}).filter(className => classesObj[className]);
-            elem.className = classList.join(" ");
+            const classList = Object.keys(classesObj || {});
+            for (let className of classList) {
+                if (classesObj[className]) {
+                    elem.classList.add(className);
+                } else {
+                    elem.classList.remove(className);
+                }
+            }
         }
     });
     return elem;
