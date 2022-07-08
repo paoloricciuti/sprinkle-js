@@ -11,11 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Permanent+Marker&display=swap"
         rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.5.0/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.5.0/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.5.0/mode/xml/xml.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.5.0/codemirror.min.css">
+    <script async defer src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
 </head>
 
 <body>
@@ -27,10 +23,10 @@
     </header>
     <section class="hero">
         <h1 class="title">The open source alternative to...<span class="to-the-moon">well, nothing!</span></h1>
-        <button class="secondary get-started">Get started</button>
+        <a href="#get-started" class="btn secondary get-started">Get started</a>
         <pre class="board"><div class="paper"><code></code></div></pre>
     </section>
-    <section class="get-started-section">
+    <section id="get-started" class="get-started-section">
         <article>
             The fastest way to get started is by clicking this
             <form action="https://codepen.io/pen/define" method="POST" target="_blank">
@@ -39,13 +35,30 @@
                 <button type="submit">Go on Codepen</button>
             </form>
         </article>
-        <div class="files-wrapper">
-            <ul class="CodeMirror cm-s-dracula files">
-                <li><button id="starter-index-js">index.js</button></li>
-                <li><button id="starter-index-html">index.html</button></li>
-            </ul>
-            <div id="sprinkle-code-starter"></div>
-        </div>
+        <!-- <article class="code-example">
+            <p class="codepen" data-border="none" data-height="300" data-theme-id="dark" data-default-tab="js,result"
+                data-slug-hash="gOebVrw" data-editable="true" data-user="paoloricciuti"
+                style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+                <span>See the Pen <a href="https://codepen.io/paoloricciuti/pen/gOebVrw">
+                        Bubbles</a> by paoloricciuti (<a href="https://codepen.io/paoloricciuti">@paoloricciuti</a>)
+                    on <a href="https://codepen.io">CodePen</a>.</span>
+            </p>
+            <p>
+                A simple bubble example
+            </p>
+        </article>
+        <article class="code-example">
+            <p class="codepen" data-border="none" data-height="300" data-theme-id="dark" data-default-tab="js,result"
+                data-slug-hash="rNJgJdo" data-editable="true" data-user="paoloricciuti"
+                style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+                <span>See the Pen <a href="https://codepen.io/paoloricciuti/pen/rNJgJdo">
+                        Tic tac toe</a> by paoloricciuti (<a href="https://codepen.io/paoloricciuti">@paoloricciuti</a>)
+                    on <a href="https://codepen.io">CodePen</a>.</span>
+            </p>
+            <p>
+                A tic tac tow exapmple
+            </p>
+        </article> -->
     </section>
     <footer class="footer">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">

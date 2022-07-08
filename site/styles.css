@@ -11,6 +11,8 @@
     --clr-primary-dull: hsl(var(--clr-primary-hue), var(--clr-saturation), var(--clr-lightness-dull));
     --clr-secondary: hsl(var(--clr-secondary-hue), var(--clr-saturation), var(--clr-lightness));
     --clr-secondary-dull: hsl(var(--clr-secondary-hue), var(--clr-saturation), var(--clr-lightness-dull));
+    --header-height: 4rem;
+    --default-skew: 4rem;
 }
 
 /* Box sizing rules */
@@ -41,7 +43,8 @@ ol[role='list'] {
 }
 
 /* Set core root defaults */
-html:focus-within {
+html {
+    scroll-padding: calc(var(--header-height) + var(--default-skew));
     scroll-behavior: smooth;
 }
 
@@ -95,7 +98,7 @@ body {
     font-family: system-ui;
 }
 
-button {
+:is(button, .btn) {
     --_active-bg: var(--clr-primary);
     font-family: 'Amatic SC', cursive;
     font-size: 1.5rem;
@@ -104,22 +107,24 @@ button {
     font-weight: 700;
     transition: outline-offset 125ms;
     border: 0.125rem solid black;
+    text-decoration: none;
+    color: black;
 }
 
-button:is(:focus, :focus-visible):not(:active) {
+:is(button, .btn):is(:focus, :focus-visible):not(:active) {
     outline: 1px solid --clr-secondary;
     outline-offset: .3em;
 }
 
-button:active {
+:is(button, .btn):active {
     --_active-bg: var(--clr-primary-dull);
 }
 
-button.secondary {
+:is(button, .btn).secondary {
     --_active-bg: var(--clr-secondary);
 }
 
-button:active.secondary {
+:is(button, .btn):active.secondary {
     --_active-bg: var(--clr-secondary-dull);
 }
 
@@ -128,7 +133,6 @@ button:active.secondary {
 }
 
 .header {
-    --header-height: 4rem;
     min-height: var(--header-height);
     padding: 1rem 2rem;
     background-color: var(--clr-bg);
@@ -213,16 +217,6 @@ button:active.secondary {
     grid-column: 2;
 }
 
-@media screen and (max-width: 43.75rem) {
-    .hero {
-        grid-template-columns: 1fr;
-    }
-
-    .board {
-        grid-column: 1;
-        grid-row: 3;
-    }
-}
 
 .paper {
     position: relative;
@@ -284,12 +278,14 @@ code>div {
 }
 
 .get-started-section {
-    --_skew-height: 4rem;
+    --_skew-height: var(--default-skew, 4rem);
     background-color: var(--clr-bg-dull);
     color: white;
     padding: 1rem;
     margin-block: var(--_skew-height);
     position: relative;
+    display: grid;
+    gap: 2rem;
 }
 
 .get-started-section>article {
@@ -297,6 +293,32 @@ code>div {
     gap: 1rem;
     justify-content: center;
     align-items: center;
+}
+
+.get-started-section>article:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.get-started-section>article.code-example {
+    justify-content: space-evenly;
+}
+
+.code-example>div {
+    min-width: 50vw;
+}
+
+.code-example>p:not(.codepen) {
+    background-color: var(--clr-primary);
+    color: black;
+    font-weight: bold;
+    padding: 3rem;
+    border-radius: 37% 63% 36% 64% / 35% 43% 57% 65%;
+    max-width: 25ch;
+    aspect-ratio: 1;
+}
+
+.code-example:nth-child(even)>p:not(.codepen) {
+    border-radius: 37% 63% 64% 36% / 45% 52% 48% 55%;
 }
 
 .get-started-section::before, .get-started-section::after {
@@ -360,43 +382,6 @@ code>div {
     height: 3rem;
 }
 
-.files-wrapper {
-    margin-block: 1rem;
-}
-
-.CodeMirror:not(.files) {
-    border-radius: .5rem;
-    border-top-left-radius: 0;
-    filter: drop-shadow(0px 5px 8px rgba(0 0 0 / .5));
-}
-
-.files.files {
-    display: inline-flex;
-    list-style: none;
-    height: auto;
-    margin: 0;
-    padding: 0;
-    border-top-right-radius: .5rem;
-    border-top-left-radius: .5rem;
-}
-
-.files>li:not(:last-of-type) {
-    border-right: 1px solid #C1CADA;
-}
-
-.files button {
-    all: inherit;
-    appearance: none;
-    background: transparent;
-    border: 0;
-    padding: .3rem;
-    cursor: pointer;
-}
-
-.files button.open-file {
-    background-color: rgba(255 255 255 / .3);
-}
-
 @keyframes fade-away {
     from {
         opacity: 1;
@@ -425,5 +410,25 @@ code>div {
 
     to {
         transform: rotate(20deg)
+    }
+}
+
+@media screen and (max-width: 43.75rem) {
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .board {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .get-started-section>article:not(:first-child) {
+        flex-direction: column-reverse;
+        align-items: flex-end;
+    }
+
+    .get-started-section>article:nth-child(even) {
+        align-items: flex-start;
     }
 }

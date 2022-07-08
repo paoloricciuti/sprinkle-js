@@ -1,5 +1,25 @@
 import { createVariable, bindInputValue, bindClass, bindDom, bindTextContent, bindStyle, createEffect } from "https://cdn.skypack.dev/sprinkle-js";
-import { documents } from "./documents.js";
+import examples from "./examples.js";
+
+const getStartedSection = document.getElementById("get-started");
+
+examples.forEach(example => {
+    const article = document.createElement("article");
+    article.classList.add("code-example");
+    article.innerHTML = `<p class="codepen" data-border="none" data-height="300" data-theme-id="dark" data-default-tab="js,result"
+    data-slug-hash="${example.pen}" data-editable="true" data-user="paoloricciuti"
+    style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+    <span>See the Pen <a href="https://codepen.io/paoloricciuti/pen/${example.pen}">
+            Bubbles</a> by paoloricciuti (<a href="https://codepen.io/paoloricciuti">@paoloricciuti</a>)
+        on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<p>
+${example.description}
+</p>`;
+    getStartedSection.append(article);
+});
+
+window.__CPEmbed();
 
 const state = createVariable({
     logoRotation: 0,
@@ -7,14 +27,11 @@ const state = createVariable({
     theme: "auto",
     mineBitcoin: true,
     bitcoinRate: 10,
-    currentStarterDoc: 0,
 }, {
     bitcoinRate: () => false,
-    currentStarterDoc: () => false
 });
 
 const stateModifiers = {
-    currentStarterDoc: (val) => Math.abs(val % 2),
     bitcoinRate: (val) => Math.min(Math.max(val, 0), 100),
 };
 
@@ -107,24 +124,3 @@ for (let key of keys) {
 const closePar = document.createTextNode("}");
 df.append(closePar);
 document.querySelector("code").append(df);
-
-const code = CodeMirror(document.querySelector("#sprinkle-code-starter"), {
-    readOnly: true,
-    lineNumbers: true,
-    theme: "dracula",
-    lineWrapping: true,
-});
-
-const indexJsBtn = bindClass("#starter-index-js", "open-file", () => state.currentStarterDoc === 0);
-const indexHtmlBtn = bindClass("#starter-index-html", "open-file", () => state.currentStarterDoc === 1);
-
-indexJsBtn.addEventListener("click", () => state.currentStarterDoc = 0);
-indexHtmlBtn.addEventListener("click", () => state.currentStarterDoc = 1);
-
-createEffect(() => {
-    if (state.currentStarterDoc === 0) {
-        code.swapDoc(documents.starter_index_js);
-    } else {
-        code.swapDoc(documents.starter_index_html);
-    }
-});
