@@ -1,7 +1,10 @@
 export default [
     {
+        pen: "NWYrXyW",
+        description: "A drawing board that shows the power of arrays and bindChildrens",
+    }, {
         pen: "gOebVrw",
-        description: "Tap into the green and start typing...after three letter you will see a bubble appear and hit Enter to send it.",
+        description: "Can Sprinkle JS store HTMLELments? Sure you can! This examples shows when it's useful.",
     },
     {
         pen: "rNJgJdo",

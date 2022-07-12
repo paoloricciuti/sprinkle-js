@@ -36,6 +36,16 @@ describe("createVariable", () => {
         variable.nested[0][0] = 15;
         expect(logSpy).toHaveBeenCalledWith(15);
     });
+    it("does not create a double proxied value if i pass in a reactive varible to it", () => {
+        const variable = createVariable({ matrix: [[0, 1, 2], [3, 4, 5]] });
+        const fnToCall = vi.fn(() => console.log(variable.matrix?.[0]?.[0]));
+        createEffect(fnToCall);
+        expect(fnToCall).toHaveBeenCalledTimes(1);
+        variable.matrix = [...variable.matrix, [7, 8, 9]];
+        expect(fnToCall).toHaveBeenCalledTimes(2);
+        variable.matrix[0][0] = Math.random();
+        expect(fnToCall).toHaveBeenCalledTimes(3);
+    });
 });
 
 describe("createComputed", () => {

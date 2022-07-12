@@ -2,6 +2,7 @@ import { AppendNode, CSSStyles, DOMUpdate, ICreateEffect, ICreateEffectExecute, 
 import { findNext, updateDom, diff, getDomElement, getRawType } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
+const IS_REACTIVE_SYMBOL = Symbol("is-reactive");
 
 const subscribe = (field: string | symbol, running: ICreateEffectRunning, subscriptionsMap: Map<string | symbol, ISubscription>) => {
     let subscriptions = subscriptionsMap.get(field);
@@ -23,6 +24,8 @@ const runRupdates = (subscriptions: Map<string | symbol, ISubscription>, field: 
 };
 
 const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) => {
+    //if the value is already reactive we simply return the value
+    if ((value as any)[IS_REACTIVE_SYMBOL]) return value;
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
     const keys = Object.keys(value || {});
     for (let keyString of keys) {
@@ -34,6 +37,9 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
     const variable = new Proxy(value, {
         get: (...props) => {
+            //using IS_REACTIVE_SYMBOL to differenciate between normal values and reactive values to avoid
+            //recreating the proxy if a value is already reactive
+            if (props[1] === IS_REACTIVE_SYMBOL) return true;;
             const running = context[context.length - 1];
             if (running) subscribe(props[1], running, subscriptions);
             return Reflect.get(...props);
@@ -44,7 +50,9 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
             //get the equality function, if it's not defined default it to Object.is
             const equality = eq?.[fieldCast] ?? Object.is as any;
             let varValue = value;
-            if (!!value && typeof value === "object" && (getRawType(value) === "Object" || Array.isArray(value))) {
+            //if the passed in value is already reactive no need to create a new reactive variable from it
+            //otherwise the effect will run twice every time
+            if (!!value && typeof value === "object" && (getRawType(value) === "Object" || Array.isArray(value)) && !value[IS_REACTIVE_SYMBOL]) {
                 varValue = createVariable(value, equality);
             }
             //check if the current value is equal to the new value
@@ -161,7 +169,7 @@ const cleanup = (running: ICreateEffectRunning) => {
 
 const createEffect: ICreateEffect = (fn) => {
     const execute: ICreateEffectExecute = () => {
-        if (running.cleanup) {
+        if (running.cleanup && typeof running.cleanup === "function") {
             running.cleanup();
         }
         cleanup(running);
