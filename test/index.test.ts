@@ -252,6 +252,57 @@ describe("createEffect", () => {
         expect(fnToRun).toHaveBeenCalledTimes(4);
     });
 
+    it("not run multiple times in case there are nested createEffect calls", () => {
+
+        const variable = createVariable({ test: true, test2: true, skip: false });
+
+        const nestedEffect = vi.fn(() => {
+            variable.test;
+            variable.test2;
+        });
+        const firstEffect = vi.fn(() => {
+            variable.test;
+            if (!variable.skip) {
+                createEffect(nestedEffect);
+            }
+        });
+        createEffect(firstEffect);
+
+        expect(firstEffect).toHaveBeenCalledTimes(1);
+        expect(nestedEffect).toHaveBeenCalledTimes(1);
+
+        variable.test = !variable.test;
+
+        expect(firstEffect).toHaveBeenCalledTimes(2);
+        expect(nestedEffect).toHaveBeenCalledTimes(2);
+
+        variable.test2 = !variable.test2;
+
+        expect(firstEffect).toHaveBeenCalledTimes(2);
+        expect(nestedEffect).toHaveBeenCalledTimes(3);
+
+        variable.skip = !variable.skip;
+
+        expect(firstEffect).toHaveBeenCalledTimes(3);
+        expect(nestedEffect).toHaveBeenCalledTimes(3);
+
+        variable.test2 = !variable.test2;
+
+        expect(firstEffect).toHaveBeenCalledTimes(3);
+        expect(nestedEffect).toHaveBeenCalledTimes(3);
+
+        variable.test = !variable.test;
+
+        expect(firstEffect).toHaveBeenCalledTimes(4);
+        expect(nestedEffect).toHaveBeenCalledTimes(3);
+
+        variable.skip = !variable.skip;
+
+        expect(firstEffect).toHaveBeenCalledTimes(5);
+        expect(nestedEffect).toHaveBeenCalledTimes(4);
+
+    });
+
     it.todo("runs the cleanup function returned from the create effect before rerunning");
 });
 

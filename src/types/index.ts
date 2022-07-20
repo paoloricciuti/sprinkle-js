@@ -20,6 +20,9 @@ export interface ICreateEffectRunning {
     execute: ICreateEffectExecute;
     dependencies: Set<ISubscription>;
     cleanup?: () => void;
+    owner: ICreateEffectRunning | null | undefined,
+    owned: ICreateEffectRunning[],
+    toRun: boolean,
 }
 
 export type IStringOrDomElement<T extends HTMLElement> = string | T;

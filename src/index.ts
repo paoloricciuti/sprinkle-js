@@ -16,6 +16,7 @@ const subscribe = (field: string | symbol, running: ICreateEffectRunning, subscr
 
 const runRupdates = (subscriptions: Map<string | symbol, ISubscription>, field: string | symbol) => {
     for (const sub of [...subscriptions.get(field) || []]) {
+        if (!sub.toRun) continue;
         const cleanUpFn = sub.execute();
         if (cleanUpFn) {
             sub.cleanup = cleanUpFn;
@@ -160,7 +161,11 @@ const createRef = <T extends Primitive>(ref: T, eq?: IEqualFunction<T>) => {
     return createVariable({ value: ref }, eq ? { value: eq } : undefined);
 };
 
-const cleanup = (running: ICreateEffectRunning) => {
+const cleanEffect = (running: ICreateEffectRunning) => {
+    running.owned.forEach(owned => {
+        owned.toRun = false;
+        cleanEffect(owned);
+    });
     for (const dep of running.dependencies) {
         dep.delete(running);
     }
@@ -169,10 +174,12 @@ const cleanup = (running: ICreateEffectRunning) => {
 
 const createEffect: ICreateEffect = (fn) => {
     const execute: ICreateEffectExecute = () => {
+        if (!running.toRun) return;
+        running?.owner?.owned?.push?.(running);
         if (running.cleanup && typeof running.cleanup === "function") {
             running.cleanup();
         }
-        cleanup(running);
+        cleanEffect(running);
         context.push(running);
         let retval;
         try {
@@ -185,7 +192,10 @@ const createEffect: ICreateEffect = (fn) => {
 
     const running: ICreateEffectRunning = {
         execute,
-        dependencies: new Set()
+        dependencies: new Set(),
+        owned: [],
+        owner: context[context.length - 1],
+        toRun: true,
     };
     const cleanupFn = execute();
     if (cleanupFn) {
