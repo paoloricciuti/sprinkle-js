@@ -1,6 +1,6 @@
 {
     "name": "sprinkle-js",
-    "version": "0.1.20",
+    "version": "0.2.0",
     "description": "A quick drop in reactive library to sprinkle reactivity in your web-app",
     "module": "dist/sprinkle-js.esm.js",
     "main": "dist/sprinkle-js.esm.js",
