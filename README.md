@@ -454,6 +454,7 @@ bindChildrens("#ul-to-bind", (element)=> variable.listOfCoolThings.map(coolThing
 });
 variable.listOfCoolThings = [...variable.listOfCoolThings, "npm"]; //this will add a new li element to the ul
 ```
+A small caveat is that only the top level childrens get's diffed. You can overcome this by binding the childrens again in the third parameter.
 
 > **Warning**
 > The following code is only valid if you are using version 0.1.20 or below.

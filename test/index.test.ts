@@ -374,15 +374,9 @@ describe("DOM manipulation by bindind", () => {
     describe("bindChildrens", () => {
         it("bind a string representing html as the children of an element. (elements with the same key does not get's replaced)", () => {
             const variable = createVariable({ array: [1, 2, 3] });
-            bindChildrens("#to-bind", () => `
-            <ul>
-                ${variable.array.map(el => `<li key="${el}">${el}</li>`).join('')}
-            </ul>
-            `);
-            const ul = toBindDiv.children[0];
-            expect(ul.tagName).toBe("UL");
-            expect(ul.children.length).toBe(3);
-            Array.from(ul.children).forEach((li, i) => {
+            bindChildrens("#to-bind", () => variable.array.map(el => `<li key="${el}">${el}</li>`).join(''));
+            expect(toBindDiv.children.length).toBe(3);
+            Array.from(toBindDiv.children).forEach((li, i) => {
                 expect(li.tagName).toBe("LI");
                 expect(li.textContent).toBe(variable.array[i].toString());
             });
@@ -424,6 +418,55 @@ describe("DOM manipulation by bindind", () => {
                 expect(li.textContent).toBe(variable.array[i].toString());
             });
             expect(afterRun).toHaveBeenCalledTimes(2);
+        });
+
+        it("bind let bind the childrens again in the after run function", () => {
+            const variable = createVariable({ numberOfUl: 1, array: [1, 2, 3] });
+
+            bindChildrens("#to-bind", () => [...Array(variable.numberOfUl).keys()].map(num => `<ul key="${num}"></ul>`).join(""), (_elem, elems) => {
+                elems.forEach((elem) => {
+                    bindChildrens(elem.element as HTMLUListElement, () => variable.array.map(num => `<li key="${num}">${num}</li>`).join(""));
+                });
+            });
+
+            expect(toBindDiv.children.length).toBe(1);
+            Array.from(toBindDiv.children).forEach((ul) => {
+                expect(ul.tagName).toBe("UL");
+                Array.from(ul.children).forEach((li, i) => {
+                    expect(li.tagName).toBe("LI");
+                    expect(li.textContent).toBe(variable.array[i].toString());
+                });
+            });
+
+            variable.array[0] = 4;
+            expect(toBindDiv.children.length).toBe(1);
+            Array.from(toBindDiv.children).forEach((ul) => {
+                expect(ul.tagName).toBe("UL");
+                Array.from(ul.children).forEach((li, i) => {
+                    expect(li.tagName).toBe("LI");
+                    expect(li.textContent).toBe(variable.array[i].toString());
+                });
+            });
+
+            variable.numberOfUl++;
+            expect(toBindDiv.children.length).toBe(2);
+            Array.from(toBindDiv.children).forEach((ul) => {
+                expect(ul.tagName).toBe("UL");
+                Array.from(ul.children).forEach((li, i) => {
+                    expect(li.tagName).toBe("LI");
+                    expect(li.textContent).toBe(variable.array[i].toString());
+                });
+            });
+
+            variable.array = [...variable.array, 7];
+            expect(toBindDiv.children.length).toBe(2);
+            Array.from(toBindDiv.children).forEach((ul) => {
+                expect(ul.tagName).toBe("UL");
+                Array.from(ul.children).forEach((li, i) => {
+                    expect(li.tagName).toBe("LI");
+                    expect(li.textContent).toBe(variable.array[i].toString());
+                });
+            });
         });
     });
 });
