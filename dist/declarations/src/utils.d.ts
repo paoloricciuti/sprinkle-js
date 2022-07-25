@@ -7,4 +7,7 @@ declare const diff: <T>(arr?: T[], arr2?: T[], eq?: (a: T, b: T) => boolean) => 
 }[];
 declare const findNext: <T>(arr: T[], eq: (element: T, index: number, array: T[]) => boolean, index?: number) => T | undefined;
 declare const getRawType: (obj: unknown) => string;
-export { getDomElement, findNext, diff, updateDom, getRawType, };
+declare const html: (innerHTML: string) => DocumentFragment;
+declare const attribute: (element: Element, attribute: string) => string | null;
+declare const key: (element: Node) => string | null;
+export { getDomElement, findNext, diff, updateDom, getRawType, html, attribute, key, };

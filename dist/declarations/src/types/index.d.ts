@@ -20,8 +20,9 @@ export interface ICreateEffectRunning {
 }
 export declare type IStringOrDomElement<T extends HTMLElement> = string | T;
 export declare type IGetDomElementFn = <T extends HTMLElement>(domElement: IStringOrDomElement<T>) => T | null;
-export declare type AppendNode<T extends ChildNode = ChildNode> = T & {
-    key?: any;
+export declare type DiffedElements = {
+    element: Node;
+    isNew: boolean;
 };
 export declare type DOMUpdate<T extends HTMLElement = HTMLElement> = {
     [key in keyof T]?: Partial<T[key]> | Omit<T[key], any>;
