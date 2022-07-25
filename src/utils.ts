@@ -86,10 +86,22 @@ const findNext = <T>(arr: T[], eq: (element: T, index: number, array: T[]) => bo
 
 const getRawType = (obj: unknown) => Object.prototype.toString.call(obj).slice(8, -1);
 
+const html = (innerHTML: string) => {
+    const ELEMENT_TEMPLATE = document.createElement('template');
+    Object.assign(ELEMENT_TEMPLATE, { innerHTML });
+    return ELEMENT_TEMPLATE.content;
+};
+
+const attribute = (element: Element, attribute: string) => element.getAttribute(attribute);
+const key = (element: Node) => element instanceof Element ? attribute(element, "key") : element.textContent;
+
 export {
     getDomElement,
     findNext,
     diff,
     updateDom,
     getRawType,
+    html,
+    attribute,
+    key,
 };

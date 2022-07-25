@@ -29,7 +29,7 @@ export type IStringOrDomElement<T extends HTMLElement> = string | T;
 
 export type IGetDomElementFn = <T extends HTMLElement>(domElement: IStringOrDomElement<T>) => T | null;
 
-export type AppendNode<T extends ChildNode = ChildNode> = T & { key?: any; };
+export type DiffedElements = { element: Node, isNew: boolean; };
 
 export type DOMUpdate<T extends HTMLElement = HTMLElement> = { [key in keyof T]?: Partial<T[key]> | Omit<T[key], any> };
 

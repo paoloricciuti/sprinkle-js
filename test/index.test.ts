@@ -2,8 +2,9 @@
  * @vitest-environment jsdom
  */
 
-import { createRef, bindTextContent, createVariable, createStored, createEffect, createComputed, bindInnerHTML, bindClasses } from "../src/index";
-import { expect, it, describe, afterEach, beforeEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { bindChildrens, bindClasses, bindInnerHTML, bindTextContent, createComputed, createEffect, createRef, createStored, createVariable } from "../src/index";
+import { DiffedElements } from '../src/types';
 
 describe("createRef", () => {
     it("create a variable with a value property set to the passed in value", () => {
@@ -367,6 +368,62 @@ describe("DOM manipulation by bindind", () => {
             expect(toBindDiv.classList.contains("two")).toBe(false);
             expect(toBindDiv.classList.contains("three")).toBe(false);
             expect(toBindDiv.classList.contains("lessThanFive")).toBe(false);
+        });
+    });
+
+    describe("bindChildrens", () => {
+        it("bind a string representing html as the children of an element. (elements with the same key does not get's replaced)", () => {
+            const variable = createVariable({ array: [1, 2, 3] });
+            bindChildrens("#to-bind", () => `
+            <ul>
+                ${variable.array.map(el => `<li key="${el}">${el}</li>`).join('')}
+            </ul>
+            `);
+            const ul = toBindDiv.children[0];
+            expect(ul.tagName).toBe("UL");
+            expect(ul.children.length).toBe(3);
+            Array.from(ul.children).forEach((li, i) => {
+                expect(li.tagName).toBe("LI");
+                expect(li.textContent).toBe(variable.array[i].toString());
+            });
+        });
+        it("bind a string representing html as the children of an element and run an after run function givind the user a map key -> element on the page. (elements with the same key does not get's replaced)", () => {
+            const variable = createVariable({ array: [1, 2, 3] });
+            let equalsNodes: { keyIndex: number, node: Node; }[] = [];
+            const afterRun = vi.fn((element, elements: Map<string, DiffedElements>) => {
+                expect(element).toBe(toBindDiv);
+                elements.forEach((node, key) => {
+                    if (key !== "element")
+                        expect(key).toBe(node.element.textContent);
+                });
+                equalsNodes.forEach(oldNode => {
+                    const actualElement = elements.get(variable.array[oldNode.keyIndex].toString());
+                    if (oldNode.keyIndex !== 0) {
+                        expect(actualElement?.isNew).toBe(false);
+                        expect(oldNode.node).toBe(actualElement?.element);
+                    } else {
+                        expect(actualElement?.isNew).toBe(true);
+                        expect(oldNode.node).not.toBe(actualElement?.element);
+                    }
+                });
+            });
+            bindChildrens("#to-bind", () => `${variable.array.map(el => `<li key="${el}">${el}</li>`).join('')}`, afterRun);
+            expect(toBindDiv.children.length).toBe(3);
+            Array.from(toBindDiv.children).forEach((li, i) => {
+                expect(li.tagName).toBe("LI");
+                expect(li.textContent).toBe(variable.array[i].toString());
+                equalsNodes.push({ keyIndex: i, node: li });
+            });
+            expect(afterRun).toHaveBeenCalledTimes(1);
+
+            variable.array[0] = 4;
+
+            expect(toBindDiv.children.length).toBe(3);
+            Array.from(toBindDiv.children).forEach((li, i) => {
+                expect(li.tagName).toBe("LI");
+                expect(li.textContent).toBe(variable.array[i].toString());
+            });
+            expect(afterRun).toHaveBeenCalledTimes(2);
         });
     });
 });
