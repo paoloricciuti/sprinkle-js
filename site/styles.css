@@ -260,6 +260,7 @@ code>div {
 .key {
     overflow: hidden;
     margin-left: 1rem;
+    user-select: none;
 }
 
 .mod-value {
@@ -299,6 +300,20 @@ code>div {
     flex-direction: row-reverse;
 }
 
+.get-started-section>article.no-examples {
+    display: block;
+    text-align: center;
+}
+
+.no-examples>svg {
+    max-width: 30vw;
+    margin: 1rem;
+}
+
+.no-examples>a {
+    color: black;
+}
+
 .get-started-section>article.code-example {
     justify-content: space-evenly;
 }
@@ -314,7 +329,6 @@ code>div {
     padding: 3rem;
     border-radius: 37% 63% 36% 64% / 35% 43% 57% 65%;
     max-width: 25ch;
-    aspect-ratio: 1;
 }
 
 .code-example:nth-child(even)>p:not(.codepen) {
