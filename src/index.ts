@@ -304,11 +304,11 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
             const toAppend = Array.from(elements);
             elem.append(...toAppend);
             toAppend.forEach(appended => safeSetElement(appended));
-            createEffect(() => {
-                if (typeof afterDiff === "function") {
+            if (typeof afterDiff === "function") {
+                createEffect(() => {
                     afterDiff(elem, mapped);
-                }
-            });
+                });
+            }
             return;
         }
         const differentElements = diff(Array.from((elem.childNodes)), Array.from(elements), (a, b) => key(a) != null && key(b) != null ? key(a) === key(b) : a === b);
@@ -319,6 +319,7 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
                 const nextRemoved = findNext(differentElements, (el) => el.type === "-" && key(el.value) === key(element.value), index);
                 if (nextRemoved) {
                     element.value = nextRemoved.value;
+                    nextRemoved.skip = true;
                 }
                 if (!nextEqual) {
                     elem.append(element.value);
@@ -329,6 +330,7 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
                 nextEqual.value.before(element.value);
                 safeSetElement(element.value);
             } else if (element.type === "-") {
+                if (element.skip) continue;
                 elem.removeChild(element.value);
                 const nextAdded = findNext(differentElements, (el) => el.type === "+" && key(el.value) === key(element.value), index);
                 if (nextAdded) {
@@ -340,11 +342,11 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
             }
             index++;
         }
-        createEffect(() => {
-            if (typeof afterDiff === "function") {
+        if (typeof afterDiff === "function") {
+            createEffect(() => {
                 afterDiff(elem, mapped);
-            }
-        });
+            });
+        }
     });
     return elem;
 };

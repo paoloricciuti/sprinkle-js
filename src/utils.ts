@@ -60,24 +60,24 @@ const diff = <T>(arr: T[] = [], arr2: T[] = [], eq = ((a: T, b: T) => a === b)) 
         //if the inth and jnth elements of the array are equals
         if (eq(arr[i - 1], arr2[j - 1])) {
             //prepend the current value with a type of equal
-            stack.unshift({ type: "=", value: arr[i - 1] });
+            stack.unshift({ type: "=", value: arr[i - 1], skip: false });
             j--;
             i--;
         } else {
             //else we check the best spot base on the matrix
             if (matrix[i - 1][j] < matrix[i][j - 1]) {
-                stack.unshift({ type: "-", value: arr[i - 1] });
+                stack.unshift({ type: "-", value: arr[i - 1], skip: false });
                 i--;
             } else {
-                stack.unshift({ type: "+", value: arr2[j - 1] });
+                stack.unshift({ type: "+", value: arr2[j - 1], skip: false });
                 j--;
             }
         }
     }
     if (i > 0) {
-        stack.unshift(...(arr?.slice?.(0, i)?.map?.(value => ({ type: "-", value })) || []));
+        stack.unshift(...(arr?.slice?.(0, i)?.map?.(value => ({ type: "-", value, skip: false })) || []));
     } else if (j > 0) {
-        stack.unshift(...(arr2?.slice?.(0, j)?.map?.(value => ({ type: "+", value })) || []));
+        stack.unshift(...(arr2?.slice?.(0, j)?.map?.(value => ({ type: "+", value, skip: false })) || []));
     }
     return stack;
 };

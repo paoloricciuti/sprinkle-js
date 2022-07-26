@@ -381,6 +381,20 @@ describe("DOM manipulation by bindind", () => {
                 expect(li.textContent).toBe(variable.array[i].toString());
             });
         });
+        it("bind a string representing html as the children of an element. (an element swapped before still get's rendered)", () => {
+            const variable = createVariable({ array: [1, 2, 3] });
+            bindChildrens("#to-bind", () => variable.array.map(el => `<li key="${el}">${el}</li>`).join(''));
+            expect(toBindDiv.children.length).toBe(3);
+            Array.from(toBindDiv.children).forEach((li, i) => {
+                expect(li.tagName).toBe("LI");
+                expect(li.textContent).toBe(variable.array[i].toString());
+            });
+            variable.array = [3, 1, 2];
+            Array.from(toBindDiv.children).forEach((li, i) => {
+                expect(li.tagName).toBe("LI");
+                expect(li.textContent).toBe(variable.array[i].toString());
+            });
+        });
         it("bind a string representing html as the children of an element and run an after run function givind the user a map key -> element on the page. (elements with the same key does not get's replaced)", () => {
             const variable = createVariable({ array: [1, 2, 3] });
             let equalsNodes: { keyIndex: number, node: Node; }[] = [];

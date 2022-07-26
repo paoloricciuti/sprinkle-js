@@ -13,7 +13,7 @@ describe("the diff function is present in utils and works as expected", () => {
         const newArray: number[] = [0];
         const result = diff(oldArray, newArray);
         expect(result).toHaveLength(1);
-        expect(result).toContainEqual({ type: "+", value: 0 });
+        expect(result).toContainEqual({ type: "+", value: 0, skip: false });
     });
     it(`return an array with an object with the type - and the actual element removed
     when the second array is empty and the first contain a value`, () => {
@@ -21,7 +21,7 @@ describe("the diff function is present in utils and works as expected", () => {
         const newArray: number[] = [];
         const result = diff(oldArray, newArray);
         expect(result).toHaveLength(1);
-        expect(result).toContainEqual({ type: "-", value: 0 });
+        expect(result).toContainEqual({ type: "-", value: 0, skip: false });
     });
     it(`return an array with the type = and the actual element removed
     when the two arrays are both with one equal element`, () => {
@@ -29,6 +29,6 @@ describe("the diff function is present in utils and works as expected", () => {
         const newArray: number[] = [0];
         const result = diff(oldArray, newArray);
         expect(result).toHaveLength(1);
-        expect(result).toContainEqual({ type: "=", value: 0 });
+        expect(result).toContainEqual({ type: "=", value: 0, skip: false });
     });
 });
