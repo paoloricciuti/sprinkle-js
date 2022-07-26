@@ -3,7 +3,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { bindChildrens, bindClasses, bindInnerHTML, bindTextContent, createComputed, createEffect, createRef, createStored, createVariable } from "../src/index";
+import { batch, bindChildrens, bindClasses, bindInnerHTML, bindTextContent, createComputed, createEffect, createRef, createStored, createVariable } from "../src/index";
 import { DiffedElements } from '../src/types';
 
 describe("createRef", () => {
@@ -368,6 +368,26 @@ describe("DOM manipulation by bindind", () => {
             expect(toBindDiv.classList.contains("two")).toBe(false);
             expect(toBindDiv.classList.contains("three")).toBe(false);
             expect(toBindDiv.classList.contains("lessThanFive")).toBe(false);
+        });
+    });
+
+    describe("batch", () => {
+        it("batch updates to variables togheter without triggering the effects before the end of the batch", () => {
+            const variable = createVariable({ test: 0, test2: 0 });
+
+            const fn = vi.fn(() => {
+                variable.test;
+                variable.test2;
+            });
+
+            createEffect(fn);
+
+            batch(() => {
+                variable.test++;
+                variable.test2++;
+            });
+
+            expect(fn).toBeCalledTimes(2);
         });
     });
 

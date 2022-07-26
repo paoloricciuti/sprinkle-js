@@ -4,6 +4,18 @@ import { diff, findNext, getDomElement, getRawType, html, key, updateDom } from 
 let context: ICreateEffectRunning[] = [];
 const IS_REACTIVE_SYMBOL = Symbol("is-reactive");
 
+let batched: Set<ICreateEffectRunning> | null = null;
+
+const batch = (fn: Function) => {
+    batched = new Set<ICreateEffectRunning>();
+    try {
+        fn();
+    } finally {
+        runEffects(batched);
+        batched = null;
+    }
+};
+
 const subscribe = (field: string | symbol, running: ICreateEffectRunning, subscriptionsMap: Map<string | symbol, ISubscription>) => {
     let subscriptions = subscriptionsMap.get(field);
     if (!subscriptions) {
@@ -14,14 +26,24 @@ const subscribe = (field: string | symbol, running: ICreateEffectRunning, subscr
     running.dependencies.add(subscriptions);
 };
 
-const runRupdates = (subscriptions: Map<string | symbol, ISubscription>, field: string | symbol) => {
-    for (const sub of [...subscriptions.get(field) || []]) {
-        if (!sub.toRun) continue;
+const runEffects = (effects: Set<ICreateEffectRunning>) => {
+    [...effects].forEach((sub) => {
+        if (!sub.toRun) return;
         const cleanUpFn = sub.execute();
         if (cleanUpFn) {
             sub.cleanup = cleanUpFn;
         }
+    });
+};
+
+const runOrQueueUpdates = (subscriptions: Map<string | symbol, ISubscription>, field: string | symbol) => {
+    const effects = subscriptions.get(field);
+    if (!effects) return;
+    if (batched !== null) {
+        effects.forEach((effect) => batched!.add(effect));
+        return;
     }
+    runEffects(effects);
 };
 
 const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) => {
@@ -62,7 +84,7 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
             const ok = Reflect.set(target, field, varValue);
             //if it's not equal run the updates
             if (!isEqual) {
-                runRupdates(subscriptions, field);
+                runOrQueueUpdates(subscriptions, field);
             }
             return ok;
         }
@@ -91,7 +113,7 @@ const createComputed = <T>(fn: () => T, eq?: IEqualFunction<T>) => {
             //update the value
             const ok = Reflect.set(target, field, value);
             if (!isEqual) {
-                runRupdates(subscriptions, field);
+                runOrQueueUpdates(subscriptions, field);
             }
             return ok;
         }
@@ -135,7 +157,7 @@ const createStored = <T extends Object>(key: string, value: T, eq?: IEqualFuncti
             const ok = Reflect.set(target, field, value);
             storage.setItem(key, JSON.stringify(target));
             if (!isEqual) {
-                runRupdates(subscriptions, field);
+                runOrQueueUpdates(subscriptions, field);
             }
             return ok;
         }
@@ -351,4 +373,4 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
     return elem;
 };
 
-export { createEffect, untrack, createRef, createVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens };
+export { createEffect, untrack, batch, createRef, createVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens };
