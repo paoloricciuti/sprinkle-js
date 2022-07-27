@@ -389,6 +389,25 @@ describe("DOM manipulation by bindind", () => {
 
             expect(fn).toBeCalledTimes(2);
         });
+
+        it("batch updates to variables togheter without triggering the effects before the end of the batch (works with computed)", () => {
+            const variable = createVariable({ test: 0, test2: 0 });
+
+            const computed = createComputed(() => variable.test + " " + variable.test2);
+
+            const fn = vi.fn(() => {
+                console.log("Line 399, Tests function effect", computed.value);
+            });
+
+            createEffect(fn);
+
+            batch(() => {
+                variable.test++;
+                variable.test2++;
+            });
+
+            expect(fn).toBeCalledTimes(2);
+        });
     });
 
     describe("bindChildrens", () => {

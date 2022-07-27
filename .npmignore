@@ -6,3 +6,4 @@ tsconfig.json
 /coverage
 /src
 /.vscode
+vite.config.ts

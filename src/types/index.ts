@@ -23,6 +23,7 @@ export interface ICreateEffectRunning {
     owner: ICreateEffectRunning | null | undefined,
     owned: ICreateEffectRunning[],
     toRun: boolean,
+    id?: string,
 }
 
 export type IStringOrDomElement<T extends HTMLElement> = string | T;

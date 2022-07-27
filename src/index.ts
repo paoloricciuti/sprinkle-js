@@ -11,8 +11,9 @@ const batch = (fn: Function) => {
     try {
         fn();
     } finally {
-        runEffects(batched);
+        const effectsToRun = new Set(batched);
         batched = null;
+        runEffects(effectsToRun);
     }
 };
 
