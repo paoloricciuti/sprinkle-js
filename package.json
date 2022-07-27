@@ -9,9 +9,9 @@
     "types": "dist/sprinkle-js.esm.d.ts",
     "scripts": {
         "build": "yarn preconstruct build && node ./automation/pack-browser.js",
-        "publish:patch": "yarn build && yarn version --patch",
-        "publish:minor": "yarn build && yarn version --minor",
-        "publish:major": "yarn build && yarn version --major",
+        "publish:patch": "yarn build && yarn version --patch && npm publish",
+        "publish:minor": "yarn build && yarn version --minor && npm publish",
+        "publish:major": "yarn build && yarn version --major && npm publish",
         "bump:patch": "yarn version --patch",
         "bump:minor": "yarn version --minor",
         "bump:major": "yarn version --major",
