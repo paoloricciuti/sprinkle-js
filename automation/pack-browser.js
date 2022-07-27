@@ -13,9 +13,6 @@ const NAMESPACE = "SprinkleJS";
         const newContent = `const ${NAMESPACE}=(()=>{${content}})();`.replace("export {", "return {");
         await fs.writeFile(browserPath, newContent);
         await fs.rename(cjsDeclarationPath, esmDeclarationPath);
-        packageJson.main = "dist/sprinkle-js.esm.js";
-        const packageNewContent = JSON.stringify(packageJson, null, 4);
-        await fs.writeFile(packageJsonPath, packageNewContent);
     } catch (e) {
         console.error(e);
     }

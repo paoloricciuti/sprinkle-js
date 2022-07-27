@@ -8,7 +8,7 @@
     "jsdelivr": "dist/sprinkle-js.esm.js",
     "types": "dist/sprinkle-js.esm.d.ts",
     "scripts": {
-        "build": "node ./automation/revert-package-json && yarn preconstruct build && node ./automation/pack-browser.js",
+        "build": "node yarn preconstruct build && node ./automation/pack-browser.js",
         "publish:patch": "yarn build && yarn version --patch",
         "publish:minor": "yarn build && yarn version --minor",
         "publish:major": "yarn build && yarn version --major",
