@@ -353,7 +353,7 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
                 nextEqual.value.before(element.value);
                 safeSetElement(element.value);
             } else if (element.type === "-") {
-                if (element.skip) continue;
+                if (element.skip) { index++; continue; }
                 elem.removeChild(element.value);
                 const nextAdded = findNext(differentElements, (el) => el.type === "+" && key(el.value) === key(element.value), index);
                 if (nextAdded) {
