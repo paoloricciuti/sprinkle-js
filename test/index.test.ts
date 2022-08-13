@@ -3,7 +3,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { batch, bindChildrens, bindClasses, bindInnerHTML, bindTextContent, createComputed, createEffect, createRef, createStored, createVariable } from "../src/index";
+import { batch, bindChildrens, bindClasses, bindInnerHTML, bindTextContent, createComputed, createCssVariable, createEffect, createRef, createStored, createVariable } from "../src/index";
 import { DiffedElements } from '../src/types';
 
 describe("createRef", () => {
@@ -17,6 +17,7 @@ describe("createRef", () => {
 describe("createVariable", () => {
     it("throws if you try to pass a non-object like element", () => {
         expect(() => {
+            //@ts-expect-error
             createVariable(1);
         }).toThrow();
     });
@@ -46,6 +47,60 @@ describe("createVariable", () => {
         expect(fnToCall).toHaveBeenCalledTimes(2);
         variable.matrix[0][0] = Math.random();
         expect(fnToCall).toHaveBeenCalledTimes(3);
+    });
+});
+
+describe("createCssVariable", () => {
+    it("create a variable and bind every property to a css variable on the root", () => {
+        const variable = createCssVariable({
+            x: 0,
+            y: 0,
+        });
+        const root = document.querySelector(":root") as HTMLElement;
+        let computedStyle = getComputedStyle(root);
+        expect(computedStyle.getPropertyValue("--x")).toBe(variable.x.toString());
+        expect(computedStyle.getPropertyValue("--y")).toBe(variable.y.toString());
+        variable.x++;
+        computedStyle = getComputedStyle(root);
+        expect(computedStyle.getPropertyValue("--x")).toBe(variable.x.toString());
+        variable.y++;
+        computedStyle = getComputedStyle(root);
+        expect(computedStyle.getPropertyValue("--y")).toBe(variable.y.toString());
+    });
+
+    it("create a variable and bind every property to a css variable on the passed in element", () => {
+        document.body.innerHTML = `<div id="to-bind"></div>`;
+        const toBindDiv = document.querySelector("#to-bind") as HTMLElement;
+        const variable = createCssVariable({
+            x: 0,
+            y: 0,
+        }, undefined, toBindDiv);
+        let computedStyle = getComputedStyle(toBindDiv);
+        expect(computedStyle.getPropertyValue("--x")).toBe(variable.x.toString());
+        expect(computedStyle.getPropertyValue("--y")).toBe(variable.y.toString());
+        variable.x++;
+        computedStyle = getComputedStyle(toBindDiv);
+        expect(computedStyle.getPropertyValue("--x")).toBe(variable.x.toString());
+        variable.y++;
+        computedStyle = getComputedStyle(toBindDiv);
+        expect(computedStyle.getPropertyValue("--y")).toBe(variable.y.toString());
+    });
+
+    it("create a variable and bind every property to a css variable on the root if the passed in element is null", () => {
+        const variable = createCssVariable({
+            x: 0,
+            y: 0,
+        }, undefined, "#non-existent-id");
+        const root = document.querySelector(":root") as HTMLElement;
+        let computedStyle = getComputedStyle(root);
+        expect(computedStyle.getPropertyValue("--x")).toBe(variable.x.toString());
+        expect(computedStyle.getPropertyValue("--y")).toBe(variable.y.toString());
+        variable.x++;
+        computedStyle = getComputedStyle(root);
+        expect(computedStyle.getPropertyValue("--x")).toBe(variable.x.toString());
+        variable.y++;
+        computedStyle = getComputedStyle(root);
+        expect(computedStyle.getPropertyValue("--y")).toBe(variable.y.toString());
     });
 });
 

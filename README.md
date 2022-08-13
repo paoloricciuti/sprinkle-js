@@ -31,13 +31,17 @@ The main philosophy behind is to build a supersmall library that requires no bun
 - **Sprinkle JS is not** for perf aficionados: we as a community are trying to our best and maybe it will become the best version of itself but keep always keep in mind the main philosophy behind it.
 ## Demo
 
-You can see this library in use [here](https://sprinkle-js.netlify.app).
+You can see this library in use [here](https://sprinkle-js.com).
 ## Authors
 
 - [@paoloricciuti](https://www.github.com/paoloricciuti)
 
 
 ## Contributing
+
+Any contribution is welcomed, you can either open a [New Issue](https://github.com/paoloricciuti/sprinkle-js/issues/new) or read the [list of the open ones](https://github.com/paoloricciuti/sprinkle-js/issues/) to work on them.
+
+A Contributing guide will be up ASAP.
 
 //⚠ WIP
 
@@ -122,6 +126,27 @@ const variable = createVariable({ whosCool: { pronoun: "you" } }, { whosCool: { 
 console.log(variable.whosCool.pronoun) // you
 ```
 in the above example `variable.whosCool.pronoun` is still reactive.
+
+#### createCssVariable
+This method is used to create a reactive variable for an object and map every field to a css variable. It'll throw if you try to pass a primitive value to it. In typescript you can pass only string or numbers as values of the object but every value will be stringified before assigning it to the css variable so if you pass a complex object you'll get "[object Object]" instead.
+
+```typescript
+//this will create two css variable at the root level --x and --y with the values of 0 and 0
+//you can use those variable inside your css
+const variable = createCssVariable({ x: 0, y: 0 });
+
+//setting this will also set the --x css variable to 200
+variable.x=200;
+```
+if you use this variable inside a createEffect or inside another method whenever you'll update the value the method will re-run.
+
+You can also pass an object containing an equality function for every field of the object that will determine how to check for equality for that field. By default it will use `Object.is`.
+```typescript
+const variable = createCssVariable({ whosCool: "you" }, { whosCool: (before, after) => before.length === after.length });
+```
+The above variable will not trigger an effect re-run if the previous value has the same length as the new value.
+
+A third argument of this method is a selector or an HTMLElement of the element you want to apply the css variables to. It default to `:root`. If the provided selector does not select anything it will apply the css variable to the `:root`
 
 #### createStored
 This method is used to create a reactive variable for an object also persisting it in localStorage or sessionStorage. It'll throw if you try to pass a primitive value to it. It will also automatically add a listener for the storage to update the variable whenever the storage changes. It will take a key and an initial value as input but will discard the initial value if the key is already present in the storage. It will also throw if the object in the storage is not Object-like
@@ -525,6 +550,6 @@ A small caveat is that only the top level childrens get's diffed. You can overco
 To run tests, run the following command
 
 ```bash
-  npm run test
+  yarn run test
 ```
 

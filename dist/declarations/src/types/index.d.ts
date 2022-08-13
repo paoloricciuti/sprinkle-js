@@ -1,5 +1,6 @@
 export declare type IEffect<TReturn, TElement extends HTMLElement = HTMLElement> = (elem?: TElement | null) => TReturn;
 export declare type Primitive = string | number | boolean;
+export declare type ICssVariable = Record<string | symbol | number, string | number>;
 export declare type OnlyNonPrimitiveKey<T> = keyof {
     [P in keyof T as T[P] extends Primitive ? never : P]: T[P];
 };

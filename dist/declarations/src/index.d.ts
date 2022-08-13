@@ -1,6 +1,7 @@
-import { CSSStyles, DiffedElements, DOMUpdate, ICreateEffect, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, Primitive } from "./types/index";
+import { CSSStyles, DiffedElements, DOMUpdate, ICreateEffect, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, Primitive } from "./types/index";
 declare const batch: (fn: Function) => void;
-declare const createVariable: <T extends Object>(value: T, eq?: IEqualFunctionMap<T> | undefined) => T;
+declare const createVariable: <T extends object>(value: T, eq?: IEqualFunctionMap<T> | undefined) => T;
+declare const createCssVariable: <T extends ICssVariable, E extends HTMLElement = HTMLHtmlElement>(value: T, eq?: IEqualFunctionMap<T> | undefined, root?: IStringOrDomElement<E>) => T;
 declare const createComputed: <T>(fn: () => T, eq?: IEqualFunction<T> | undefined) => {
     value: T;
 };
@@ -20,4 +21,4 @@ declare const bindInputValue: (domElement: IStringOrDomElement<HTMLInputElement>
 declare const bindDom: <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<DOMUpdate<TElement>, TElement>) => TElement | null;
 declare const bindStyle: <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<CSSStyles<TElement>, TElement>) => TElement | undefined;
 declare const bindChildrens: <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void) | undefined) => TElement | null;
-export { createEffect, untrack, batch, createRef, createVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens };
+export { createEffect, untrack, batch, createRef, createVariable, createCssVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens };

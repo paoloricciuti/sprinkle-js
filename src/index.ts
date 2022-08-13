@@ -1,4 +1,4 @@
-import { CSSStyles, DiffedElements, DOMUpdate, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
+import { CSSStyles, DiffedElements, DOMUpdate, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
 import { diff, findNext, getDomElement, getRawType, html, key, updateDom } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
@@ -47,7 +47,7 @@ const runOrQueueUpdates = (subscriptions: Map<string | symbol, ISubscription>, f
     runEffects(effects);
 };
 
-const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) => {
+const createVariable = <T extends object>(value: T, eq?: IEqualFunctionMap<T>) => {
     //if the value is already reactive we simply return the value
     if ((value as any)[IS_REACTIVE_SYMBOL]) return value;
     if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
@@ -55,7 +55,7 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
     for (let keyString of keys) {
         const key = keyString as keyof T;
         if (!!value[key] && typeof value[key] === "object" && (getRawType(value[key]) === "Object" || Array.isArray(value[key]))) {
-            value[key] = createVariable(value[key], (eq?.[key] as any as IEqualFunctionMap<T[keyof T]>));
+            value[key] = createVariable(value[key] as unknown as object, (eq?.[key] as any as IEqualFunctionMap<T[keyof T]>)) as unknown as T[keyof T];
         }
     }
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
@@ -89,6 +89,23 @@ const createVariable = <T extends Object>(value: T, eq?: IEqualFunctionMap<T>) =
             }
             return ok;
         }
+    });
+    return variable;
+};
+
+const createCssVariable = <T extends ICssVariable, E extends HTMLElement = HTMLHtmlElement>(value: T, eq?: IEqualFunctionMap<T>, root: IStringOrDomElement<E> = ":root") => {
+    const variable = createVariable(value, eq);
+    let domElement = getDomElement(root);
+    if (!domElement) {
+        console.warn("Impossible to find the right html element, attaching the variables to the root.");
+        domElement = document.querySelector(":root");
+    }
+    createEffect(() => {
+        const keys = Object.keys(variable);
+
+        keys.forEach(key => {
+            domElement!.style.setProperty(`--${key}`, variable[key]?.toString());
+        });
     });
     return variable;
 };
@@ -374,4 +391,4 @@ const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: I
     return elem;
 };
 
-export { createEffect, untrack, batch, createRef, createVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens };
+export { createEffect, untrack, batch, createRef, createVariable, createCssVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens };
