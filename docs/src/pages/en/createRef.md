@@ -4,7 +4,7 @@ description: createRef
 layout: ../../layouts/MainLayout.astro
 ---
 
-#### createRef
+## createRef
 This method is used to create a reactive variable for a primitive. It wraps the primitive in an object with a value property.
 
 ```typescript
