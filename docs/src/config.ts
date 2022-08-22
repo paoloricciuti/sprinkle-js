@@ -1,6 +1,6 @@
 export const SITE = {
-    title: 'Documentation',
-    description: 'Your website description.',
+    title: 'Sprinkle JS',
+    description: 'A drop in reactive library to sprinkle your code with reactivity.',
     defaultLanguage: 'en_US',
 };
 
