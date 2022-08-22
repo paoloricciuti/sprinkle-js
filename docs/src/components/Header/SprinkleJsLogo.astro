@@ -2,7 +2,13 @@
 const { size } = Astro.props;
 ---
 
-<svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="none">
+<svg
+    width={size}
+    height={size}
+    viewBox="0 0 300 300"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+>
     <g>
         <mask id="a">
             <path fill="#fff" d="M0 0h300v300H0z"></path>
