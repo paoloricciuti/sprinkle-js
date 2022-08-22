@@ -30,17 +30,33 @@ export const GITHUB_EDIT_URL = `https://github.com/paoloricciuti/sprinkle-js/blo
 //   apiKey: 'XXXXXXXXXX',
 // }
 
+
+
+
+
+
+
+
 export const SIDEBAR = {
     en: [
-        { text: '', header: true },
-        { text: 'Section Header', header: true },
+        { text: 'Getting Started', header: true },
         { text: 'Introduction', link: 'en/introduction' },
-        { text: 'Page 2', link: 'en/page-2' },
-        { text: 'Page 3', link: 'en/page-3' },
-
-        { text: 'Another Section', header: true },
-        { text: 'Page 4', link: 'en/page-4' },
-        { text: 'DOM Manipulation', header: true },
+        { text: 'API', header: true },
         { text: 'createRef', link: 'en/createRef' },
+        { text: 'createVariable', link: 'en/createVariable' },
+        { text: 'createCssVariable', link: 'en/createCssVariable' },
+        { text: 'createStored', link: 'en/createStored' },
+        { text: 'createComputed', link: 'en/createComputed' },
+        { text: 'createEffect', link: 'en/createEffect' },
+        { text: 'untrack', link: 'en/untrack' },
+        { text: 'batch', link: 'en/batch' },
+        { text: 'bindTextContent', link: 'en/bindTextContent' },
+        { text: 'bindInnerHTML', link: 'en/bindInnerHTML' },
+        { text: 'bindInputValue', link: 'en/bindInputValue' },
+        { text: 'bindDom', link: 'en/bindDom' },
+        { text: 'bindClass', link: 'en/bindClass' },
+        { text: 'bindClasses', link: 'en/bindClasses' },
+        { text: 'bindStyle', link: 'en/bindStyle' },
+        { text: 'bindChildrens', link: 'en/bindChildrens' }
     ],
 };
