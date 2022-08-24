@@ -1,14 +1,14 @@
 {
     "name": "sprinkle-js",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "description": "A quick drop in reactive library to sprinkle reactivity in your web-app",
-    "module": "dist/sprinkle-js.esm.js",
+    "module": "dist/sprinkle-js.es.js",
     "main": "dist/sprinkle-js.cjs.js",
-    "unpkg": "dist/sprinkle-js.esm.js",
-    "jsdelivr": "dist/sprinkle-js.esm.js",
-    "types": "dist/sprinkle-js.esm.d.ts",
+    "unpkg": "dist/sprinkle-js.es.js",
+    "jsdelivr": "dist/sprinkle-js.es.js",
+    "types": "dist/declarations/src/index.d.ts",
     "scripts": {
-        "build": "yarn preconstruct build && node ./automation/pack-browser.js",
+        "build": "vite build && tsc src/index.ts --declaration --emitDeclarationOnly --downlevelIteration --declarationDir dist/declarations/src",
         "publish:patch": "yarn build && yarn version --patch && npm publish",
         "publish:minor": "yarn build && yarn version --minor && npm publish",
         "publish:major": "yarn build && yarn version --major && npm publish",
@@ -32,16 +32,11 @@
     },
     "homepage": "https://github.com/paoloricciuti/sprinkle-js#readme",
     "devDependencies": {
-        "@babel/preset-env": "^7.18.2",
-        "@babel/preset-typescript": "^7.17.12",
-        "@preconstruct/cli": "^2.1.5",
         "@types/jest": "^27.5.1",
-        "babel-jest": "^28.1.0",
-        "babel-minify": "^0.5.2",
-        "babel-preset-minify": "^0.5.2",
         "c8": "^7.11.3",
         "jsdom": "^20.0.0",
         "typescript": "^4.6.4",
+        "vite": "^3.0.9",
         "vitest": "^0.17.0"
     },
     "volta": {
