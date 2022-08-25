@@ -16,7 +16,8 @@
         "bump:minor": "yarn version --minor",
         "bump:major": "yarn version --major",
         "test": "vitest",
-        "coverage": "vitest run --coverage"
+        "coverage": "vitest run --coverage",
+        "build:docs": "node automation/docs-from-readme.js"
     },
     "repository": "git+https://github.com/paoloricciuti/sprinkle-js.git",
     "keywords": [

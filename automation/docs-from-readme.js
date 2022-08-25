@@ -14,7 +14,7 @@ const getMapFromString = (string, regex) => {
 
 (async () => {
     try {
-        const readMePath = path.join("../", "README.md");
+        const readMePath = path.join("README.md");
         const readMe = await (await fs.readFile(readMePath)).toString();
         const readMeMap = getMapFromString(readMe, /\r\n\#\#\s(.+)\r\n/);
         const usageAndExamples = readMeMap.get("Usage/Examples");
@@ -27,10 +27,10 @@ layout: ../../layouts/MainLayout.astro
 ---
 ${content}
 `;
-            const pathToWrite = path.join("../", "docs", "src", "pages", "en", `${page}.md`);
+            const pathToWrite = path.join("docs", "src", "pages", "en", `${page}.md`);
             await fs.writeFile(pathToWrite, toWrite);
         }
-        const configTsPath = path.join("../", "docs", "src", "config.ts");
+        const configTsPath = path.join("docs", "src", "config.ts");
         const configTs = await (await fs.readFile(configTsPath)).toString();
         const configTsNoSidebarVar = configTs.substring(0, configTs.indexOf("export const SIDEBAR"));
         const configToWrite = `${configTsNoSidebarVar}
@@ -38,6 +38,7 @@ export const SIDEBAR = {
     en: [
         { text: 'Getting Started', header: true },
         { text: 'Introduction', link: 'en/introduction' },
+        { text: 'Installation', link: 'en/installation' },
         { text: 'API', header: true },
         ${[...usageMap.keys()].map(page => {
             return `{ text: '${page}', link: 'en/${page}' }`;

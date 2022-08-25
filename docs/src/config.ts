@@ -37,10 +37,12 @@ export const GITHUB_EDIT_URL = `https://github.com/paoloricciuti/sprinkle-js/blo
 
 
 
+
 export const SIDEBAR = {
     en: [
         { text: 'Getting Started', header: true },
         { text: 'Introduction', link: 'en/introduction' },
+        { text: 'Installation', link: 'en/installation' },
         { text: 'API', header: true },
         { text: 'createRef', link: 'en/createRef' },
         { text: 'createVariable', link: 'en/createVariable' },
