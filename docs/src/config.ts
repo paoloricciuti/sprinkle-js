@@ -6,7 +6,7 @@ export const SITE = {
 
 export const OPEN_GRAPH = {
     image: {
-        src: 'https://sprinkle-js.netlify.app/assets/sprinkle-js.svg',
+        src: 'https://raw.githubusercontent.com/paoloricciuti/sprinkle-js/master/docs/public/default-og-image.png',
         alt: 'sprinkle-js logo, a donut',
     },
     twitter: 'paoloricciuti',
