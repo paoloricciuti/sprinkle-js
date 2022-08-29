@@ -37,7 +37,7 @@ This will install the npm package in your project and will let you import the va
 ```typescript
 import SprinkleJS from "sprinkle-js";
 ```
->**Tip**: it's better to actually import the naming exports to allow for tree shaking
+>**Tip**: it's better to actually import the naming exports to allow for tree shaking 🌳
 >```typescript
 >import { createVariable } from "sprinkle-js";
 >```
@@ -54,6 +54,31 @@ Sprinkle JS is available from all major cdn's
 - https://unpkg.com/sprinkle-js
 - https://cdn.jsdelivr.net/npm/sprinkle-js
 - https://cdn.skypack.com/sprinkle-js
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprinkle JS App</title>
+    <!-- This will load the library in a SprinkleJS global variable -->
+    <script src="https://unpkg.com/sprinkle-js/dist/sprinkle-js.iife.js"></script>
+    <!-- You can reference that variable and destructure from it in
+    your script tag or even in your js file-->
+    <script>
+        const { createVariable, createEffect } = SprinkleJS;
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
+```
 
 If you append `dist/sprinkle-js.iife.js` to each of those links you can also embed it in a script tag.
 
