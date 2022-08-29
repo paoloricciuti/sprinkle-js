@@ -18,7 +18,7 @@ const lang = currentPage && getLanguageFromURL(currentPage);
             <SidebarToggle client:idle />
         </div>
         <div class="logo flex">
-            <a href="/">
+            <a aria-label="Go to homepage" href="/">
                 <SprinkleJsLogo size={40} />
                 <h1>{CONFIG.SITE.title ?? "Documentation"}</h1>
             </a>
