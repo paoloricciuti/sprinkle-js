@@ -121,7 +121,12 @@ const githubEditUrl =
                 <LeftSidebar {currentPage} />
             </aside>
             <div id="grid-main">
-                <PageContent {frontmatter} {headings} {githubEditUrl}>
+                <PageContent
+                    {frontmatter}
+                    {headings}
+                    {githubEditUrl}
+                    {currentPage}
+                >
                     <slot />
                 </PageContent>
             </div>

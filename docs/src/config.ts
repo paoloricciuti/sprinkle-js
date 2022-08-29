@@ -30,12 +30,15 @@ export const GITHUB_EDIT_URL = `https://github.com/paoloricciuti/sprinkle-js/blo
 //   apiKey: 'XXXXXXXXXX',
 // }
 
-
-
-
-
-
-
+export type SidebarElement = {
+    text: string;
+    header: boolean;
+    link?: undefined;
+} | {
+    text: string;
+    link: string;
+    header?: undefined;
+};
 
 
 export const SIDEBAR = {

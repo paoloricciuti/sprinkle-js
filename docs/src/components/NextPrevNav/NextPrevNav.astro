@@ -1,0 +1,73 @@
+---
+import { SidebarElement } from "../../config";
+
+export type Props = {
+    navItem?: SidebarElement;
+    kind: "prev" | "next";
+};
+
+const { navItem, kind } = Astro.props;
+---
+
+{
+    navItem && (
+        <div class={kind}>
+            <p>{kind === "next" ? "Next" : "Previous"}</p>
+            <a href={new URL(navItem.link, Astro.site)}>
+                {kind === "prev" && (
+                    <span class="prev-next-button">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 0 24 24"
+                            width="24px"
+                            fill="#000000"
+                        >
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path d="M15.61 7.41L14.2 6l-6 6 6 6 1.41-1.41L11.03 12l4.58-4.59z" />
+                        </svg>
+                    </span>
+                )}
+                <span>{navItem.text}</span>
+                {kind === "next" && (
+                    <span class="prev-next-button">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 0 24 24"
+                            width="24px"
+                            fill="#000000"
+                        >
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />
+                        </svg>
+                    </span>
+                )}
+            </a>
+        </div>
+    )
+}
+
+<style>
+    div {
+        font-weight: bold;
+        background-color: var(--theme-bg-accent);
+        padding: 1rem;
+        width: 100%;
+        display: grid;
+        gap: 0.5rem;
+    }
+    .prev {
+        justify-items: flex-end;
+    }
+    a {
+        font-weight: bold;
+        display: flex;
+        gap: 0.5rem;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .prev-next-button {
+        line-height: 0;
+    }
+</style>
