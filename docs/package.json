@@ -22,5 +22,8 @@
     "@astrojs/preact": "^1.0.2",
     "@astrojs/react": "^1.0.0",
     "astro": "^1.0.6"
+  },
+  "volta": {
+    "node": "17.0.1"
   }
 }

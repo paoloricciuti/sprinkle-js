@@ -4,7 +4,7 @@ description: Installation
 layout: ../../layouts/MainLayout.astro
 ---
 
-#### Installation
+## Installation
 To install Sprinkle JS you can run
 ```bash
 npm i sprinkle-js
@@ -32,3 +32,21 @@ Sprinkle JS is available from all major cdn's
 - https://cdn.skypack.com/sprinkle-js
 
 If you append `dist/sprinkle-js.iife.js` to each of those links you can also embed it in a script tag.
+
+## On Codepen
+
+The easiest way to get started with Sprinkle JS is just by going on Codepen by <a href="https://codepen.io/pen?template=KKoQLRg" target="_blank">clicking this</a>.
+
+This will bring you to codepen.io with the Sprinkle JS template.
+
+## On Stackblitz
+
+You can quickly initialize a Stackblitz project setup with typescript and Sprinkle JS by going to <a href="https://stackblitz.com/edit/sprinkle-js-template" target="_blank">this template</a>.
+
+> **Tip:** we try to keep this templates up to date but it's safer to always update the dependencies as soon as you fork it.
+
+## On Codesandbox
+
+You can quickly initialize a Code Sandbox project setup with typescript and Sprinkle JS by going to <a href="https://codesandbox.io/s/sprinkle-js-typescript-rg0j4k" target="_blank">this template</a>.
+
+> **Tip:** we try to keep this templates up to date but it's safer to always update the dependencies as soon as you fork it.

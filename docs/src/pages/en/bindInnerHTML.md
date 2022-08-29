@@ -5,6 +5,7 @@ layout: ../../layouts/MainLayout.astro
 ---
 > **Warning**
 > Sprinkle JS does not sanitize the content of the innerHTML. If you use this function with user input make sure to sanitize it first to avoid expose yourself to XSS attacks.
+
 This function is used to bind a string value to the innerHTML of an element. It takes a dom element or a selector as the first argument and a function returning the value to bind to the innerHTML as the second argument.
 
 ```typescript

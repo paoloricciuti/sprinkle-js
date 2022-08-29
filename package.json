@@ -9,12 +9,12 @@
     "types": "dist/declarations/src/index.d.ts",
     "scripts": {
         "build": "vite build && tsc src/index.ts --declaration --emitDeclarationOnly --downlevelIteration --declarationDir dist/declarations/src",
-        "publish:patch": "yarn build && yarn version --patch && npm publish",
-        "publish:minor": "yarn build && yarn version --minor && npm publish",
-        "publish:major": "yarn build && yarn version --major && npm publish",
-        "bump:patch": "yarn version --patch",
-        "bump:minor": "yarn version --minor",
-        "bump:major": "yarn version --major",
+        "publish:patch": "npm run build && npm version patch && npm publish",
+        "publish:minor": "npm run build && npm version minor && npm publish",
+        "publish:major": "npm run build && npm version major && npm publish",
+        "bump:patch": "npm version patch",
+        "bump:minor": "npm version minor",
+        "bump:major": "npm version major",
         "test": "vitest",
         "coverage": "vitest run --coverage",
         "build:docs": "node automation/docs-from-readme.js"
