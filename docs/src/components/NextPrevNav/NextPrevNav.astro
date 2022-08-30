@@ -60,6 +60,9 @@ const { navItem, kind } = Astro.props;
     .prev {
         justify-items: flex-end;
     }
+    .next {
+        grid-row-start: 1;
+    }
     a {
         font-weight: bold;
         display: flex;
@@ -70,13 +73,9 @@ const { navItem, kind } = Astro.props;
     .prev-next-button {
         line-height: 0;
     }
-
     @media (min-width: 24em) {
-        div:only-child {
-            max-width: 50%;
-        }
-        .next:only-child {
-            margin-left: auto;
+        .next {
+            grid-column-start: 2;
         }
     }
 </style>

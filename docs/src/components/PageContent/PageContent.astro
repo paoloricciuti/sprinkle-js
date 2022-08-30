@@ -52,15 +52,16 @@ if (index !== -1 && index < links.length - 1) next = links[index + 1];
     }
 
     .next-prev {
-        display: flex;
-        justify-content: space-between;
-        flex-direction: column-reverse;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
         gap: 1rem;
     }
 
     @media (min-width: 24em) {
         .next-prev {
-            flex-direction: row;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr;
         }
     }
 
