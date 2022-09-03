@@ -8,7 +8,10 @@
     "jsdelivr": "dist/sprinkle-js.es.js",
     "types": "dist/declarations/src/index.d.ts",
     "scripts": {
-        "build": "vite build && tsc src/index.ts --declaration --emitDeclarationOnly --downlevelIteration --declarationDir dist/declarations/src",
+        "build": "npm run build:lib && npm run build:site",
+        "build:lib": "vite build && tsc src/index.ts --declaration --emitDeclarationOnly --downlevelIteration --declarationDir dist/declarations/src",
+        "build:site": "vite build --config vite.config.site.ts",
+        "build:docs": "node automation/docs-from-readme.js",
         "publish:patch": "npm run build && npm version patch && npm publish",
         "publish:minor": "npm run build && npm version minor && npm publish",
         "publish:major": "npm run build && npm version major && npm publish",
@@ -16,8 +19,7 @@
         "bump:minor": "npm version minor",
         "bump:major": "npm version major",
         "test": "vitest",
-        "coverage": "vitest run --coverage",
-        "build:docs": "node automation/docs-from-readme.js"
+        "coverage": "vitest run --coverage"
     },
     "repository": "git+https://github.com/paoloricciuti/sprinkle-js.git",
     "keywords": [

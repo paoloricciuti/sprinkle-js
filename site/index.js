@@ -1,4 +1,4 @@
-import { bindChildrens, bindDom, bindStyle, bindTextContent, createVariable } from "https://cdn.skypack.dev/sprinkle-js";
+import { bindChildrens, bindDom, bindStyle, bindTextContent, createVariable } from "./dist/sprinkle-js.es.js";
 import examples from "./examples.js";
 
 const getStartedSection = document.getElementById("get-started");
