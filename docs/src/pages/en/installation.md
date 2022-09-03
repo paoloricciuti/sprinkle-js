@@ -2,6 +2,8 @@
 title: Installation
 description: Installation
 layout: ../../layouts/MainLayout.astro
+header: Getting Started
+order: 2
 ---
 
 ## Installation

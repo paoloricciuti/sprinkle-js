@@ -2,6 +2,8 @@
 title: untrack
 description: untrack
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 106
 ---
 
 This function can be used inside a createEffect to untrack a dependency. This way you can use a reactive variable inside a create effect without triggering the re-run when that variable changes. It takes a function as input and it return anything returned from that function.

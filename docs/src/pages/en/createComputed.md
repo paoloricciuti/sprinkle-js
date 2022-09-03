@@ -2,6 +2,8 @@
 title: createComputed
 description: createComputed
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 104
 ---
 This method is used to create a reactive computed variable. You need to pass a function that will return a value. The return value of the function will be inside of the `.value` field of the returned computed. If you use some other variable to compute the this value it will always be in sync.
 

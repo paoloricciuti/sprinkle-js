@@ -2,6 +2,8 @@
 title: bindDom
 description: bindDom
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 111
 ---
 
 This function is used to bind an object that describe some DOM properties to the actual DOM properties. It takes a dom element or a selector as the first argument and a function returning the object as the second argument.

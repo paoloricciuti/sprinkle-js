@@ -2,6 +2,8 @@
 title: Introduction
 description: Docs intro
 layout: ../../layouts/MainLayout.astro
+header: Getting Started
+order: 1
 ---
 
 ## Getting started

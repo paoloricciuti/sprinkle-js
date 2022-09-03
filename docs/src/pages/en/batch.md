@@ -2,6 +2,8 @@
 title: batch
 description: batch
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 107
 ---
 
 This function can be used to avoid running effects multiple times when changing multiple variables. It's as simple as calling batch and passing a function that will change some variables.

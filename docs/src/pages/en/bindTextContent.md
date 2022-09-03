@@ -2,6 +2,8 @@
 title: bindTextContent
 description: bindTextContent
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 108
 ---
 
 This function is used to bind a string value to the text content of an element. It takes a dom element or a selector as the first argument and a function returning the value to bind to the text content as the second argument.

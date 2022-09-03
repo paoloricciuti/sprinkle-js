@@ -2,6 +2,8 @@
 title: createEffect
 description: createEffect
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 105
 ---
 This method is used to create an effect that will keep track of it's dependencies and re-run every time they changed
 

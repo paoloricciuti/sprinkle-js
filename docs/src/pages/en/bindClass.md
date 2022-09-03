@@ -2,6 +2,8 @@
 title: bindClass
 description: bindClass
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 112
 ---
 
 This function is used to bind a class to the actual element. It takes a dom element or a selector as the first argument, the class that you want to apply and a function returning a boolean as the third argument.

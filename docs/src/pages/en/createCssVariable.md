@@ -2,6 +2,8 @@
 title: createCssVariable
 description: createCssVariable
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 102
 ---
 This method is used to create a reactive variable for an object and map every field to a css variable. It'll throw if you try to pass a primitive value to it. In typescript you can pass only string or numbers as values of the object but every value will be stringified before assigning it to the css variable so if you pass a complex object you'll get "[object Object]" instead.
 

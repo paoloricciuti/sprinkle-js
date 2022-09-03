@@ -2,6 +2,8 @@
 title: createVariable
 description: createVariable
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 101
 ---
 This method is used to create a reactive variable for an object. It'll throw if you try to pass a primitive value to it.
 

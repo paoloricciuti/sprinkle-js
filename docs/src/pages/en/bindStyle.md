@@ -2,6 +2,8 @@
 title: bindStyle
 description: bindStyle
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 114
 ---
 
 This function is used to bind an object that describe the style of an element to the actual element style. It takes a dom element or a selector as the first argument and a function returning the object as the second argument.

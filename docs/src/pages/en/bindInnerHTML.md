@@ -2,6 +2,8 @@
 title: bindInnerHTML
 description: bindInnerHTML
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 109
 ---
 > **Warning**
 > Sprinkle JS does not sanitize the content of the innerHTML. If you use this function with user input make sure to sanitize it first to avoid expose yourself to XSS attacks.

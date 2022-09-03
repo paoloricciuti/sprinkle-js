@@ -1,12 +1,14 @@
 ---
 import MoreMenu from "../RightSidebar/MoreMenu.astro";
 import TableOfContents from "../RightSidebar/TableOfContents";
-import { SIDEBAR } from "../../config";
 import type { SidebarElement } from "../../config";
 import NextPrevNav from "../NextPrevNav/NextPrevNav.astro";
+import { getSidebarFromGlob, IMDFrontmatter } from "../../utils/utils";
 
 const { frontmatter, headings, githubEditUrl, currentPage } = Astro.props;
 const title = frontmatter.title;
+
+const SIDEBAR = await getSidebarFromGlob();
 
 const links: SidebarElement[] = SIDEBAR.en.filter((links) => !links.header);
 const index = links.findIndex((x) => `/${x.link}` === currentPage);

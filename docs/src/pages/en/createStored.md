@@ -2,6 +2,8 @@
 title: createStored
 description: createStored
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 103
 ---
 This method is used to create a reactive variable for an object also persisting it in localStorage or sessionStorage. It'll throw if you try to pass a primitive value to it. It will also automatically add a listener for the storage to update the variable whenever the storage changes. It will take a key and an initial value as input but will discard the initial value if the key is already present in the storage. It will also throw if the object in the storage is not Object-like
 

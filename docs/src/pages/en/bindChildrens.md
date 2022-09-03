@@ -2,6 +2,8 @@
 title: bindChildrens
 description: bindChildrens
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 115
 ---
 
 This function is used to bind html as the children of an element. How is this different than bindInnerHTML? Each item can have a key attribute and if the key attribute does not change the element will not change either (it will have the same reference in the dom). It takes a dom element or a selector as the first argument, a function returning the html string as the second argument and an option function to run after the diffing as the third parameter.

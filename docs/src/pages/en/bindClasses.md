@@ -2,6 +2,8 @@
 title: bindClasses
 description: bindClasses
 layout: ../../layouts/MainLayout.astro
+header: API Reference
+order: 113
 ---
 
 This function is used to bind multiple classes to the actual element. It takes a dom element or a selector as the first argument, and an object containing the classes that you want to apply as the keys and a boolean as the value. Each class will be applied only if the corrispondent value is true.
