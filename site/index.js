@@ -47,7 +47,7 @@ window.scriptTag = codepenScriptTag;
 
 const state = createVariable({
     logoRotation: 0,
-    title: "well nothing!",
+    title: "well, nothing!",
     mineBitcoin: true,
     bitcoinRate: 10,
     bitcoinMined: 0,
