@@ -1,4 +1,4 @@
 # a path:
-*.ttf
+/assets/fonts/*
   # headers for that path:
   Cache-Control: "public, max-age=604800"
