@@ -402,6 +402,7 @@ describe("DOM manipulation by bindind", () => {
                 ariaLabel: variable.label,
                 style: {
                     backgroundColor: variable.background,
+                    "--bg": variable.background,
                 },
                 "data-test": variable.data,
                 className: variable.classes,
