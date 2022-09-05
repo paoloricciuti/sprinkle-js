@@ -1,6 +1,6 @@
-import { IGetDomElementFn, IStringOrDomElement } from "./types/index";
+import { HTMLOrSVGElement, IGetDomElementFn, IStringOrDomElement } from "./types/index";
 
-const getDomElement: IGetDomElementFn = <T extends HTMLElement>(domElement: IStringOrDomElement<T>) => {
+const getDomElement: IGetDomElementFn = <T extends HTMLOrSVGElement>(domElement: IStringOrDomElement<T>) => {
     return typeof domElement === "string" ? document.querySelector<T>(domElement) : domElement;
 };
 
@@ -9,14 +9,23 @@ const updateDom = (domElement: any, properties: any, namespace: string[] = []) =
     for (let [property, value] of entries) {
         if (typeof value === "object") {
             updateDom(domElement, value, [...namespace, property]);
-            return;
+            continue;
         }
         let toUpdate = domElement;
         for (const ns of namespace) {
             toUpdate = toUpdate[ns];
         }
-        if (namespace[namespace.length - 1] === "style") {
+        if (namespace[namespace.length - 1] === "style" && property.startsWith("--")) {
             toUpdate.setProperty(property, value);
+            continue;
+        }
+        if (property === "className" && domElement instanceof SVGElement) {
+            (toUpdate as SVGElement).setAttribute("class", (value as any).toString());
+            continue;
+        }
+        if (namespace.length === 0 && property.startsWith("data-")) {
+            domElement.setAttribute(property, value);
+            continue;
         }
         toUpdate[property] = value;
     }

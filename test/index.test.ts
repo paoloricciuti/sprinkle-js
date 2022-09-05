@@ -3,7 +3,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { batch, bindChildrens, bindClasses, bindInnerHTML, bindTextContent, createComputed, createCssVariable, createEffect, createRef, createStored, createVariable } from "../src/index";
+import { batch, bindChildrens, bindClasses, bindDom, bindInnerHTML, bindTextContent, createComputed, createCssVariable, createEffect, createRef, createStored, createVariable } from "../src/index";
 import { DiffedElements } from '../src/types';
 
 describe("createRef", () => {
@@ -387,6 +387,75 @@ describe("DOM manipulation by bindind", () => {
             ref.value++;
             expect(toBindDiv.firstChild).toBeInstanceOf(HTMLSpanElement);
             expect(toBindDiv.firstChild?.textContent).toBe("2");
+        });
+    });
+
+    describe("bindDom", () => {
+        it("update the attributes of a dom element merging it with the passed in object", () => {
+            const variable = createVariable({
+                label: "test-aria",
+                background: "#BADA55",
+                data: "testing dataset",
+                classes: "class1 class2",
+            });
+            bindDom("#to-bind", () => ({
+                ariaLabel: variable.label,
+                style: {
+                    backgroundColor: variable.background,
+                },
+                "data-test": variable.data,
+                className: variable.classes,
+            }));
+
+            expect(toBindDiv.ariaLabel).toBe("test-aria");
+            expect(toBindDiv.style.backgroundColor).toBe("rgb(186, 218, 85)");
+            expect(toBindDiv.dataset["test"]).toBe("testing dataset");
+            expect(toBindDiv.className).toBe("class1 class2");
+
+            variable.label = "test-aria-changed";
+            expect(toBindDiv.ariaLabel).toBe("test-aria-changed");
+            variable.background = "#C0FFEE";
+            expect(toBindDiv.style.backgroundColor).toBe("rgb(192, 255, 238)");
+            variable.data = "testing dataset change";
+            expect(toBindDiv.dataset["test"]).toBe("testing dataset change");
+            variable.classes = "class1 class2 class3";
+            expect(toBindDiv.className).toBe("class1 class2 class3");
+        });
+
+        it("update the attributes of a dom element merging it with the passed in object (with SVGs)", () => {
+            document.body.innerHTML = `<svg id="to-bind"></svg>`;
+            let toBindSvg = document.querySelector("#to-bind") as SVGElement;
+            const variable = createVariable({
+                label: "test-aria",
+                background: "#BADA55",
+                data: "testing dataset",
+                classes: "class1 class2",
+                test: {
+                    test2: true,
+                }
+            });
+            bindDom(toBindSvg, () => ({
+                ariaLabel: variable.label,
+                style: {
+                    backgroundColor: variable.background,
+                },
+                "data-test": variable.data,
+                className: variable.classes,
+            }));
+
+            expect(toBindSvg.ariaLabel).toBe("test-aria");
+            expect(toBindSvg.style.backgroundColor).toBe("rgb(186, 218, 85)");
+            expect(toBindSvg.dataset["test"]).toBe("testing dataset");
+            expect(toBindSvg.getAttribute("class")).toBe("class1 class2");
+
+            variable.label = "test-aria-changed";
+            expect(toBindSvg.ariaLabel).toBe("test-aria-changed");
+            variable.background = "#C0FFEE";
+            expect(toBindSvg.style.backgroundColor).toBe("rgb(192, 255, 238)");
+            variable.data = "testing dataset change";
+            expect(toBindSvg.dataset["test"]).toBe("testing dataset change");
+            variable.classes = "class1 class2 class3";
+            expect(toBindSvg.getAttribute("class")).toBe("class1 class2 class3");
         });
     });
 

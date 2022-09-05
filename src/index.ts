@@ -1,4 +1,4 @@
-import { CSSStyles, DiffedElements, DOMUpdate, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
+import { CSSStyles, DiffedElements, DOMUpdate, HTMLOrSVGElement, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
 import { diff, findNext, getDomElement, getRawType, html, key, updateDom } from "./utils";
 
 let context: ICreateEffectRunning[] = [];
@@ -55,7 +55,7 @@ const createVariable = <T extends object>(value: T, eq?: IEqualFunctionMap<T>) =
     for (let keyString of keys) {
         const key = keyString as keyof T;
         if (!!value[key] && typeof value[key] === "object" && (getRawType(value[key]) === "Object" || Array.isArray(value[key]))) {
-            value[key] = createVariable(value[key] as unknown as object, (eq?.[key] as any as IEqualFunctionMap<T[keyof T]>)) as unknown as T[keyof T];
+            value[key] = createVariable(value[key] as unknown as object, (eq?.[key] as any)) as unknown as T[keyof T];
         }
     }
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
@@ -93,7 +93,7 @@ const createVariable = <T extends object>(value: T, eq?: IEqualFunctionMap<T>) =
     return variable;
 };
 
-const createCssVariable = <T extends ICssVariable, E extends HTMLElement = HTMLHtmlElement>(value: T, eq?: IEqualFunctionMap<T>, root: IStringOrDomElement<E> = ":root") => {
+const createCssVariable = <T extends ICssVariable, E extends HTMLOrSVGElement = HTMLHtmlElement>(value: T, eq?: IEqualFunctionMap<T>, root: IStringOrDomElement<E> = ":root") => {
     const variable = createVariable(value, eq);
     let domElement = getDomElement(root);
     if (!domElement) {
@@ -251,7 +251,7 @@ const untrack = (fn: () => any) => {
     return retval;
 };
 
-const bindTextContent = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>) => {
+const bindTextContent = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem) {
@@ -261,7 +261,7 @@ const bindTextContent = <TElement extends HTMLElement = HTMLElement>(domElement:
     return elem;
 };
 
-const bindInnerHTML = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>) => {
+const bindInnerHTML = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem) {
@@ -271,7 +271,7 @@ const bindInnerHTML = <TElement extends HTMLElement = HTMLElement>(domElement: I
     return elem;
 };
 
-const bindClass = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, className: string, fn: IEffect<boolean, TElement>) => {
+const bindClass = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, className: string, fn: IEffect<boolean, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem) {
@@ -286,7 +286,7 @@ const bindClass = <TElement extends HTMLElement = HTMLElement>(domElement: IStri
     return elem;
 };
 
-const bindClasses = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<{ [key: string]: boolean; }, TElement>) => {
+const bindClasses = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<{ [key: string]: boolean; }, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem) {
@@ -314,20 +314,20 @@ const bindInputValue = (domElement: IStringOrDomElement<HTMLInputElement>, fn: I
     return elem;
 };
 
-const bindDom = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<DOMUpdate<TElement>, TElement>) => {
+const bindDom = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<DOMUpdate<TElement>, TElement>) => {
     const elem = getDomElement(domElement);
     createEffect(() => updateDom(elem, fn(elem)));
     return elem;
 };
 
-const bindStyle = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<CSSStyles<TElement>, TElement>) => {
+const bindStyle = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<CSSStyles<TElement>, TElement>) => {
     const elem = getDomElement(domElement);
     if (!elem) return;
     bindDom(elem, () => ({ style: fn(elem) as any }));
     return elem;
 };
 
-const bindChildrens = <TElement extends HTMLElement = HTMLElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void)) => {
+const bindChildrens = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void)) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem === null) return;
