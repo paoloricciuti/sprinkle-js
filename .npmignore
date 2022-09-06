@@ -7,3 +7,4 @@ tsconfig.json
 /src
 /.vscode
 vite.config.ts
+/docs
