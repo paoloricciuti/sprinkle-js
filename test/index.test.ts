@@ -3,7 +3,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { batch, bindChildrens, bindClasses, bindDom, bindInnerHTML, bindTextContent, createComputed, createCssVariable, createEffect, createRef, createStored, createVariable } from "../src/index";
+import { batch, bindChildrens, bindClass, bindClasses, bindDom, bindInnerHTML, bindInputValue, bindStyle, bindTextContent, createComputed, createCssVariable, createEffect, createRef, createStored, createVariable, untrack } from "../src/index";
 import { DiffedElements } from '../src/types';
 
 describe("createRef", () => {
@@ -359,7 +359,31 @@ describe("createEffect", () => {
 
     });
 
-    it.todo("runs the cleanup function returned from the create effect before rerunning");
+    it("runs the cleanup function returned from the create effect before rerunning", () => {
+        const variable = createRef<number>(0);
+        const cleanupFn = vi.fn(() => { });
+        const effectFn = vi.fn(() => {
+            variable.value;
+            return cleanupFn;
+        });
+        createEffect(effectFn);
+        expect(effectFn).toHaveBeenCalledTimes(1);
+        variable.value++;
+        expect(cleanupFn).toHaveBeenCalledTimes(1);
+        expect(effectFn).toHaveBeenCalledTimes(2);
+    });
+
+    it("does not rerun if a variable used inside untrack changes (and can access the return value of untrack)", () => {
+        const variable = createRef<number>(0);
+        const effectFn = vi.fn(() => {
+            const varValue = untrack(() => variable.value);
+            expect(varValue).toBe(0);
+        });
+        createEffect(effectFn);
+        expect(effectFn).toHaveBeenCalledTimes(1);
+        variable.value++;
+        expect(effectFn).toHaveBeenCalledTimes(1);
+    });
 });
 
 describe("DOM manipulation by bindind", () => {
@@ -369,12 +393,23 @@ describe("DOM manipulation by bindind", () => {
         toBindDiv = document.querySelector("#to-bind") as HTMLElement;
     });
     describe("bindTextContent ", () => {
-        it("bind a value of a ref or a variable to the textContent of an input element", () => {
+        it("bind a value of a ref or a variable to the textContent of an element", () => {
             const ref = createRef(1);
             bindTextContent("#to-bind", () => ref.value.toString());
             expect(toBindDiv.textContent).toBe("1");
             ref.value++;
             expect(toBindDiv.textContent).toBe("2");
+        });
+    });
+
+    describe("bindInputValue ", () => {
+        it("bind a value of a ref or a variable to the inputValue of an input element", () => {
+            const inputToBind = document.createElement("input");
+            const ref = createRef(1);
+            bindInputValue(inputToBind, () => ref.value.toString());
+            expect(inputToBind.value).toBe("1");
+            ref.value++;
+            expect(inputToBind.value).toBe("2");
         });
     });
 
@@ -457,6 +492,31 @@ describe("DOM manipulation by bindind", () => {
             expect(toBindSvg.dataset["test"]).toBe("testing dataset change");
             variable.classes = "class1 class2 class3";
             expect(toBindSvg.getAttribute("class")).toBe("class1 class2 class3");
+        });
+    });
+
+    describe("bindStyle", () => {
+        it("bind the style passed in as an object to the element", () => {
+            const variable = createVariable({
+                background: "#BADA55",
+            });
+
+            bindStyle("#to-bind", () => ({
+                backgroundColor: variable.background,
+            }));
+            expect(toBindDiv.style.backgroundColor).toBe("rgb(186, 218, 85)");
+            variable.background = "#C0FFEE";
+            expect(toBindDiv.style.backgroundColor).toBe("rgb(192, 255, 238)");
+        });
+    });
+
+    describe("bindClass", () => {
+        it("bind a class to an element based on the boolean value returned by a function", () => {
+            const ref = createRef<boolean>(false);
+            bindClass("#to-bind", "test-class", () => ref.value);
+            expect(toBindDiv.classList.contains("test-class")).toBe(false);
+            ref.value = !ref.value;
+            expect(toBindDiv.classList.contains("test-class")).toBe(true);
         });
     });
 
