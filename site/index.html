@@ -41,41 +41,41 @@
     <section class="hero">
         <h1 class="title">The open source alternative to...<span class="to-the-moon">well, nothing!</span></h1>
         <a href="#get-started" class="btn secondary get-started">Get started</a>
-        <pre class="board"><div class="paper"><code></code></div></pre>
+        <pre class="board"><div class="paper"><code class="paper-code"></code></div></pre>
     </section>
-    <section id="get-started" class="get-started-section">
-        <article>
-            <strong>The fastest way to get started is by clicking this button</strong>
-            <form action="https://codepen.io/pen/define" method="POST" target="_blank">
-                <input type="hidden" name="data"
-                    value="{&quot;title&quot;:&quot;Sprinkle JS - First example&quot;,&quot;description&quot;:&quot;The fastest way to get started with sprinkle js&quot;,&quot;tags&quot;:[&quot;sprinkle-js&quot;,&quot;javascript&quot;,&quot;reactive&quot;],&quot;editors&quot;:&quot;0010&quot;,&quot;layout&quot;:&quot;left&quot;,&quot;html&quot;:&quot;<div id=&bsol;&quot;app&bsol;&quot;/>&quot;,&quot;css&quot;:&quot;&quot;,&quot;js&quot;:&quot;import { createVariable, bindTextContent } from &bsol;&quot;https://cdn.skypack.dev/sprinkle-js&bsol;&quot;;\n\nconst variable = createVariable({isCool: true});\n\nbindTextContent(&bsol;&quot;#app&bsol;&quot;, ()=>variable.isCool?'😎':'😢');\n\nwindow.addEventListener(&bsol;&quot;click&bsol;&quot;, ()=> variable.isCool = !variable.isCool);&quot;}">
-                <button type="submit">Go on Codepen</button>
-            </form>
-        </article>
-        <!-- <article class="code-example">
-            <p class="codepen" data-border="none" data-height="300" data-theme-id="dark" data-default-tab="js,result"
-                data-slug-hash="gOebVrw" data-editable="true" data-user="paoloricciuti"
-                style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
-                <span>See the Pen <a href="https://codepen.io/paoloricciuti/pen/gOebVrw">
-                        Bubbles</a> by paoloricciuti (<a href="https://codepen.io/paoloricciuti">@paoloricciuti</a>)
-                    on <a href="https://codepen.io">CodePen</a>.</span>
-            </p>
-            <p>
-                A simple bubble example
-            </p>
-        </article>
-        <article class="code-example">
-            <p class="codepen" data-border="none" data-height="300" data-theme-id="dark" data-default-tab="js,result"
-                data-slug-hash="rNJgJdo" data-editable="true" data-user="paoloricciuti"
-                style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
-                <span>See the Pen <a href="https://codepen.io/paoloricciuti/pen/rNJgJdo">
-                        Tic tac toe</a> by paoloricciuti (<a href="https://codepen.io/paoloricciuti">@paoloricciuti</a>)
-                    on <a href="https://codepen.io">CodePen</a>.</span>
-            </p>
-            <p>
-                A tic tac tow exapmple
-            </p>
-        </article> -->
+    <section id="get-started" class="skewed">
+        <div class="get-started-section">
+            <article class="template full-width-grid">
+                <strong>The fastest way to get started is by clicking this button</strong>
+                <a class="btn" href="https://codepen.io/pen?template=KKoQLRg" target="_blank"
+                    rel="noopener noreferrer">Go
+                    on
+                    Codepen</a>
+            </article>
+            <article class="text-center full-width-grid">
+                ...or if you want to try in a more setupped environment you can...
+            </article>
+            <article class="template">
+                <a class="btn" href="https://stackblitz.com/edit/sprinkle-js-template?file=index.ts" target="_blank"
+                    rel="noopener noreferrer">Go
+                    on
+                    Code Stackblitz</a>
+            </article>
+            <article class="template">
+                <a class="btn" href="https://codesandbox.io/s/sprinkle-js-typescript-rg0j4k" target="_blank"
+                    rel="noopener noreferrer">Go
+                    on
+                    Code Sandbox</a>
+            </article>
+            <article class="install full-width-grid">
+                ...but if you really really want to use Sprinkle JS with a bundle you can
+                <code
+                    class="install-code">npm install sprinkle-js@latest <button class="copy-btn"><img src="./assets/copy.svg" alt="copy"/></button></code>
+            </article>
+        </div>
+    </section>
+    <section id="examples">
+        <h2 class="examples-title">Want to see Sprinkle JS in action?</h2>
     </section>
     <footer class="footer">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
