@@ -28,7 +28,9 @@ The main philosophy behind is to build a supersmall library that requires no bun
 
 - **Sprinkle JS is not** the next big thing after React.
 - **Sprinkle JS is not** for your big project...i mean if you want to use it feel free to do so but it's not what's meant to be.
-- **Sprinkle JS is not** for perf aficionados: we as a community are trying to our best and maybe it will become the best version of itself but keep always keep in mind the main philosophy behind it.## Installation
+- **Sprinkle JS is not** for perf aficionados: we as a community are trying to our best and maybe it will become the best version of itself but keep always keep in mind the main philosophy behind it.
+
+## Installation
 To install Sprinkle JS you can run
 ```bash
 npm i sprinkle-js
