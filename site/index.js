@@ -1,5 +1,16 @@
-import { bindChildrens, bindDom, bindStyle, bindTextContent, createVariable } from "./dist/sprinkle-js.es.js";
+import { bindChildrens, bindClass, bindDom, bindStyle, bindTextContent, createVariable } from "./dist/sprinkle-js.es.js";
 import examples from "./examples.js";
+
+const exampleObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+            exampleObserver.unobserve(entry.target);
+        }
+    });
+}, {
+    rootMargin: "0% 2000px 0% 2000px",
+});
 
 const examplesSection = document.getElementById("examples");
 const codepenScriptTag = document.createElement("script");
@@ -20,6 +31,7 @@ codepenScriptTag.addEventListener("load", () => {
         ${example.description}
         </p>`;
             examplesSection.append(article);
+            exampleObserver.observe(article);
         });
         window.__CPEmbed();
     } else {
@@ -34,16 +46,22 @@ codepenScriptTag.addEventListener("load", () => {
         examplesSection.append(article);
     }
 });
-const goOnCodepenObserver = new IntersectionObserver(([entry]) => {
+const examplesObserver = new IntersectionObserver(([entry]) => {
     if (entry.isIntersecting) {
         document.head.append(codepenScriptTag);
-        goOnCodepenObserver.unobserve(examplesSection);
+        examplesObserver.unobserve(examplesSection);
     }
+}, {
+    rootMargin: "200px",
 });
 
-goOnCodepenObserver.observe(examplesSection);
+examplesObserver.observe(examplesSection);
 
-window.scriptTag = codepenScriptTag;
+const packageManagers = [
+    "npm install",
+    "yarn add",
+    "pnpm install",
+];
 
 const state = createVariable({
     logoRotation: 0,
@@ -51,16 +69,46 @@ const state = createVariable({
     mineBitcoin: true,
     bitcoinRate: 10,
     bitcoinMined: 0,
+    packageManager: 0,
 }, {
     bitcoinRate: () => false,
 });
 
 const stateModifiers = {
     bitcoinRate: (val) => Math.min(Math.max(val, 0), 100),
+    packageManager: (val) => Math.abs(val % 3),
 };
 
 window.state = state;
 
+const tabsChooser = document.querySelector(".tabs-chooser");
+
+tabsChooser.addEventListener("click", ({ target }) => {
+    if (target.tagName === "BUTTON") {
+        const pressed = [...tabsChooser.children].findIndex((e) => e === target);
+        state.packageManager = pressed;
+    }
+});
+
+packageManagers.forEach((_, i) => {
+    bindClass(`.tabs-chooser>button:nth-of-type(${i + 1})`, "selected", () => state.packageManager === i);
+});
+
+bindTextContent(".install-code>span", () => `${packageManagers[state.packageManager]} sprinkle-js`);
+const installCopyBtn = document.querySelector(".install-code>.copy-btn");
+installCopyBtn.addEventListener("click", async () => {
+    try {
+        await navigator.clipboard.writeText(`${packageManagers[state.packageManager]} sprinkle-js`);
+        installCopyBtn.classList.add("ok");
+    } catch (e) {
+        installCopyBtn.classList.add("error");
+    }
+});
+
+installCopyBtn.addEventListener("animationend", () => {
+    installCopyBtn.classList.remove("ok");
+    installCopyBtn.classList.remove("error");
+});
 bindTextContent(".to-the-moon", () => state.title);
 bindStyle(".logo > img", () => ({
     "--logo-rotation": state.logoRotation,
@@ -92,9 +140,23 @@ arms.addEventListener("animationiteration", () => {
     iterationCount++;
 });
 
+let passiveIfSupported = false;
+
+try {
+    window.addEventListener("test", null,
+        Object.defineProperty(
+            {},
+            "passive",
+            {
+                get() { passiveIfSupported = { passive: true }; }
+            }
+        )
+    );
+} catch (err) { }
+
 window.addEventListener("scroll", (e) => {
     state.logoRotation = Math.floor(window.scrollY);
-});
+}, passiveIfSupported);
 
 const openPar = document.createTextNode("{");
 const keys = Object.keys(state);
