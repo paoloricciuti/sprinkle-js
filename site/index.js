@@ -9,7 +9,7 @@ const exampleObserver = new IntersectionObserver((entries) => {
         }
     });
 }, {
-    rootMargin: "0% 2000px 0% 2000px",
+    threshold: .5,
 });
 
 const examplesSection = document.getElementById("examples");

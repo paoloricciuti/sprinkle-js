@@ -390,22 +390,24 @@ body {
 }
 
 #examples>article {
-    --translation: 100vmax;
+    --translation: 20%;
+    --transition-duration: 500ms;
     display: flex;
     gap: 1rem;
     justify-content: center;
     align-items: center;
-    transform: translate(var(--translation), 0);
-    transition: transform 500ms;
+    opacity: 0;
+    transform: translateY(var(--translation));
+    transition: transform var(--transition-duration), opacity var(--transition-duration);
 }
 
 #examples>article:nth-child(even) {
     flex-direction: row-reverse;
-    --translation: -100vmax;
 }
 
 #examples>article.in-view {
     --translation: 0;
+    opacity: 1;
 }
 
 #examples>article.no-examples {
@@ -568,6 +570,18 @@ body {
 
     to {
         transform: rotate(20deg)
+    }
+}
+
+@keyframes fly-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
