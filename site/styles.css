@@ -630,30 +630,25 @@ body {
     .header-nav {
         transform: translateX(100%);
         transition: transform 250ms;
-    }
-
-    .open {
         position: fixed;
         top: 0;
         bottom: 0;
         right: 0;
-        left: 50%;
+        width: min(20rem, 65vw);
         background-color: var(--clr-bg);
+    }
+
+    .open {
         box-shadow: -.5rem 0 2rem 0 rgba(0 0 0 / .3), 0 0 0 100vmax rgba(0 0 0 / .3);
         transform: translateX(0);
     }
 
-    .open>.hamburger-btn {
-        margin: .5rem;
-        margin-left: auto;
-    }
-
-    .open>ul {
+    .header-nav>ul {
         flex-direction: column;
         text-align: center;
     }
 
-    .open li:nth-child(n) {
+    .header-nav li:nth-child(n) {
         padding: .5rem;
         border-right: none;
         border-bottom: 1px solid rgb(0 0 0 / .3);
