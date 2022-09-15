@@ -241,6 +241,8 @@ body {
 .title {
     transform: rotateZ(-3deg);
     align-self: end;
+    font-size: 2.7rem;
+    text-align: center;
 }
 
 .get-started {
