@@ -166,8 +166,7 @@ body {
 }
 
 .header {
-    min-height: var(--header-height);
-    padding: 1rem 2rem;
+    padding: .5rem;
     background-color: var(--clr-bg);
     box-shadow: 0 0 1rem 0 rgb(0 0 0 / .3);
     position: sticky;
@@ -175,24 +174,58 @@ body {
     display: flex;
     gap: 1rem;
     z-index: 10;
+    align-items: center;
 }
 
 .header>.logo {
     height: var(--header-height);
     display: flex;
     gap: 1rem;
-    position: absolute;
-    filter: drop-shadow(0 0 .3rem rgb(0 0 0 / .3));
+    left: 1rem;
+    margin-right: auto;
 }
 
 .logo>img {
     object-fit: contain;
     transform: rotate(calc(var(--logo-rotation, 0)*5deg));
+    filter: drop-shadow(rgba(0, 0, 0, 0.3) 0px 0px 0.3rem);
 }
 
 .logo>h1 {
     font-size: clamp(1.31rem, calc(1.28rem + 0.19vw), 1.50rem);
     align-self: center;
+}
+
+.hamburger-btn {
+    display: none;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+}
+
+.hamburger-btn>svg {
+    display: block;
+}
+
+.header-nav>ul {
+    display: flex;
+    gap: .5rem;
+    list-style: none;
+    padding: 0 .5rem;
+}
+
+.header-nav a {
+    text-decoration: none;
+    color: black;
+}
+
+.header-nav a:hover {
+    color: rgb(0 0 0 / .7);
+}
+
+.header-nav li:not(:last-child) {
+    border-right: 1px solid rgba(0 0 0 / .3);
+    padding-right: .5rem;
 }
 
 .hero {
@@ -586,6 +619,46 @@ body {
 }
 
 @media screen and (max-width: 43.75rem) {
+    .header-nav:not(.open)>ul {
+        display: none;
+    }
+
+    .hamburger-btn {
+        display: block;
+    }
+
+    .header-nav {
+        transform: translateX(100%);
+        transition: transform 250ms;
+    }
+
+    .open {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 50%;
+        background-color: var(--clr-bg);
+        box-shadow: -.5rem 0 2rem 0 rgba(0 0 0 / .3), 0 0 0 100vmax rgba(0 0 0 / .3);
+        transform: translateX(0);
+    }
+
+    .open>.hamburger-btn {
+        margin: .5rem;
+        margin-left: auto;
+    }
+
+    .open>ul {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .open li:nth-child(n) {
+        padding: .5rem;
+        border-right: none;
+        border-bottom: 1px solid rgb(0 0 0 / .3);
+    }
+
     .hero {
         grid-template-columns: 1fr;
     }

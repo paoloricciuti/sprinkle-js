@@ -1,4 +1,4 @@
-import { bindChildrens, bindClass, bindDom, bindStyle, bindTextContent, createVariable } from "./dist/sprinkle-js.es.js";
+import { bindChildrens, bindClass, bindDom, bindInnerHTML, bindStyle, bindTextContent, createEffect, createVariable } from "./dist/sprinkle-js.es.js";
 import examples from "./examples.js";
 
 const exampleObserver = new IntersectionObserver((entries) => {
@@ -65,6 +65,7 @@ const packageManagers = [
 
 const state = createVariable({
     logoRotation: 0,
+    mobileMenuOpen: false,
     title: "well, nothing!",
     mineBitcoin: true,
     bitcoinRate: 10,
@@ -92,6 +93,27 @@ tabsChooser.addEventListener("click", ({ target }) => {
 
 packageManagers.forEach((_, i) => {
     bindClass(`.tabs-chooser>button:nth-of-type(${i + 1})`, "selected", () => state.packageManager === i);
+});
+
+const headerNav = bindClass(".header-nav", "open", () => state.mobileMenuOpen);
+
+const menuButton = document.getElementById("open-menu");
+
+menuButton.addEventListener("click", () => {
+    state.mobileMenuOpen = !state.mobileMenuOpen;
+});
+
+createEffect(() => {
+    if (state.mobileMenuOpen) {
+        const clickOutsideHandler = (e) => {
+            if (e.target === headerNav || headerNav.contains(e.target)) return;
+            state.mobileMenuOpen = false;
+        };
+        window.addEventListener("pointerdown", clickOutsideHandler);
+        return () => {
+            window.removeEventListener("pointerdown", clickOutsideHandler);
+        };
+    }
 });
 
 bindTextContent(".install-code>span", () => `${packageManagers[state.packageManager]} sprinkle-js`);
