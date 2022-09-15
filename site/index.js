@@ -107,11 +107,17 @@ createEffect(() => {
     if (state.mobileMenuOpen) {
         const clickOutsideHandler = (e) => {
             if (e.target === headerNav || headerNav.contains(e.target)) return;
+            e.stopPropagation();
+            e.preventDefault();
             state.mobileMenuOpen = false;
         };
-        window.addEventListener("pointerdown", clickOutsideHandler);
+        window.addEventListener("click", clickOutsideHandler, {
+            capture: true,
+        });
         return () => {
-            window.removeEventListener("pointerdown", clickOutsideHandler);
+            window.removeEventListener("click", clickOutsideHandler, {
+                capture: true,
+            });
         };
     }
 });
