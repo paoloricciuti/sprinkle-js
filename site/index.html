@@ -72,6 +72,9 @@
         <h1 class="title">The open source alternative to...<span class="to-the-moon">well, nothing!</span></h1>
         <a href="#get-started" class="btn secondary get-started">Get started</a>
         <pre class="board"><div class="paper"><code class="paper-code"></code></div></pre>
+        <div class="tip">Try to interact with the state in the below panel or open the console and update
+            <code>window.state</code>
+        </div>
     </section>
     <section id="get-started" class="skewed">
         <div class="get-started-section">
@@ -88,8 +91,7 @@
             <article class="template">
                 <a class="btn" href="https://stackblitz.com/edit/sprinkle-js-template?file=index.ts" target="_blank"
                     rel="noopener noreferrer">Go
-                    on
-                    Code Stackblitz</a>
+                    on Stackblitz</a>
             </article>
             <article class="template">
                 <a class="btn" href="https://codesandbox.io/s/sprinkle-js-typescript-rg0j4k" target="_blank"
@@ -97,8 +99,13 @@
                     on
                     Code Sandbox</a>
             </article>
+            <article class="template full-width-grid">
+                ...given it requires no bundler you can even...
+                <a class="btn" download="index.html" href="./assets/downloads/index.html" target="_blank"
+                    rel="noopener noreferrer">Download a single file</a>
+            </article>
             <article class="install full-width-grid">
-                ...but if you really really want to use Sprinkle JS with a bundle you can
+                ...but if you really really want to use Sprinkle JS with a bundle you can...
                 <div class="tabs-chooser">
                     <button class="selected">npm</button><button>yarn</button><button>pnpm</button>
                     <code
@@ -107,7 +114,36 @@
             </article>
         </div>
     </section>
-    <section id="examples">
+    <section id="why">
+        <h2 class="examples-title">But why?</h2>
+        <ul class="why-list">
+            <li>
+                <h3>No bundler</h3>
+                <p>Modern web development often require you to go through thousands of configurations to setup your
+                    bundler and this is often required to have a bit of reactivity in your app. The aim of Sprinkle JS
+                    is to free you of all of this!</p>
+                <ul class="bundler-black-hole">
+                    <li style="--animation-order: 0"><img src="./assets/bundlers/esbuild.svg" alt="esbuild logo"></li>
+                    <li style="--animation-order: 1"><img src="./assets/bundlers/rollup.svg" alt="rollup logo"></li>
+                    <li style="--animation-order: 2"><img src="./assets/bundlers/webpack.png" alt="webpack logo"></li>
+                </ul>
+            </li>
+            <li>
+                <h3>Small size</h3>
+                <p>With a bundle size of less than <strong>3kb</strong> gzipped and no additional dependencies Sprinkle
+                    JS will save your time without wasting your users time!</p>
+                <img class="small-size" src="./assets/jslogo.png" alt="the javascript logo shrinking" />
+            </li>
+            <li>
+                <h3>Powerful primitives</h3>
+                <p>A few powerful primitives it's all is exported from Sprinkle JS. You might not have the flexibility
+                    of React, Vue, Svelte or Solid but let's be honest: for your fun little app you don't need all of
+                    that!</p>
+                <img src="./assets/code.svg" alt="code being written" />
+            </li>
+        </ul>
+    </section>
+    <section id="examples" class="skewed forward">
         <h2 class="examples-title">Want to see Sprinkle JS in action?</h2>
     </section>
     <footer class="footer">

@@ -1,4 +1,4 @@
-import { bindChildrens, bindClass, bindDom, bindInnerHTML, bindStyle, bindTextContent, createEffect, createVariable } from "./dist/sprinkle-js.es.js";
+import { bindChildrens, bindClass, bindDom, bindStyle, bindTextContent, createEffect, createVariable } from "./dist/sprinkle-js.es.js";
 import examples from "./examples.js";
 
 const exampleObserver = new IntersectionObserver((entries) => {
