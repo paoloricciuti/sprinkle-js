@@ -77,3 +77,7 @@ You can quickly initialize a Stackblitz project setup with typescript and Sprink
 You can quickly initialize a Code Sandbox project setup with typescript and Sprinkle JS by going to <a href="https://codesandbox.io/s/sprinkle-js-typescript-rg0j4k" target="_blank">this template</a>.
 
 > **Tip:** we try to keep this templates up to date but it's safer to always update the dependencies as soon as you fork it.
+
+## Single file download
+
+Given the nature of Sprinkle JS you can even just <a href="https://sprinkle-js.com/assets/download/index.html" download="index.html">click here</a> to download a single HTML file to get started with Sprinkle JS.
