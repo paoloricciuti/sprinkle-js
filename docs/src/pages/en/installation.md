@@ -80,4 +80,4 @@ You can quickly initialize a Code Sandbox project setup with typescript and Spri
 
 ## Single file download
 
-Given the nature of Sprinkle JS you can even just <a href="https://sprinkle-js.com/assets/download/index.html" download="index.html">click here</a> to download a single HTML file to get started with Sprinkle JS.
+Given the nature of Sprinkle JS you can even just <a href="https://www.sprinkle-js.com/assets/downloads/index.html" download="index.html">click here</a> to download a single HTML file to get started with Sprinkle JS.
