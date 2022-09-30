@@ -3,6 +3,7 @@ import { diff, findNext, getDomElement, getRawType, html, key, updateDom } from 
 
 let context: ICreateEffectRunning[] = [];
 const IS_REACTIVE_SYMBOL = Symbol('is-reactive');
+const IS_COMPUTED_WRITABLE = Symbol('memo');
 
 let batched: Set<ICreateEffectRunning> | null = null;
 
@@ -70,6 +71,7 @@ const createVariable = <T extends object>(value: T, eq?: IEqualFunctionMap<T>) =
             return Reflect.get(...props);
         },
         set: (target, field, val) => {
+            if ((target as any)[IS_COMPUTED_WRITABLE] === false && field !== IS_COMPUTED_WRITABLE) return true;
             // cast the field to a keyof T
             const fieldCast = field as keyof T;
             // get the equality function, if it's not defined default it to Object.is
@@ -112,42 +114,18 @@ const createCssVariable = <T extends ICssVariable, E extends HTMLOrSVGElement = 
 };
 
 const createComputed = <T>(fn: () => T, eq?: IEqualFunction<T>) => {
-    const value = { value: fn() };
-    let canWrite = false;
-    const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
-    const computed = new Proxy(value, {
-        get: (...props) => {
-            const running = context[context.length - 1];
-            if (running) subscribe(props[1], running, subscriptions);
-            return Reflect.get(...props);
-        },
-        set: (target, field, val) => {
-            if (!canWrite) return true;
-            // cast the field to the const value since it's the only field it can have
-            const fieldCast = field as 'value';
-            // get the equality function, if it's not defined default it to Object.is
-            const equality = eq ?? Object.is as any;
-            // check if the current value is equal to the new value
-            const isEqual = equality(target[fieldCast], val);
-            // update the value
-            const ok = Reflect.set(target, field, val);
-            if (!isEqual) {
-                runOrQueueUpdates(subscriptions, field);
-            }
-            return ok;
-        },
-    });
+    const value = { value: fn(), [IS_COMPUTED_WRITABLE]: false };
+    const computed = createVariable(value, eq ? { value: eq } : undefined);
     createEffect(() => {
-        canWrite = true;
+        computed[IS_COMPUTED_WRITABLE] = true;
         computed.value = fn();
-        canWrite = false;
+        computed[IS_COMPUTED_WRITABLE] = false;
     });
     return computed;
 };
 
 const createStored = <T extends Object>(storageKey: string, value: T, eq?: IEqualFunctionMap<T>, storage: Storage = window.localStorage) => {
     if (typeof value !== 'object') throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
-    const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
     let existingValue: T | null = null;
     try {
         const storedValue = storage.getItem(storageKey);
@@ -159,27 +137,9 @@ const createStored = <T extends Object>(storageKey: string, value: T, eq?: IEqua
     } catch (e) {
         throw new Error('The specified key is associated with a non Object-like element');
     }
-    const variable = new Proxy(existingValue ?? value, {
-        get: (...props) => {
-            const running = context[context.length - 1];
-            if (running) subscribe(props[1], running, subscriptions);
-            return Reflect.get(...props);
-        },
-        set: (target, field, val) => {
-            // cast the field to a keyof T
-            const fieldCast = field as keyof T;
-            // get the equality function, if it's not defined default it to Object.is
-            const equality = eq?.[fieldCast] ?? Object.is as any;
-            // check if the current value is equal to the new value
-            const isEqual = equality(target[fieldCast], val);
-            // update the value
-            const ok = Reflect.set(target, field, val);
-            storage.setItem(storageKey, JSON.stringify(target));
-            if (!isEqual) {
-                runOrQueueUpdates(subscriptions, field);
-            }
-            return ok;
-        },
+    const variable = createVariable(existingValue ?? value, eq);
+    createEffect(() => {
+        storage.setItem(storageKey, JSON.stringify(variable));
     });
     window.addEventListener('storage', (e) => {
         if (e.storageArea === storage && e.key === storageKey) {
