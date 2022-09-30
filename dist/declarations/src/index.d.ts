@@ -1,9 +1,11 @@
 import { CSSStyles, DiffedElements, DOMUpdate, HTMLOrSVGElement, ICreateEffect, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, Primitive } from './types/index';
+declare const IS_COMPUTED_WRITABLE: unique symbol;
 declare const batch: (fn: Function) => void;
 declare const createVariable: <T extends object>(value: T, eq?: IEqualFunctionMap<T>) => T;
 declare const createCssVariable: <T extends ICssVariable, E extends HTMLOrSVGElement = HTMLHtmlElement>(value: T, eq?: IEqualFunctionMap<T>, root?: IStringOrDomElement<E>) => T;
 declare const createComputed: <T>(fn: () => T, eq?: IEqualFunction<T>) => {
     value: T;
+    [IS_COMPUTED_WRITABLE]: boolean;
 };
 declare const createStored: <T extends Object>(storageKey: string, value: T, eq?: IEqualFunctionMap<T>, storage?: Storage) => T;
 declare const createRef: <T extends Primitive>(ref: T, eq?: IEqualFunction<T>) => {
