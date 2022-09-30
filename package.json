@@ -19,7 +19,9 @@
         "bump:minor": "npm version minor",
         "bump:major": "npm version major",
         "test": "vitest",
-        "coverage": "vitest run --coverage"
+        "coverage": "vitest run --coverage",
+        "lint": "eslint ./src",
+        "lint-fix": "eslint ./src --fix"
     },
     "repository": "git+https://github.com/paoloricciuti/sprinkle-js.git",
     "keywords": [
@@ -36,9 +38,17 @@
     "homepage": "https://github.com/paoloricciuti/sprinkle-js#readme",
     "devDependencies": {
         "@types/jest": "^27.5.1",
+        "@typescript-eslint/eslint-plugin": "^5.38.1",
         "c8": "^7.11.3",
+        "eslint": "^8.24.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-config-airbnb-typescript": "^17.0.0",
+        "eslint-config-standard-with-typescript": "^23.0.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-n": "^15.3.0",
+        "eslint-plugin-promise": "^6.0.1",
         "jsdom": "^20.0.0",
-        "typescript": "^4.6.4",
+        "typescript": "^4.8.4",
         "vite": "^3.0.9",
         "vitest": "^0.17.0"
     },

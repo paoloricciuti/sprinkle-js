@@ -30,4 +30,4 @@ export declare type DiffedElements = {
 export declare type DOMUpdate<T extends HTMLOrSVGElement = HTMLOrSVGElement> = {
     [key in keyof T]?: Partial<T[key]> | Omit<T[key], any>;
 };
-export declare type CSSStyles<T extends HTMLOrSVGElement = HTMLOrSVGElement> = Partial<T["style"]> | Omit<Partial<T["style"]>, any>;
+export declare type CSSStyles<T extends HTMLOrSVGElement = HTMLOrSVGElement> = Partial<T['style']> | Omit<Partial<T['style']>, any>;

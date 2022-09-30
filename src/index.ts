@@ -1,10 +1,20 @@
-import { CSSStyles, DiffedElements, DOMUpdate, HTMLOrSVGElement, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from "./types/index";
-import { diff, findNext, getDomElement, getRawType, html, key, updateDom } from "./utils";
+import { CSSStyles, DiffedElements, DOMUpdate, HTMLOrSVGElement, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from './types/index';
+import { diff, findNext, getDomElement, getRawType, html, key, updateDom } from './utils';
 
 let context: ICreateEffectRunning[] = [];
-const IS_REACTIVE_SYMBOL = Symbol("is-reactive");
+const IS_REACTIVE_SYMBOL = Symbol('is-reactive');
 
 let batched: Set<ICreateEffectRunning> | null = null;
+
+const runEffects = (effects: Set<ICreateEffectRunning>) => {
+    [...effects].forEach((sub) => {
+        if (!sub.toRun) return;
+        const cleanUpFn = sub.execute();
+        if (cleanUpFn) {
+            sub.cleanup = cleanUpFn;
+        }
+    });
+};
 
 const batch = (fn: Function) => {
     batched = new Set<ICreateEffectRunning>();
@@ -27,16 +37,6 @@ const subscribe = (field: string | symbol, running: ICreateEffectRunning, subscr
     running.dependencies.add(subscriptions);
 };
 
-const runEffects = (effects: Set<ICreateEffectRunning>) => {
-    [...effects].forEach((sub) => {
-        if (!sub.toRun) return;
-        const cleanUpFn = sub.execute();
-        if (cleanUpFn) {
-            sub.cleanup = cleanUpFn;
-        }
-    });
-};
-
 const runOrQueueUpdates = (subscriptions: Map<string | symbol, ISubscription>, field: string | symbol) => {
     const effects = subscriptions.get(field);
     if (!effects) return;
@@ -48,63 +48,64 @@ const runOrQueueUpdates = (subscriptions: Map<string | symbol, ISubscription>, f
 };
 
 const createVariable = <T extends object>(value: T, eq?: IEqualFunctionMap<T>) => {
-    //if the value is already reactive we simply return the value
+    // if the value is already reactive we simply return the value
     if ((value as any)[IS_REACTIVE_SYMBOL]) return value;
-    if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
+    if (typeof value !== 'object') throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
     const keys = Object.keys(value || {});
-    for (let keyString of keys) {
-        const key = keyString as keyof T;
-        if (!!value[key] && typeof value[key] === "object" && (getRawType(value[key]) === "Object" || Array.isArray(value[key]))) {
-            value[key] = createVariable(value[key] as unknown as object, (eq?.[key] as any)) as unknown as T[keyof T];
+    keys.forEach((keyString) => {
+        const keyStr = keyString as keyof T;
+        if (!!value[keyStr] && typeof value[keyStr] === 'object' && (getRawType(value[keyStr]) === 'Object' || Array.isArray(value[keyStr]))) {
+            value[keyStr] = createVariable(value[keyStr] as unknown as object, (eq?.[keyStr] as any)) as unknown as T[keyof T];
         }
-    }
+    });
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
     const variable = new Proxy(value, {
         get: (...props) => {
-            //using IS_REACTIVE_SYMBOL to differenciate between normal values and reactive values to avoid
-            //recreating the proxy if a value is already reactive
-            if (props[1] === IS_REACTIVE_SYMBOL) return true;;
+            // using IS_REACTIVE_SYMBOL to differenciate between normal values and
+            // reactive values to avoid
+            // recreating the proxy if a value is already reactive
+            if (props[1] === IS_REACTIVE_SYMBOL) return true;
             const running = context[context.length - 1];
             if (running) subscribe(props[1], running, subscriptions);
             return Reflect.get(...props);
         },
-        set: (target, field, value) => {
-            //cast the field to a keyof T
+        set: (target, field, val) => {
+            // cast the field to a keyof T
             const fieldCast = field as keyof T;
-            //get the equality function, if it's not defined default it to Object.is
+            // get the equality function, if it's not defined default it to Object.is
             const equality = eq?.[fieldCast] ?? Object.is as any;
-            let varValue = value;
-            //if the passed in value is already reactive no need to create a new reactive variable from it
-            //otherwise the effect will run twice every time
-            if (!!value && typeof value === "object" && (getRawType(value) === "Object" || Array.isArray(value)) && !value[IS_REACTIVE_SYMBOL]) {
-                varValue = createVariable(value, equality);
+            let varValue = val;
+            // if the passed in value is already reactive no need to create
+            // a new reactive variable from it otherwise the effect will run twice every time
+            if (!!val && typeof val === 'object' && (getRawType(val) === 'Object' || Array.isArray(val)) && !val[IS_REACTIVE_SYMBOL]) {
+                varValue = createVariable(val, equality);
             }
-            //check if the current value is equal to the new value
-            const isEqual = equality(target[fieldCast], value);
-            //update the value
+            // check if the current value is equal to the new value
+            const isEqual = equality(target[fieldCast], val);
+            // update the value
             const ok = Reflect.set(target, field, varValue);
-            //if it's not equal run the updates
+            // if it's not equal run the updates
             if (!isEqual) {
                 runOrQueueUpdates(subscriptions, field);
             }
             return ok;
-        }
+        },
     });
     return variable;
 };
 
-const createCssVariable = <T extends ICssVariable, E extends HTMLOrSVGElement = HTMLHtmlElement>(value: T, eq?: IEqualFunctionMap<T>, root: IStringOrDomElement<E> = ":root") => {
+const createCssVariable = <T extends ICssVariable, E extends HTMLOrSVGElement = HTMLHtmlElement>(value: T, eq?: IEqualFunctionMap<T>, root: IStringOrDomElement<E> = ':root') => {
     const variable = createVariable(value, eq);
     let domElement = getDomElement(root);
     if (!domElement) {
-        console.warn("Impossible to find the right html element, attaching the variables to the root.");
-        domElement = document.querySelector(":root");
+        console.warn('Impossible to find the right html element, attaching the variables to the root.');
+        domElement = document.querySelector(':root');
     }
     createEffect(() => {
         const keys = Object.keys(variable);
 
-        keys.forEach(key => {
-            domElement!.style.setProperty(`--${key}`, variable[key]?.toString());
+        keys.forEach((objKey) => {
+            domElement!.style.setProperty(`--${objKey}`, variable[objKey]?.toString());
         });
     });
     return variable;
@@ -120,21 +121,21 @@ const createComputed = <T>(fn: () => T, eq?: IEqualFunction<T>) => {
             if (running) subscribe(props[1], running, subscriptions);
             return Reflect.get(...props);
         },
-        set: (target, field, value) => {
+        set: (target, field, val) => {
             if (!canWrite) return true;
-            //cast the field to the const value since it's the only field it can have
-            const fieldCast = field as "value";
-            //get the equality function, if it's not defined default it to Object.is
+            // cast the field to the const value since it's the only field it can have
+            const fieldCast = field as 'value';
+            // get the equality function, if it's not defined default it to Object.is
             const equality = eq ?? Object.is as any;
-            //check if the current value is equal to the new value
-            const isEqual = equality(target[fieldCast], value);
-            //update the value
-            const ok = Reflect.set(target, field, value);
+            // check if the current value is equal to the new value
+            const isEqual = equality(target[fieldCast], val);
+            // update the value
+            const ok = Reflect.set(target, field, val);
             if (!isEqual) {
                 runOrQueueUpdates(subscriptions, field);
             }
             return ok;
-        }
+        },
     });
     createEffect(() => {
         canWrite = true;
@@ -144,19 +145,19 @@ const createComputed = <T>(fn: () => T, eq?: IEqualFunction<T>) => {
     return computed;
 };
 
-const createStored = <T extends Object>(key: string, value: T, eq?: IEqualFunctionMap<T>, storage: Storage = window.localStorage) => {
-    if (typeof value !== "object") throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
+const createStored = <T extends Object>(storageKey: string, value: T, eq?: IEqualFunctionMap<T>, storage: Storage = window.localStorage) => {
+    if (typeof value !== 'object') throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
     const subscriptions: Map<string | symbol, ISubscription> = new Map<string, ISubscription>();
     let existingValue: T | null = null;
     try {
-        const storedValue = storage.getItem(key);
+        const storedValue = storage.getItem(storageKey);
         if (storedValue) {
             existingValue = JSON.parse(storedValue);
         } else {
-            storage.setItem(key, JSON.stringify(value));
+            storage.setItem(storageKey, JSON.stringify(value));
         }
     } catch (e) {
-        throw new Error("The specified key is associated with a non Object-like element");
+        throw new Error('The specified key is associated with a non Object-like element');
     }
     const variable = new Proxy(existingValue ?? value, {
         get: (...props) => {
@@ -164,51 +165,50 @@ const createStored = <T extends Object>(key: string, value: T, eq?: IEqualFuncti
             if (running) subscribe(props[1], running, subscriptions);
             return Reflect.get(...props);
         },
-        set: (target, field, value) => {
-            //cast the field to a keyof T
+        set: (target, field, val) => {
+            // cast the field to a keyof T
             const fieldCast = field as keyof T;
-            //get the equality function, if it's not defined default it to Object.is
+            // get the equality function, if it's not defined default it to Object.is
             const equality = eq?.[fieldCast] ?? Object.is as any;
-            //check if the current value is equal to the new value
-            const isEqual = equality(target[fieldCast], value);
-            //update the value
-            const ok = Reflect.set(target, field, value);
-            storage.setItem(key, JSON.stringify(target));
+            // check if the current value is equal to the new value
+            const isEqual = equality(target[fieldCast], val);
+            // update the value
+            const ok = Reflect.set(target, field, val);
+            storage.setItem(storageKey, JSON.stringify(target));
             if (!isEqual) {
                 runOrQueueUpdates(subscriptions, field);
             }
             return ok;
-        }
+        },
     });
-    window.addEventListener("storage", (e) => {
-        if (e.storageArea === storage && e.key === key) {
+    window.addEventListener('storage', (e) => {
+        if (e.storageArea === storage && e.key === storageKey) {
             try {
                 if (e.newValue) {
                     const newObj: T = JSON.parse(e.newValue);
-                    for (let key in newObj) {
-                        variable[key] = newObj[key];
-                    }
+                    const keys = Object.keys(newObj) as any as (keyof T)[];
+                    keys.forEach((keyStr) => {
+                        variable[keyStr] = newObj[keyStr];
+                    });
                 }
-            } catch (e) {
-                console.warn("The storage was modified but the resulting object is not parsable...the variable was not updated.");
+            } catch (error) {
+                console.warn('The storage was modified but the resulting object is not parsable...the variable was not updated.');
             }
         }
     });
     return variable;
 };
 
-const createRef = <T extends Primitive>(ref: T, eq?: IEqualFunction<T>) => {
-    return createVariable({ value: ref }, eq ? { value: eq } : undefined);
-};
+const createRef = <T extends Primitive>(ref: T, eq?: IEqualFunction<T>) => createVariable({ value: ref }, eq ? { value: eq } : undefined);
 
 const cleanEffect = (running: ICreateEffectRunning) => {
-    running.owned.forEach(owned => {
+    running.owned.forEach((owned) => {
         owned.toRun = false;
         cleanEffect(owned);
     });
-    for (const dep of running.dependencies) {
+    running.dependencies.forEach((dep) => {
         dep.delete(running);
-    }
+    });
     running.dependencies.clear();
 };
 
@@ -216,7 +216,7 @@ const createEffect: ICreateEffect = (fn) => {
     const execute: ICreateEffectExecute = () => {
         if (!running.toRun) return;
         running?.owner?.owned?.push?.(running);
-        if (running.cleanup && typeof running.cleanup === "function") {
+        if (running.cleanup && typeof running.cleanup === 'function') {
             running.cleanup();
         }
         cleanEffect(running);
@@ -292,13 +292,13 @@ const bindClasses = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domEl
         if (elem) {
             const classesObj = fn(elem);
             const classList = Object.keys(classesObj || {});
-            for (let className of classList) {
+            classList.forEach((className) => {
                 if (classesObj[className]) {
                     elem.classList.add(className);
                 } else {
                     elem.classList.remove(className);
                 }
-            }
+            });
         }
     });
     return elem;
@@ -336,27 +336,27 @@ const bindChildrens = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(dom
         const mapped = new Map<string, DiffedElements>();
         const safeSetElement = (element: Node, isNew: boolean = true) => {
             const elementKey = key(element);
-            if (elementKey !== null || elementKey != undefined) {
+            if (elementKey !== null && elementKey !== undefined) {
                 mapped.set(elementKey, { element, isNew });
             }
         };
         if (elem.children.length === 0) {
             const toAppend = Array.from(elements);
             elem.append(...toAppend);
-            toAppend.forEach(appended => safeSetElement(appended));
-            if (typeof afterDiff === "function") {
+            toAppend.forEach((appended) => safeSetElement(appended));
+            if (typeof afterDiff === 'function') {
                 createEffect(() => {
                     afterDiff(elem, mapped);
                 });
             }
             return;
         }
-        const differentElements = diff(Array.from((elem.childNodes)), Array.from(elements), (a, b) => key(a) != null && key(b) != null ? key(a) === key(b) : a === b);
-        let nextEqual = differentElements.find(element => element.type === "=");
+        const differentElements = diff(Array.from((elem.childNodes)), Array.from(elements), (a, b) => (key(a) != null && key(b) != null ? key(a) === key(b) : a === b));
+        let nextEqual = differentElements.find((element) => element.type === '=');
         let index = 0;
-        for (let element of differentElements) {
-            if (element.type === "+") {
-                const nextRemoved = findNext(differentElements, (el) => el.type === "-" && key(el.value) === key(element.value), index);
+        differentElements.forEach((element) => {
+            if (element.type === '+') {
+                const nextRemoved = findNext(differentElements, (el) => el.type === '-' && key(el.value) === key(element.value), index);
                 if (nextRemoved) {
                     element.value = nextRemoved.value;
                     nextRemoved.skip = true;
@@ -364,25 +364,25 @@ const bindChildrens = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(dom
                 if (!nextEqual) {
                     elem.append(element.value);
                     safeSetElement(element.value);
-                    index++;
-                    continue;
+                    index += 1;
+                    return;
                 }
                 nextEqual.value.before(element.value);
                 safeSetElement(element.value);
-            } else if (element.type === "-") {
-                if (element.skip) { index++; continue; }
+            } else if (element.type === '-') {
+                if (element.skip) { index += 1; return; }
                 elem.removeChild(element.value);
-                const nextAdded = findNext(differentElements, (el) => el.type === "+" && key(el.value) === key(element.value), index);
+                const nextAdded = findNext(differentElements, (el) => el.type === '+' && key(el.value) === key(element.value), index);
                 if (nextAdded) {
                     nextAdded.value = element.value;
                 }
             } else {
-                nextEqual = findNext(differentElements, (element) => element.type === "=", index);
+                nextEqual = findNext(differentElements, (elementToFind) => elementToFind.type === '=', index);
                 safeSetElement(element.value, false);
             }
-            index++;
-        }
-        if (typeof afterDiff === "function") {
+            index += 1;
+        });
+        if (typeof afterDiff === 'function') {
             createEffect(() => {
                 afterDiff(elem, mapped);
             });
@@ -391,4 +391,6 @@ const bindChildrens = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(dom
     return elem;
 };
 
-export { createEffect, untrack, batch, createRef, createVariable, createCssVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens };
+export {
+ createEffect, untrack, batch, createRef, createVariable, createCssVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens,
+};
