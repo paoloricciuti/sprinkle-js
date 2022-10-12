@@ -16,6 +16,14 @@ export type IEqualFunctionMap<T extends object> = {
 
 export type ICreateEffect = (fn: IEffect<any>) => void;
 
+export type ISetupOptions = {
+    createVariable?: <T extends object>(value: T, eq?: IEqualFunctionMap<T> | undefined) => T;
+    createEffect?: ICreateEffect;
+    createComputed?: <T>(fn: () => T, eq?: IEqualFunction<T> | undefined) => {
+        value: T;
+    };
+};
+
 export type ICreateEffectExecute = () => (() => void) | void;
 
 export type ISubscription = Set<ICreateEffectRunning>;

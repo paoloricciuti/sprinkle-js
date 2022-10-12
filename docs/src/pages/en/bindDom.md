@@ -3,18 +3,22 @@ title: bindDom
 description: bindDom
 layout: ../../layouts/MainLayout.astro
 header: API Reference
-order: 111
+order: 112
 ---
 
-This function is used to bind an object that describe some DOM properties to the actual DOM properties. It takes a dom element or a selector as the first argument and a function returning the object as the second argument.
+This function is used to bind an object that describe some DOM properties to the
+actual DOM properties. It takes a dom element or a selector as the first
+argument and a function returning the object as the second argument.
 
-The following code will bind the ariaLabel value to the `variable.whosCool` field and the checked value for the checkbox.
+The following code will bind the ariaLabel value to the `variable.whosCool`
+field and the checked value for the checkbox.
 
 ```typescript
 const variable = createVariable({ whosCool: "you" });
 
-bindDom("#checkbox", (element)=> ({
-    ariaLabel: variable.whosCool,
-    checked: variable.whosCool === "you",
+bindDom("#checkbox", (element) => ({
+  ariaLabel: variable.whosCool,
+  checked: variable.whosCool === "you",
 }));
 ```
+

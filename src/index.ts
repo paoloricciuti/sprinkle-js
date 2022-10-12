@@ -1,4 +1,4 @@
-import { CSSStyles, DiffedElements, DOMUpdate, HTMLOrSVGElement, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, IStringOrDomElement, ISubscription, Primitive } from './types/index';
+import { CSSStyles, DiffedElements, DOMUpdate, HTMLOrSVGElement, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, ISetupOptions, IStringOrDomElement, ISubscription, Primitive } from './types/index';
 import { diff, findNext, getDomElement, getRawType, html, key, updateDom } from './utils';
 
 let context: ICreateEffectRunning[] = [];
@@ -48,7 +48,7 @@ const runOrQueueUpdates = (subscriptions: Map<string | symbol, ISubscription>, f
     runEffects(effects);
 };
 
-const createVariable = <T extends object>(value: T, eq?: IEqualFunctionMap<T>) => {
+const defCreateVariable = <T extends object>(value: T, eq?: IEqualFunctionMap<T>) => {
     // if the value is already reactive we simply return the value
     if ((value as any)[IS_REACTIVE_SYMBOL]) return value;
     if (typeof value !== 'object') throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
@@ -113,7 +113,7 @@ const createCssVariable = <T extends ICssVariable, E extends HTMLOrSVGElement = 
     return variable;
 };
 
-const createComputed = <T>(fn: () => T, eq?: IEqualFunction<T>) => {
+const defCreateComputed = <T>(fn: () => T, eq?: IEqualFunction<T>) => {
     const value = { value: fn(), [IS_COMPUTED_WRITABLE]: false };
     const computed = createVariable(value, eq ? { value: eq } : undefined);
     createEffect(() => {
@@ -172,7 +172,7 @@ const cleanEffect = (running: ICreateEffectRunning) => {
     running.dependencies.clear();
 };
 
-const createEffect: ICreateEffect = (fn) => {
+const defCreateEffect: ICreateEffect = (fn) => {
     const execute: ICreateEffectExecute = () => {
         if (!running.toRun) return;
         running?.owner?.owned?.push?.(running);
@@ -201,6 +201,29 @@ const createEffect: ICreateEffect = (fn) => {
     if (cleanupFn) {
         running.cleanup = cleanupFn;
     }
+};
+
+const DEFAULT_CORE_FUNCTIONS = {
+    createVariable: defCreateVariable,
+    createEffect: defCreateEffect,
+    createComputed: defCreateComputed,
+};
+
+let CORE_FUNCTIONS = { ...DEFAULT_CORE_FUNCTIONS };
+
+const createVariable = <T extends object>(value: T, eq?: IEqualFunctionMap<T>) => CORE_FUNCTIONS.createVariable(value, eq);
+
+const createEffect: ICreateEffect = (fn) => CORE_FUNCTIONS.createEffect(fn);
+
+const createComputed = <T>(fn: () => T, eq?: IEqualFunction<T>) => CORE_FUNCTIONS.createComputed(fn, eq);
+
+const setup = (options: ISetupOptions = DEFAULT_CORE_FUNCTIONS) => {
+    Object.keys(options).forEach((optionKey) => {
+        CORE_FUNCTIONS[(optionKey as keyof ISetupOptions)] = options[(optionKey as keyof ISetupOptions)] as any;
+    });
+    return () => {
+        CORE_FUNCTIONS = DEFAULT_CORE_FUNCTIONS;
+    };
 };
 
 const untrack = (fn: () => any) => {
@@ -352,5 +375,5 @@ const bindChildrens = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(dom
 };
 
 export {
- createEffect, untrack, batch, createRef, createVariable, createCssVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens,
+    createEffect, untrack, batch, createRef, createVariable, createCssVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens, setup,
 };
