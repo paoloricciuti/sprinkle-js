@@ -1,4 +1,4 @@
-import { bindChildrens, bindClass, bindDom, bindStyle, bindTextContent, createEffect, createVariable } from "./dist/sprinkle-js.es.js";
+import { bindChildren, bindClass, bindDom, bindStyle, bindTextContent, createEffect, createVariable } from "./dist/sprinkle-js.es.js";
 import examples from "./examples.js";
 
 const exampleObserver = new IntersectionObserver((entries) => {
@@ -220,7 +220,7 @@ for (let key of keys) {
             spanVal.append(input);
         }
     } else if (type === "boolean") {
-        bindChildrens(spanVal, () => `${state[key]}<input type="checkbox" key="${key}" id="${key}" />`, (_, objects) => {
+        bindChildren(spanVal, () => `${state[key]}<input type="checkbox" key="${key}" id="${key}" />`, (_, objects) => {
             const checkbox = objects.get(key);
             if (checkbox) {
                 bindDom(checkbox.element, () => ({

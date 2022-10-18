@@ -6,6 +6,7 @@ header: API Reference
 order: 103
 ---
 
+
 This method is used to create a reactive variable for an object and map every
 field to a css variable. It'll throw if you try to pass a primitive value to it.
 In typescript you can pass only string or numbers as values of the object but
@@ -40,4 +41,5 @@ the same length as the new value.
 A third argument of this method is a selector or an HTMLElement of the element
 you want to apply the css variables to. It default to `:root`. If the provided
 selector does not select anything it will apply the css variable to the `:root`
+
 

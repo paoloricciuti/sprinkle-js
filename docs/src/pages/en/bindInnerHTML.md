@@ -6,6 +6,7 @@ header: API Reference
 order: 110
 ---
 
+
 > **Warning** Sprinkle JS does not sanitize the content of the innerHTML. If you
 > use this function with user input make sure to sanitize it first to avoid
 > expose yourself to XSS attacks.
@@ -64,4 +65,5 @@ const divToBind = bindInnerHTML<HTMLDivElement>(
     `${element?.textContent} ${ref.value} ${variable.whosCool}`,
 );
 ```
+
 

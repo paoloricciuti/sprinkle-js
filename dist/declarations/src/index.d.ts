@@ -23,5 +23,6 @@ declare const bindClasses: <TElement extends HTMLOrSVGElement = HTMLOrSVGElement
 declare const bindInputValue: (domElement: IStringOrDomElement<HTMLInputElement>, fn: IEffect<string, HTMLInputElement>) => HTMLInputElement;
 declare const bindDom: <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<DOMUpdate<TElement>, TElement>) => TElement;
 declare const bindStyle: <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<CSSStyles<TElement>, TElement>) => TElement;
+declare const bindChildren: <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>, afterDiff?: (root: TElement, elements: Map<string, DiffedElements>) => void) => TElement;
 declare const bindChildrens: <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>, afterDiff?: (root: TElement, elements: Map<string, DiffedElements>) => void) => TElement;
-export { createEffect, untrack, batch, createRef, createVariable, createCssVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens, setup, };
+export { batch, bindChildren, bindChildrens, bindClass, bindClasses, bindDom, bindInnerHTML, bindInputValue, bindStyle, bindTextContent, createComputed, createCssVariable, createEffect, createRef, createStored, createVariable, setup, untrack, };

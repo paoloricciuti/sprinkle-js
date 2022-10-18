@@ -4,7 +4,7 @@
  */
 
 import { afterEach, beforeEach, afterAll, describe, expect, it, vi } from 'vitest';
-import { batch, setup, bindChildrens, bindClass, bindClasses, bindDom, bindInnerHTML, bindInputValue, bindStyle, bindTextContent, createComputed, createCssVariable, createEffect, createRef, createStored, createVariable, untrack } from '../src/index';
+import { batch, setup, bindChildren, bindClass, bindClasses, bindDom, bindInnerHTML, bindInputValue, bindStyle, bindTextContent, createComputed, createCssVariable, createEffect, createRef, createStored, createVariable, untrack } from '../src/index';
 import { DiffedElements } from '../src/types';
 
 describe('createRef', () => {
@@ -612,10 +612,10 @@ describe('DOM manipulation by bindind', () => {
         });
     });
 
-    describe('bindChildrens', () => {
+    describe('bindChildren', () => {
         it("bind a string representing html as the children of an element. (elements with the same key does not get's replaced)", () => {
             const variable = createVariable({ array: [1, 2, 3] });
-            bindChildrens('#to-bind', () => variable.array.map((el) => `<li key="${el}">${el}</li>`).join(''));
+            bindChildren('#to-bind', () => variable.array.map((el) => `<li key="${el}">${el}</li>`).join(''));
             expect(toBindDiv.children.length).toBe(3);
             Array.from(toBindDiv.children).forEach((li, i) => {
                 expect(li.tagName).toBe('LI');
@@ -624,7 +624,7 @@ describe('DOM manipulation by bindind', () => {
         });
         it("bind a string representing html as the children of an element. (an element swapped before still get's rendered)", () => {
             const variable = createVariable({ array: [1, 2, 3] });
-            bindChildrens('#to-bind', () => variable.array.map((el) => `<li key="${el}">${el}</li>`).join(''));
+            bindChildren('#to-bind', () => variable.array.map((el) => `<li key="${el}">${el}</li>`).join(''));
             expect(toBindDiv.children.length).toBe(3);
             Array.from(toBindDiv.children).forEach((li, i) => {
                 expect(li.tagName).toBe('LI');
@@ -655,7 +655,7 @@ describe('DOM manipulation by bindind', () => {
                     }
                 });
             });
-            bindChildrens('#to-bind', () => `${variable.array.map((el) => `<li key="${el}">${el}</li>`).join('')}`, afterRun);
+            bindChildren('#to-bind', () => `${variable.array.map((el) => `<li key="${el}">${el}</li>`).join('')}`, afterRun);
             expect(toBindDiv.children.length).toBe(3);
             Array.from(toBindDiv.children).forEach((li, i) => {
                 expect(li.tagName).toBe('LI');
@@ -677,9 +677,9 @@ describe('DOM manipulation by bindind', () => {
         it('bind let bind the childrens again in the after run function', () => {
             const variable = createVariable({ numberOfUl: 1, array: [1, 2, 3] });
 
-            bindChildrens('#to-bind', () => [...Array(variable.numberOfUl).keys()].map((num) => `<ul key="${num}"></ul>`).join(''), (_elem, elems) => {
+            bindChildren('#to-bind', () => [...Array(variable.numberOfUl).keys()].map((num) => `<ul key="${num}"></ul>`).join(''), (_elem, elems) => {
                 elems.forEach((elem) => {
-                    bindChildrens(elem.element as HTMLUListElement, () => variable.array.map((num) => `<li key="${num}">${num}</li>`).join(''));
+                    bindChildren(elem.element as HTMLUListElement, () => variable.array.map((num) => `<li key="${num}">${num}</li>`).join(''));
                 });
             });
 

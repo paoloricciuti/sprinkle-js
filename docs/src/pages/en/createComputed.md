@@ -6,6 +6,7 @@ header: API Reference
 order: 105
 ---
 
+
 This method is used to create a reactive computed variable. You need to pass a
 function that will return a value. The return value of the function will be
 inside of the `.value` field of the returned computed. If you use some other
@@ -57,4 +58,5 @@ the value (instead of accessing it by `.value`)
 
 However this second method will rerun the effect it's used in even if it has the
 same value as before.
+
 

@@ -6,6 +6,7 @@ header: API Reference
 order: 102
 ---
 
+
 This method is used to create a reactive variable for an object. It'll throw if
 you try to pass a primitive value to it.
 
@@ -61,4 +62,5 @@ console.log(variable.whosCool.pronoun); // you
 ```
 
 in the above example `variable.whosCool.pronoun` is still reactive.
+
 

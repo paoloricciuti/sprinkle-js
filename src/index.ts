@@ -310,7 +310,7 @@ const bindStyle = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElem
     return elem;
 };
 
-const bindChildrens = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void)) => {
+const bindChildren = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void)) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem === null) return;
@@ -374,6 +374,34 @@ const bindChildrens = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(dom
     return elem;
 };
 
+const deprecated = <T>(api: T, msg: string, url?: URL): T => {
+    console.warn(`${msg}${url ? `See more at ${url}` : ''}`);
+    return api;
+};
+
+const bindChildrens = deprecated(
+    bindChildren,
+    `'bindChildrens' is deprecated: please use 'bindChildren' instead.`,
+    new URL('https://github.com/paoloricciuti/sprinkle-js/issues/3'),
+);
+
 export {
-    createEffect, untrack, batch, createRef, createVariable, createCssVariable, createComputed, createStored, bindInputValue, bindInnerHTML, bindTextContent, bindDom, bindClass, bindClasses, bindStyle, bindChildrens, setup,
+    batch,
+    bindChildren,
+    bindChildrens,
+    bindClass,
+    bindClasses,
+    bindDom,
+    bindInnerHTML,
+    bindInputValue,
+    bindStyle,
+    bindTextContent,
+    createComputed,
+    createCssVariable,
+    createEffect,
+    createRef,
+    createStored,
+    createVariable,
+    setup,
+    untrack,
 };

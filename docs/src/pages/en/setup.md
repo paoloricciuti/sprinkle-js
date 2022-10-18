@@ -6,6 +6,7 @@ header: API Reference
 order: 100
 ---
 
+
 Given that Sprinkle JS uses the two core methods to do everything with this
 method you can plug your own reactivity system inside Sprinkle JS. Why should
 you do this? I don't know! For fun, or maybe because you already have
@@ -113,4 +114,5 @@ createEffect(() => {
 //we need to use the same access method also inside the methods of Sprinkle JS
 bindTextContent("#app", () => `The content of the state is ${state()}`);
 ```
+
 

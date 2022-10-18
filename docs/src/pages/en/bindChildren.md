@@ -1,10 +1,11 @@
 ---
-title: bindChildrens
-description: bindChildrens
+title: bindChildren
+description: bindChildren
 layout: ../../layouts/MainLayout.astro
 header: API Reference
 order: 116
 ---
+
 
 This function is used to bind html as the children of an element. How is this
 different than bindInnerHTML? Each item can have a key attribute and if the key
@@ -29,7 +30,7 @@ const variable = createVariable({
   ],
 });
 
-bindChildrens(
+bindChildren(
   "#ul-to-bind",
   (element) =>
     variable.listOfCoolThings.map((coolThing) =>
@@ -92,7 +93,7 @@ overcome this by binding the childrens again in the third parameter.
 >     ]
 > });
 >
-> bindChildrens("#ul-to-bind", (element)=> {
+> bindChildren("#ul-to-bind", (element)=> {
 >     const retval = [];
 >     for(let coolThing of variable.listOfCoolThings){
 >         const li = document.createElement("li");
@@ -113,4 +114,5 @@ overcome this by binding the childrens again in the third parameter.
 > Another intresting thing to note is that arrays works assignements. You can't
 > push into an array but you need to reassign it to let the reactivity system
 > react to it.
+
 

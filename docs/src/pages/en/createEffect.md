@@ -6,6 +6,7 @@ header: API Reference
 order: 106
 ---
 
+
 This method is used to create an effect that will keep track of it's
 dependencies and re-run every time they changed
 
@@ -47,4 +48,5 @@ ref.value++;
 variable.whosCool = "whoever uses Sprinkle JS";
 //the effect run again logging first "cleaning up" and then (whoever uses Sprinkle JS, 2)
 ```
+
 

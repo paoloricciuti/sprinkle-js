@@ -1,7 +1,7 @@
 export default [
     {
         pen: "NWYrXyW",
-        description: "A drawing board that shows the power of arrays and bindChildrens",
+        description: "A drawing board that shows the power of arrays and bindChildren",
     }, {
         pen: "gOebVrw",
         description: "Can you store HTMLELments in a Sprinkle JS variable? Sure you can! This examples shows when it's useful.",
