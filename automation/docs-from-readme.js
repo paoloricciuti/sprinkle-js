@@ -15,10 +15,10 @@ const getMapFromString = (string, regex) => {
 (async () => {
     try {
         const readMePath = path.join("README.md");
-        const readMe = await (await fs.readFile(readMePath)).toString();
-        const readMeMap = getMapFromString(readMe, /\r\n\#\#\s(.+)\r\n/);
+        const readMe = (await fs.readFile(readMePath)).toString();
+        const readMeMap = getMapFromString(readMe, /^##\s(.+)$/m);
         const usageAndExamples = readMeMap.get("Usage/Examples");
-        const usageMap = getMapFromString(usageAndExamples, /\r\n\#\#\#\#\s(.+)\r\n/);
+        const usageMap = getMapFromString(usageAndExamples, /^####\s(.+)$/m);
         let i = 100;
         for (let [page, content] of usageMap.entries()) {
             let toWrite = `---
