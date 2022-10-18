@@ -6,6 +6,7 @@ header: API Reference
 order: 113
 ---
 
+
 This function is used to bind a class to the actual element. It takes a dom
 element or a selector as the first argument, the class that you want to apply
 and a function returning a boolean as the third argument.
@@ -22,4 +23,5 @@ variable.count++;
 //this will add the class again;
 variable.count++;
 ```
+
 

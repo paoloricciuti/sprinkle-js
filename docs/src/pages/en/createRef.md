@@ -6,6 +6,7 @@ header: API Reference
 order: 101
 ---
 
+
 This method is used to create a reactive variable for a primitive. It wraps the
 primitive in an object with a value property.
 
@@ -36,4 +37,5 @@ will narrow the type to a constant. If you are using this in Javascript you are
 allowed to pass object to the ref (although is not recommended since you'll have
 to access it unnecessarly via the `.value` property), the object passed will be
 deeply reactive.
+
 

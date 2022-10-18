@@ -6,6 +6,7 @@ header: API Reference
 order: 114
 ---
 
+
 This function is used to bind multiple classes to the actual element. It takes a
 dom element or a selector as the first argument, and an object containing the
 classes that you want to apply as the keys and a boolean as the value. Each
@@ -34,4 +35,5 @@ variable.count++;
 //the div will have no classes
 variable.count++;
 ```
+
 

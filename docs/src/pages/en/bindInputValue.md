@@ -6,6 +6,7 @@ header: API Reference
 order: 111
 ---
 
+
 This function is used to bind a string value to the value of an input element.
 It takes an input dom element or a selector as the first argument and a function
 returning the value to bind to the input value as the second argument.
@@ -39,4 +40,5 @@ inputToBind.addEventListener("input", (e) => {
   variable.whosCool = e.target.value;
 });
 ```
+
 

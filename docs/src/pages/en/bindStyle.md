@@ -6,6 +6,7 @@ header: API Reference
 order: 115
 ---
 
+
 This function is used to bind an object that describe the style of an element to
 the actual element style. It takes a dom element or a selector as the first
 argument and a function returning the object as the second argument.
@@ -24,4 +25,5 @@ bindStyle("#div-to-bind", (element) => ({
 variable.bg = "#C0FFEE"; //the div will now have #C0FFEE as backgroundColor
 variable.color = "white"; //the div will now have white as the color
 ```
+
 

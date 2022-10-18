@@ -871,7 +871,7 @@ variable.bg = "#C0FFEE"; //the div will now have #C0FFEE as backgroundColor
 variable.color = "white"; //the div will now have white as the color
 ```
 
-#### bindChildrens
+#### bindChildren
 
 This function is used to bind html as the children of an element. How is this
 different than bindInnerHTML? Each item can have a key attribute and if the key
@@ -896,7 +896,7 @@ const variable = createVariable({
   ],
 });
 
-bindChildrens(
+bindChildren(
   "#ul-to-bind",
   (element) =>
     variable.listOfCoolThings.map((coolThing) =>
@@ -959,7 +959,7 @@ overcome this by binding the childrens again in the third parameter.
 >     ]
 > });
 >
-> bindChildrens("#ul-to-bind", (element)=> {
+> bindChildren("#ul-to-bind", (element)=> {
 >     const retval = [];
 >     for(let coolThing of variable.listOfCoolThings){
 >         const li = document.createElement("li");
