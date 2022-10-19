@@ -41,13 +41,13 @@ const E = (e) => typeof e == "string" ? document.querySelector(e) : e, A = (e, t
   for (; c > 0 && o > 0; )
     n(e[c - 1], t[o - 1]) ? (i.unshift({ type: "=", value: e[c - 1], skip: !1 }), o -= 1, c -= 1) : s[c - 1][o] < s[c][o - 1] ? (i.unshift({ type: "-", value: e[c - 1], skip: !1 }), c -= 1) : (i.unshift({ type: "+", value: t[o - 1], skip: !1 }), o -= 1);
   return c > 0 ? i.unshift(...((d = (u = (a = e == null ? void 0 : e.slice) == null ? void 0 : a.call(e, 0, c)) == null ? void 0 : u.map) == null ? void 0 : d.call(u, (r) => ({ type: "-", value: r, skip: !1 }))) || []) : o > 0 && i.unshift(...((f = (l = (h = t == null ? void 0 : t.slice) == null ? void 0 : h.call(t, 0, o)) == null ? void 0 : l.map) == null ? void 0 : f.call(l, (r) => ({ type: "+", value: r, skip: !1 }))) || []), i;
-}, v = (e, t, n = 0) => e.find((s, i, ...c) => i > n && t(s, i, ...c)), j = (e) => Object.prototype.toString.call(e).slice(8, -1), V = (e) => {
+}, S = (e, t, n = 0) => e.find((s, i, ...c) => i > n && t(s, i, ...c)), j = (e) => Object.prototype.toString.call(e).slice(8, -1), V = (e) => {
   const t = document.createElement("template");
   return Object.assign(t, { innerHTML: e }), t.content;
 }, N = (e, t) => e.getAttribute(t), y = (e) => e instanceof Element ? N(e, "key") : e.textContent;
 let b = [];
 const O = Symbol("is-reactive"), k = Symbol("memo");
-let C = null;
+let v = null;
 const x = (e) => {
   [...e].forEach((t) => {
     if (!t.toRun)
@@ -56,12 +56,12 @@ const x = (e) => {
     n && (t.cleanup = n);
   });
 }, W = (e) => {
-  C = /* @__PURE__ */ new Set();
+  v = /* @__PURE__ */ new Set();
   try {
     e();
   } finally {
-    const t = new Set(C);
-    C = null, x(t);
+    const t = new Set(v);
+    v = null, x(t);
   }
 }, M = (e, t, n) => {
   let s = n.get(e);
@@ -69,8 +69,8 @@ const x = (e) => {
 }, U = (e, t) => {
   const n = e.get(t);
   if (!!n) {
-    if (C !== null) {
-      n.forEach((s) => C.add(s));
+    if (v !== null) {
+      n.forEach((s) => v.add(s));
       return;
     }
     x(n);
@@ -175,11 +175,11 @@ const x = (e) => {
   createEffect: F,
   createComputed: P
 };
-let S = { ...g };
-const w = (e, t) => S.createVariable(e, t), p = (e) => S.createEffect(e), Q = (e, t) => S.createComputed(e, t), Y = (e = g) => (Object.keys(e).forEach((t) => {
-  S[t] = e[t];
+let C = { ...g };
+const w = (e, t) => C.createVariable(e, t), p = (e) => C.createEffect(e), Q = (e, t) => C.createComputed(e, t), Y = (e = g) => (Object.keys(e).forEach((t) => {
+  C[t] = e[t];
 }), () => {
-  S = g;
+  C = g;
 }), z = (e) => {
   const t = b;
   b = [];
@@ -242,7 +242,7 @@ const w = (e, t) => S.createVariable(e, t), p = (e) => S.createEffect(e), Q = (e
     let d = u.find((l) => l.type === "="), h = 0;
     u.forEach((l) => {
       if (l.type === "+") {
-        const f = v(u, (r) => r.type === "-" && y(r.value) === y(l.value), h);
+        const f = S(u, (r) => r.type === "-" && y(r.value) === y(l.value), h);
         if (f && (l.value = f.value, f.skip = !0), !d) {
           s.append(l.value), a(l.value), h += 1;
           return;
@@ -254,16 +254,16 @@ const w = (e, t) => S.createVariable(e, t), p = (e) => S.createEffect(e), Q = (e
           return;
         }
         s.removeChild(l.value);
-        const f = v(u, (r) => r.type === "+" && y(r.value) === y(l.value), h);
+        const f = S(u, (r) => r.type === "+" && y(r.value) === y(l.value), h);
         f && (f.value = l.value);
       } else
-        d = v(u, (f) => f.type === "=", h), a(l.value, !1);
+        d = S(u, (f) => f.type === "=", h), a(l.value, !1);
       h += 1;
     }), typeof n == "function" && p(() => {
       n(s, o);
     });
   }), s;
-}, H = (e, t, n) => (console.warn(`${t}${n ? `See more at ${n}` : ""}`), e), ne = H(
+}, H = (e, t, n) => (...i) => (console.warn(`${t}${n ? `See more at ${n}` : ""}`), e(...i)), ne = H(
   $,
   "'bindChildrens' is deprecated: please use 'bindChildren' instead.",
   new URL("https://github.com/paoloricciuti/sprinkle-js/issues/3")
