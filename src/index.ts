@@ -381,7 +381,7 @@ const deprecated = <T>(api: T, msg: string, url?: URL): T => {
 
 const bindChildrens = deprecated(
     bindChildren,
-    `'bindChildrens' is deprecated: please use 'bindChildren' instead.`,
+    '\'bindChildrens\' is deprecated: please use \'bindChildren\' instead.',
     new URL('https://github.com/paoloricciuti/sprinkle-js/issues/3'),
 );
 

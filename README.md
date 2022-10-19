@@ -901,11 +901,11 @@ bindChildren(
   (element) =>
     variable.listOfCoolThings.map((coolThing) =>
       `<li key="${coolThing}">${coolThing}</li>`
-    ),
+    ).join(''),
   (element, elements) => {
     const youElement = elements.get("you");
     if (youElement?.isNew) {
-      youElement?.addEventListener(
+      youElement?.element.addEventListener(
         "click",
         () => console.log("You pressed the you element"),
       );
