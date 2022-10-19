@@ -374,11 +374,14 @@ const bindChildren = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domE
     return elem;
 };
 
-type IDeprecated = <T extends (...args: any[]) => any>(api: T, msg: string, url?: URL) => ((...args: Parameters<T>) => ReturnType<T>);
+type IDeprecated = <T extends (...args: any[]) => any>(api: T, msg: string, url?: URL) => T;
 
-const deprecated: IDeprecated = <T extends (...args: any) => any>(api: T, msg: string, url?: URL) => (...args: Parameters<T>) => {
-    console.warn(`${msg}${url ? `See more at ${url}` : ''}`);
-    return api(...args);
+const deprecated: IDeprecated = <T extends (...args: any) => any>(api: T, msg: string, url?: URL) => {
+    const retval = ((...args: Parameters<T>) => {
+        console.warn(`${msg}${url ? `See more at ${url}` : ''}`);
+        return api(...args);
+    }) as unknown as T;
+    return retval;
 };
 
 const bindChildrens = deprecated(
