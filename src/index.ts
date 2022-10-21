@@ -481,7 +481,7 @@ const bindChildren = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domE
         const mapped = new Map<string, DiffedElements>();
         const safeSetElement = (element: Node, isNew: boolean = true) => {
             const elementKey = key(element);
-            if (elementKey !== null && elementKey !== undefined) {
+            if (elementKey !== null && elementKey !== undefined && !(element instanceof Text)) {
                 const toAdd: DiffedElements = element as DiffedElements;
                 toAdd.isNew = isNew;
                 mapped.set(elementKey, toAdd);

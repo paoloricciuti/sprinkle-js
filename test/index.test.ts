@@ -641,9 +641,6 @@ describe('DOM manipulation by bindind', () => {
             const equalsNodes: { keyIndex: number, node: Node; }[] = [];
             const afterRun = vi.fn((element, elements: Map<string, DiffedElements>) => {
                 expect(element).toBe(toBindDiv);
-                elements.forEach((node, key) => {
-                    if (key !== 'element') { expect(key).toBe(node.textContent); }
-                });
                 equalsNodes.forEach((oldNode) => {
                     const actualElement = elements.get(variable.array[oldNode.keyIndex].toString());
                     if (oldNode.keyIndex !== 0) {

@@ -1,7 +1,7 @@
-const E = (t) => typeof t == "string" ? document.querySelector(t) : t, L = (t, e, n = []) => {
+const E = (t) => typeof t == "string" ? document.querySelector(t) : t, T = (t, e, n = []) => {
   Object.entries(e).forEach(([r, c]) => {
     if (typeof c == "object") {
-      L(t, c, [...n, r]);
+      T(t, c, [...n, r]);
       return;
     }
     let o = t;
@@ -41,14 +41,14 @@ const E = (t) => typeof t == "string" ? document.querySelector(t) : t, L = (t, e
   for (; c > 0 && o > 0; )
     n(t[c - 1], e[o - 1]) ? (r.unshift({ type: "=", value: t[c - 1], skip: !1 }), o -= 1, c -= 1) : s[c - 1][o] < s[c][o - 1] ? (r.unshift({ type: "-", value: t[c - 1], skip: !1 }), c -= 1) : (r.unshift({ type: "+", value: e[o - 1], skip: !1 }), o -= 1);
   return c > 0 ? r.unshift(...((a = (i = (l = t == null ? void 0 : t.slice) == null ? void 0 : l.call(t, 0, c)) == null ? void 0 : i.map) == null ? void 0 : a.call(i, (u) => ({ type: "-", value: u, skip: !1 }))) || []) : o > 0 && r.unshift(...((y = (d = (f = e == null ? void 0 : e.slice) == null ? void 0 : f.call(e, 0, o)) == null ? void 0 : d.map) == null ? void 0 : y.call(d, (u) => ({ type: "+", value: u, skip: !1 }))) || []), r;
-}, k = (t, e, n = 0) => t.find((s, r, ...c) => r > n && e(s, r, ...c)), j = (t) => Object.prototype.toString.call(t).slice(8, -1), H = (t) => {
+}, k = (t, e, n = 0) => t.find((s, r, ...c) => r > n && e(s, r, ...c)), j = (t) => Object.prototype.toString.call(t).slice(8, -1), $ = (t) => {
   const e = document.createElement("template");
   return Object.assign(e, { innerHTML: t }), e.content;
-}, P = (t, e) => t.getAttribute(e), h = (t) => t instanceof Element ? P(t, "key") : t.textContent;
+}, H = (t, e) => t.getAttribute(e), h = (t) => t instanceof Element ? H(t, "key") : `[[textNode:${t.textContent}]]`;
 let b = [];
 const O = Symbol("is-reactive"), w = Symbol("memo");
 let x = null;
-const T = (t) => {
+const L = (t) => {
   [...t].forEach((e) => {
     if (!e.toRun)
       return;
@@ -61,9 +61,9 @@ const T = (t) => {
     t();
   } finally {
     const e = new Set(x);
-    x = null, T(e);
+    x = null, L(e);
   }
-}, $ = (t, e, n) => {
+}, P = (t, e, n) => {
   let s = n.get(t);
   s || (s = /* @__PURE__ */ new Set(), n.set(t, s)), s.add(e), e.dependencies.add(s);
 }, D = (t, e) => {
@@ -73,9 +73,9 @@ const T = (t) => {
       n.forEach((s) => x.add(s));
       return;
     }
-    T(n);
+    L(n);
   }
-}, m = (t, e) => {
+}, J = (t, e) => {
   if (t[O])
     return t;
   if (typeof t != "object")
@@ -90,7 +90,7 @@ const T = (t) => {
       if (c[1] === O)
         return !0;
       const o = b[b.length - 1];
-      return o && $(c[1], o, s), Reflect.get(...c);
+      return o && P(c[1], o, s), Reflect.get(...c);
     },
     set: (c, o, l) => {
       var u;
@@ -112,7 +112,7 @@ const T = (t) => {
       r.style.setProperty(`--${o}`, (l = s[o]) == null ? void 0 : l.toString());
     });
   }), s;
-}, J = (t, e) => {
+}, W = (t, e) => {
   const n = { value: t(), [w]: !1 }, s = v(n, e ? { value: e } : void 0);
   return p(() => {
     s[w] = !0, s.value = t(), s[w] = !1;
@@ -143,18 +143,18 @@ const T = (t) => {
         console.warn("The storage was modified but the resulting object is not parsable...the variable was not updated.");
       }
   }), c;
-}, Z = (t, e) => v({ value: t }, e ? { value: e } : void 0), R = (t) => {
+}, Z = (t, e) => v({ value: t }, e ? { value: e } : void 0), N = (t) => {
   t.owned.forEach((e) => {
-    e.toRun = !1, R(e);
+    e.toRun = !1, N(e);
   }), t.dependencies.forEach((e) => {
     e.delete(t);
   }), t.dependencies.clear();
-}, W = (t) => {
+}, m = (t) => {
   const e = () => {
     var c, o, l;
     if (!n.toRun)
       return;
-    (l = (o = (c = n == null ? void 0 : n.owner) == null ? void 0 : c.owned) == null ? void 0 : o.push) == null || l.call(o, n), n.cleanup && typeof n.cleanup == "function" && n.cleanup(), R(n), b.push(n);
+    (l = (o = (c = n == null ? void 0 : n.owner) == null ? void 0 : c.owned) == null ? void 0 : o.push) == null || l.call(o, n), n.cleanup && typeof n.cleanup == "function" && n.cleanup(), N(n), b.push(n);
     let r;
     try {
       r = t();
@@ -171,9 +171,9 @@ const T = (t) => {
   }, s = e();
   s && (n.cleanup = s);
 }, A = {
-  createVariable: m,
-  createEffect: W,
-  createComputed: J
+  createVariable: J,
+  createEffect: m,
+  createComputed: W
 };
 let C = { ...A };
 const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t, e) => C.createComputed(t, e), q = (t = A) => (Object.keys(t).forEach((e) => {
@@ -217,12 +217,12 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
   }), n;
 }, B = (t, e) => {
   const n = E(t);
-  return p(() => L(n, e(n))), n;
+  return p(() => T(n, e(n))), n;
 }, it = (t, e) => {
   const n = E(t);
   if (!!n)
     return B(n, () => ({ style: e(n) })), n;
-}, N = (t, e, n) => {
+}, R = (t, e, n) => {
   var s, r, c, o, l;
   if (t instanceof Text) {
     let i = (s = t.textContent) != null ? s : "";
@@ -241,7 +241,7 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
   }
   for (let i = 0; i < t.childNodes.length; i += 1) {
     const a = t.childNodes[i];
-    N(a, e, n);
+    R(a, e, n);
   }
   if (t instanceof Element && t.attributes)
     for (let i = 0; i < t.attributes.length; i += 1) {
@@ -271,10 +271,10 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
   const s = [], r = [];
   for (let o = 0; o < t.length; o += 1)
     n += t[o], n = I(n, s, r, e[o]);
-  const c = H(n);
+  const c = $(n);
   for (let o = 0; o < c.children.length; o += 1) {
     const l = c.children[o];
-    N(l, s, r);
+    R(l, s, r);
   }
   return c[M] = !0, c;
 }, S = (t, e) => {
@@ -339,7 +339,7 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
     const c = e(s).childNodes, o = /* @__PURE__ */ new Map();
     V(s, c, (i, a = !0) => {
       const f = h(i);
-      if (f != null) {
+      if (f != null && !(i instanceof Text)) {
         const d = i;
         d.isNew = a, o.set(f, d);
       }

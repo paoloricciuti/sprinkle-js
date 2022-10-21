@@ -101,7 +101,7 @@ const strToHtml = (innerHTML: string) => {
 };
 
 const attribute = (element: Element, attr: string) => element.getAttribute(attr);
-const key = (element: Node) => (element instanceof Element ? attribute(element, 'key') : element.textContent);
+const key = (element: Node) => (element instanceof Element ? attribute(element, 'key') : `[[textNode:${element.textContent}]]`);
 
 export {
     getDomElement,
