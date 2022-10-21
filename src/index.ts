@@ -447,7 +447,7 @@ const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>,
                 nextAdded.value = element.value;
             }
         } else {
-            fixListeners(element.value as ElementWithListeners, Array.from(elem.childNodes).find((old) => key(old) === key(element.value)) as ElementWithListeners);
+            fixListeners(Array.from(elements).find((old) => key(old) === key(element.value)) as ElementWithListeners, element.value as ElementWithListeners);
             nextEqual = findNext(differentElements, (elementToFind) => elementToFind.type === '=', index);
             safeSetElement(element.value, false);
         }
