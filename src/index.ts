@@ -403,11 +403,13 @@ const fixListeners = (toAdd: ElementWithListeners, toRemove: ElementWithListener
     toRemove.listeners?.forEach((listeners, listenerKey) => {
         listeners.forEach((handler) => {
             toRemove.removeEventListener(listenerKey, handler);
+            toRemove.listeners.get(listenerKey)?.delete(handler);
         });
     });
     toAdd.listeners?.forEach((listeners, listenerKey) => {
         listeners.forEach((handler) => {
             toRemove.addEventListener(listenerKey, handler);
+            toRemove.listeners.get(listenerKey)?.add(handler);
         });
     });
 };

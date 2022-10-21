@@ -5,8 +5,8 @@ const E = (t) => typeof t == "string" ? document.querySelector(t) : t, T = (t, e
       return;
     }
     let o = t;
-    if (n.forEach((l) => {
-      o = o[l];
+    if (n.forEach((a) => {
+      o = o[a];
     }), n[n.length - 1] === "style" && r.startsWith("--")) {
       o.setProperty(r, c);
       return;
@@ -22,7 +22,7 @@ const E = (t) => typeof t == "string" ? document.querySelector(t) : t, T = (t, e
     o[r] = c;
   });
 }, F = (t, e) => [...Array(t).keys()].map(() => Array(e).fill(0)), U = (t = [], e = [], n = (s, r) => s === r) => {
-  var l, i, a, f, d, y;
+  var a, i, l, f, d, y;
   const s = F(t.length + 1, e.length + 1);
   for (let u = 0; u < t.length + 1; u += 1)
     s[u][0] = u;
@@ -40,7 +40,7 @@ const E = (t) => typeof t == "string" ? document.querySelector(t) : t, T = (t, e
   let c = t.length, o = e.length;
   for (; c > 0 && o > 0; )
     n(t[c - 1], e[o - 1]) ? (r.unshift({ type: "=", value: t[c - 1], skip: !1 }), o -= 1, c -= 1) : s[c - 1][o] < s[c][o - 1] ? (r.unshift({ type: "-", value: t[c - 1], skip: !1 }), c -= 1) : (r.unshift({ type: "+", value: e[o - 1], skip: !1 }), o -= 1);
-  return c > 0 ? r.unshift(...((a = (i = (l = t == null ? void 0 : t.slice) == null ? void 0 : l.call(t, 0, c)) == null ? void 0 : i.map) == null ? void 0 : a.call(i, (u) => ({ type: "-", value: u, skip: !1 }))) || []) : o > 0 && r.unshift(...((y = (d = (f = e == null ? void 0 : e.slice) == null ? void 0 : f.call(e, 0, o)) == null ? void 0 : d.map) == null ? void 0 : y.call(d, (u) => ({ type: "+", value: u, skip: !1 }))) || []), r;
+  return c > 0 ? r.unshift(...((l = (i = (a = t == null ? void 0 : t.slice) == null ? void 0 : a.call(t, 0, c)) == null ? void 0 : i.map) == null ? void 0 : l.call(i, (u) => ({ type: "-", value: u, skip: !1 }))) || []) : o > 0 && r.unshift(...((y = (d = (f = e == null ? void 0 : e.slice) == null ? void 0 : f.call(e, 0, o)) == null ? void 0 : d.map) == null ? void 0 : y.call(d, (u) => ({ type: "+", value: u, skip: !1 }))) || []), r;
 }, k = (t, e, n = 0) => t.find((s, r, ...c) => r > n && e(s, r, ...c)), j = (t) => Object.prototype.toString.call(t).slice(8, -1), $ = (t) => {
   const e = document.createElement("template");
   return Object.assign(e, { innerHTML: t }), e.content;
@@ -92,14 +92,14 @@ const L = (t) => {
       const o = b[b.length - 1];
       return o && P(c[1], o, s), Reflect.get(...c);
     },
-    set: (c, o, l) => {
+    set: (c, o, a) => {
       var u;
       if (c[w] === !1 && o !== w)
         return !0;
-      const i = o, a = (u = e == null ? void 0 : e[i]) != null ? u : Object.is;
-      let f = l;
-      !!l && typeof l == "object" && (j(l) === "Object" || Array.isArray(l)) && !l[O] && (f = v(l, a));
-      const d = a(c[i], l), y = Reflect.set(c, o, f);
+      const i = o, l = (u = e == null ? void 0 : e[i]) != null ? u : Object.is;
+      let f = a;
+      !!a && typeof a == "object" && (j(a) === "Object" || Array.isArray(a)) && !a[O] && (f = v(a, l));
+      const d = l(c[i], a), y = Reflect.set(c, o, f);
       return d || D(s, o), y;
     }
   });
@@ -108,8 +108,8 @@ const L = (t) => {
   let r = E(n);
   return r || (console.warn("Impossible to find the right html element, attaching the variables to the root."), r = document.querySelector(":root")), p(() => {
     Object.keys(s).forEach((o) => {
-      var l;
-      r.style.setProperty(`--${o}`, (l = s[o]) == null ? void 0 : l.toString());
+      var a;
+      r.style.setProperty(`--${o}`, (a = s[o]) == null ? void 0 : a.toString());
     });
   }), s;
 }, W = (t, e) => {
@@ -134,9 +134,9 @@ const L = (t) => {
     if (o.storageArea === s && o.key === t)
       try {
         if (o.newValue) {
-          const l = JSON.parse(o.newValue);
-          Object.keys(l).forEach((a) => {
-            c[a] = l[a];
+          const a = JSON.parse(o.newValue);
+          Object.keys(a).forEach((l) => {
+            c[l] = a[l];
           });
         }
       } catch {
@@ -149,12 +149,12 @@ const L = (t) => {
   }), t.dependencies.forEach((e) => {
     e.delete(t);
   }), t.dependencies.clear();
-}, m = (t) => {
+}, B = (t) => {
   const e = () => {
-    var c, o, l;
+    var c, o, a;
     if (!n.toRun)
       return;
-    (l = (o = (c = n == null ? void 0 : n.owner) == null ? void 0 : c.owned) == null ? void 0 : o.push) == null || l.call(o, n), n.cleanup && typeof n.cleanup == "function" && n.cleanup(), N(n), b.push(n);
+    (a = (o = (c = n == null ? void 0 : n.owner) == null ? void 0 : c.owned) == null ? void 0 : o.push) == null || a.call(o, n), n.cleanup && typeof n.cleanup == "function" && n.cleanup(), N(n), b.push(n);
     let r;
     try {
       r = t();
@@ -172,7 +172,7 @@ const L = (t) => {
   s && (n.cleanup = s);
 }, A = {
   createVariable: J,
-  createEffect: m,
+  createEffect: B,
   createComputed: W
 };
 let C = { ...A };
@@ -215,20 +215,20 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
   return p(() => {
     n && (n.value = e(n));
   }), n;
-}, B = (t, e) => {
+}, m = (t, e) => {
   const n = E(t);
   return p(() => T(n, e(n))), n;
 }, it = (t, e) => {
   const n = E(t);
   if (!!n)
-    return B(n, () => ({ style: e(n) })), n;
-}, R = (t, e, n) => {
-  var s, r, c, o, l;
+    return m(n, () => ({ style: e(n) })), n;
+}, I = (t, e, n) => {
+  var s, r, c, o, a;
   if (t instanceof Text) {
     let i = (s = t.textContent) != null ? s : "";
-    const a = /\{\{fn:(?<index>\d+)\}\}/g;
+    const l = /\{\{fn:(?<index>\d+)\}\}/g;
     let f;
-    for (; f = a.exec((r = t.textContent) != null ? r : ""); ) {
+    for (; f = l.exec((r = t.textContent) != null ? r : ""); ) {
       if (!((c = f == null ? void 0 : f.groups) != null && c.index))
         continue;
       const d = e[+f.groups.index]();
@@ -240,18 +240,18 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
     ((o = i == null ? void 0 : i.groups) == null ? void 0 : o.index) != null && t.replaceWith(n[+i.groups.index]);
   }
   for (let i = 0; i < t.childNodes.length; i += 1) {
-    const a = t.childNodes[i];
-    R(a, e, n);
+    const l = t.childNodes[i];
+    I(l, e, n);
   }
   if (t instanceof Element && t.attributes)
     for (let i = 0; i < t.attributes.length; i += 1) {
-      const a = t.attributes[i], [f, d] = a.name.split(":");
+      const l = t.attributes[i], [f, d] = l.name.split(":");
       if (f === "on" && d) {
-        const y = a.value.match(/\{\{fn:(?<index>\d+)\}\}/);
-        ((l = y == null ? void 0 : y.groups) == null ? void 0 : l.index) != null && (t.addEventListener(d, e[+y.groups.index]), t.removeAttribute(a.name), t.listeners || (t.listeners = /* @__PURE__ */ new Map()), t.listeners.has(d) || t.listeners.set(d, /* @__PURE__ */ new Set()), t.listeners.get(d).add(e[+y.groups.index]));
+        const y = l.value.match(/\{\{fn:(?<index>\d+)\}\}/);
+        ((a = y == null ? void 0 : y.groups) == null ? void 0 : a.index) != null && (t.addEventListener(d, e[+y.groups.index]), t.removeAttribute(l.name), t.listeners || (t.listeners = /* @__PURE__ */ new Map()), t.listeners.has(d) || t.listeners.set(d, /* @__PURE__ */ new Set()), t.listeners.get(d).add(e[+y.groups.index]));
       }
     }
-}, I = (t, e, n, s) => {
+}, R = (t, e, n, s) => {
   if (s == null)
     return t;
   if (typeof s == "function")
@@ -261,7 +261,7 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
   else if (Array.isArray(s))
     for (let r = 0; r < s.length; r += 1) {
       const c = s[r];
-      t = I(t, e, n, c);
+      t = R(t, e, n, c);
     }
   else
     t += s;
@@ -270,41 +270,43 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
   let n = "";
   const s = [], r = [];
   for (let o = 0; o < t.length; o += 1)
-    n += t[o], n = I(n, s, r, e[o]);
+    n += t[o], n = R(n, s, r, e[o]);
   const c = $(n);
   for (let o = 0; o < c.children.length; o += 1) {
-    const l = c.children[o];
-    R(l, s, r);
+    const a = c.children[o];
+    I(a, s, r);
   }
   return c[M] = !0, c;
 }, S = (t, e) => {
   var n, s;
   (n = e.listeners) == null || n.forEach((r, c) => {
     r.forEach((o) => {
-      e.removeEventListener(c, o);
+      var a;
+      e.removeEventListener(c, o), (a = e.listeners.get(c)) == null || a.delete(o);
     });
   }), (s = t.listeners) == null || s.forEach((r, c) => {
     r.forEach((o) => {
-      e.addEventListener(c, o);
+      var a;
+      e.addEventListener(c, o), (a = e.listeners.get(c)) == null || a.add(o);
     });
   });
 }, V = (t, e, n) => {
-  var l;
-  if (((l = t == null ? void 0 : t.children) == null ? void 0 : l.length) && t.children.length === 0) {
+  var a;
+  if (((a = t == null ? void 0 : t.children) == null ? void 0 : a.length) && t.children.length === 0) {
     const i = Array.from(e);
-    t.append(...i), i.forEach((a) => n(a));
+    t.append(...i), i.forEach((l) => n(l));
     return;
   }
-  const s = U(Array.from(t.childNodes), Array.from(e), (i, a) => h(i) != null && h(a) != null ? h(i) === h(a) : i === a);
+  const s = U(Array.from(t.childNodes), Array.from(e), (i, l) => h(i) != null && h(l) != null ? h(i) === h(l) : i === l);
   let r = s.find((i) => i.type === "="), c = 0;
   const o = [];
   s.forEach((i) => {
     if (i.type === "+") {
-      const a = k(s, (f) => f.type === "-" && h(f.value) === h(i.value), c);
-      if (a && (o.push({
+      const l = k(s, (f) => f.type === "-" && h(f.value) === h(i.value), c);
+      if (l && (o.push({
         new: i.value,
-        old: a.value
-      }), S(i.value, a.value), i.value = a.value, a.skip = !0), !r) {
+        old: l.value
+      }), S(i.value, l.value), i.value = l.value, l.skip = !0), !r) {
         t.append(i.value), n(i.value), c += 1;
         return;
       }
@@ -315,17 +317,17 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
         return;
       }
       t.removeChild(i.value);
-      const a = k(s, (f) => f.type === "+" && h(f.value) === h(i.value), c);
-      a && (o.push({
-        new: a.value,
+      const l = k(s, (f) => f.type === "+" && h(f.value) === h(i.value), c);
+      l && (o.push({
+        new: l.value,
         old: i.value
-      }), S(a.value, i.value), a.value = i.value);
+      }), S(l.value, i.value), l.value = i.value);
     } else {
-      const a = Array.from(e).find((f) => h(f) === h(i.value));
+      const l = Array.from(e).find((f) => h(f) === h(i.value));
       o.push({
         new: i.value,
-        old: a
-      }), S(a, i.value), r = k(s, (f) => f.type === "=", c), n(i.value, !1);
+        old: l
+      }), S(l, i.value), r = k(s, (f) => f.type === "=", c), n(i.value, !1);
     }
     c += 1;
   }), o.forEach((i) => {
@@ -337,11 +339,11 @@ const v = (t, e) => C.createVariable(t, e), p = (t) => C.createEffect(t), K = (t
     if (s === null)
       return;
     const c = e(s).childNodes, o = /* @__PURE__ */ new Map();
-    V(s, c, (i, a = !0) => {
+    V(s, c, (i, l = !0) => {
       const f = h(i);
       if (f != null && !(i instanceof Text)) {
         const d = i;
-        d.isNew = a, o.set(f, d);
+        d.isNew = l, o.set(f, d);
       }
     }), typeof n == "function" && p(() => {
       n(s, o);
@@ -358,7 +360,7 @@ export {
   at as bindChildrens,
   st as bindClass,
   ot as bindClasses,
-  B as bindDom,
+  m as bindDom,
   nt as bindInnerHTML,
   ct as bindInputValue,
   it as bindStyle,
