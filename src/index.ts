@@ -413,7 +413,7 @@ const fixListeners = (toAdd: ElementWithListeners, toRemove: ElementWithListener
 };
 
 const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>, safeSetElement: Function) => {
-    if (elem.children.length === 0) {
+    if (elem?.children?.length && elem.children.length === 0) {
         const toAppend = Array.from(elements);
         elem.append(...toAppend);
         toAppend.forEach((appended) => safeSetElement(appended));
@@ -422,10 +422,15 @@ const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>,
     const differentElements = diff(Array.from((elem.childNodes)), Array.from(elements), (a, b) => (key(a) != null && key(b) != null ? key(a) === key(b) : a === b));
     let nextEqual = differentElements.find((element) => element.type === '=');
     let index = 0;
+    const toFurtherDiff: { new: any, old: any; }[] = [];
     differentElements.forEach((element) => {
         if (element.type === '+') {
             const nextRemoved = findNext(differentElements, (el) => el.type === '-' && key(el.value) === key(element.value), index);
             if (nextRemoved) {
+                toFurtherDiff.push({
+                    new: element.value,
+                    old: nextRemoved.value,
+                });
                 fixListeners(element.value as ElementWithListeners, nextRemoved.value as ElementWithListeners);
                 element.value = nextRemoved.value;
                 nextRemoved.skip = true;
@@ -443,15 +448,27 @@ const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>,
             elem.removeChild(element.value);
             const nextAdded = findNext(differentElements, (el) => el.type === '+' && key(el.value) === key(element.value), index);
             if (nextAdded) {
+                toFurtherDiff.push({
+                    new: nextAdded.value,
+                    old: element.value,
+                });
                 fixListeners(nextAdded.value as ElementWithListeners, element.value as ElementWithListeners);
                 nextAdded.value = element.value;
             }
         } else {
-            fixListeners(Array.from(elements).find((old) => key(old) === key(element.value)) as ElementWithListeners, element.value as ElementWithListeners);
+            const old = Array.from(elements).find((oldEl) => key(oldEl) === key(element.value));
+            toFurtherDiff.push({
+                new: element.value,
+                old,
+            });
+            fixListeners(old as ElementWithListeners, element.value as ElementWithListeners);
             nextEqual = findNext(differentElements, (elementToFind) => elementToFind.type === '=', index);
             safeSetElement(element.value, false);
         }
         index += 1;
+    });
+    toFurtherDiff.forEach((values) => {
+        updateChildren(values.new, values.old.childNodes, safeSetElement);
     });
 };
 
