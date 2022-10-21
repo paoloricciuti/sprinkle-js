@@ -21,5 +21,6 @@ module.exports = {
         "max-len": 0,
         "object-curly-newline": 0,
         "no-console": 0,
+        "no-continue": 0,
     }
 };

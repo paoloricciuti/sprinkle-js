@@ -1,5 +1,5 @@
-import { CSSStyles, DiffedElements, DOMUpdate, HTMLOrSVGElement, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, ISetupOptions, IStringOrDomElement, ISubscription, Primitive } from './types/index';
-import { diff, findNext, getDomElement, getRawType, html, key, updateDom } from './utils';
+import { CSSStyles, DiffedElements, DOMUpdate, ElementWithListeners, HTMLOrSVGElement, ICreateEffect, ICreateEffectExecute, ICreateEffectRunning, ICssVariable, IEffect, IEqualFunction, IEqualFunctionMap, ISetupOptions, IStringOrDomElement, ISubscription, Primitive } from './types/index';
+import { diff, findNext, getDomElement, getRawType, strToHtml, key, updateDom } from './utils';
 
 let context: ICreateEffectRunning[] = [];
 const IS_REACTIVE_SYMBOL = Symbol('is-reactive');
@@ -310,61 +310,167 @@ const bindStyle = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElem
     return elem;
 };
 
-const bindChildren = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<string, TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void)) => {
+const replaceFunctions = (element: ElementWithListeners, functions: Function[], components: IComponents) => {
+    if (element instanceof Text) {
+        let startingText = element.textContent ?? '';
+        const regex = /\{\{fn:(?<index>\d+)\}\}/g;
+        let matches;
+        // eslint-disable-next-line no-cond-assign
+        while (matches = regex.exec(element.textContent ?? '')) {
+            if (!matches?.groups?.['index']) continue;
+            const result = functions[+matches.groups['index']]();
+            startingText = startingText.replace(matches[0], result);
+        }
+        element.textContent = startingText;
+    } else if (element instanceof HTMLElement) {
+        const match = element.tagName.match(/to-replace-(?<index>\d+)/i);
+        // eslint-disable-next-line eqeqeq
+        if (match?.groups?.['index'] != undefined) {
+            element.replaceWith(components[+match.groups['index']]);
+        }
+    }
+    for (let i = 0; i < element.childNodes.length; i += 1) {
+        const child = element.childNodes[i] as ElementWithListeners;
+        replaceFunctions(child, functions, components);
+    }
+    if (element instanceof Element && element.attributes) {
+        for (let i = 0; i < element.attributes.length; i += 1) {
+            const attr = element.attributes[i];
+            const [on, listener] = attr.name.split(':');
+            if (on === 'on' && listener) {
+                const match = attr.value.match(/\{\{fn:(?<index>\d+)\}\}/);
+                // eslint-disable-next-line eqeqeq
+                if (match?.groups?.['index'] != undefined) {
+                    element.addEventListener(listener as unknown as keyof HTMLElementEventMap, functions[+match.groups['index']] as any);
+                    element.removeAttribute(attr.name);
+                    if (!element.listeners) {
+                        element.listeners = new Map();
+                    }
+                    if (!element.listeners.has(listener)) {
+                        element.listeners.set(listener, new Set());
+                    }
+                    element.listeners.get(listener)!.add(functions[+match.groups['index']] as any);
+                }
+            }
+        }
+    }
+};
+
+type IComponents = ReturnType<typeof html>[];
+
+const populateStringFunctionsAndComponents = (el: string, functions: Function[], components: IComponents, els: any) => {
+    // eslint-disable-next-line eqeqeq
+    if (els == undefined) return el;
+    if (typeof els === 'function') {
+        el += `{{fn:${functions.length}}}`;
+        functions.push(els);
+    } else if (els[FROM_H]) {
+        el += `<to-replace-${components.length}></to-replace-${components.length}>`;
+        components.push(els);
+    } else if (Array.isArray(els)) {
+        for (let i = 0; i < els.length; i += 1) {
+            const newEls = els[i];
+            el = populateStringFunctionsAndComponents(el, functions, components, newEls);
+        }
+    } else {
+        el += els;
+    }
+    return el;
+};
+
+const FROM_H = Symbol('from_h');
+
+const html = (strings: TemplateStringsArray, ...els: any[]) => {
+    let el = '';
+    const functions: Function[] = [];
+    const components: IComponents = [];
+    for (let i = 0; i < strings.length; i += 1) {
+        el += strings[i];
+        el = populateStringFunctionsAndComponents(el, functions, components, els[i]);
+    }
+    const elements: DocumentFragment & {
+        [FROM_H]?: boolean;
+    } = strToHtml(el);
+    for (let i = 0; i < elements.children.length; i += 1) {
+        const element = elements.children[i];
+        replaceFunctions(element as ElementWithListeners, functions, components);
+    }
+    elements[FROM_H] = true;
+    return elements;
+};
+
+const fixListeners = (toAdd: ElementWithListeners, toRemove: ElementWithListeners) => {
+    toRemove.listeners?.forEach((listeners, listenerKey) => {
+        listeners.forEach((handler) => {
+            toRemove.removeEventListener(listenerKey, handler);
+        });
+    });
+    toAdd.listeners?.forEach((listeners, listenerKey) => {
+        listeners.forEach((handler) => {
+            toRemove.addEventListener(listenerKey, handler);
+        });
+    });
+};
+
+const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>, safeSetElement: Function) => {
+    if (elem.children.length === 0) {
+        const toAppend = Array.from(elements);
+        elem.append(...toAppend);
+        toAppend.forEach((appended) => safeSetElement(appended));
+        return;
+    }
+    const differentElements = diff(Array.from((elem.childNodes)), Array.from(elements), (a, b) => (key(a) != null && key(b) != null ? key(a) === key(b) : a === b));
+    let nextEqual = differentElements.find((element) => element.type === '=');
+    let index = 0;
+    differentElements.forEach((element) => {
+        if (element.type === '+') {
+            const nextRemoved = findNext(differentElements, (el) => el.type === '-' && key(el.value) === key(element.value), index);
+            if (nextRemoved) {
+                fixListeners(element.value as ElementWithListeners, nextRemoved.value as ElementWithListeners);
+                element.value = nextRemoved.value;
+                nextRemoved.skip = true;
+            }
+            if (!nextEqual) {
+                elem.append(element.value);
+                safeSetElement(element.value);
+                index += 1;
+                return;
+            }
+            nextEqual.value.before(element.value);
+            safeSetElement(element.value);
+        } else if (element.type === '-') {
+            if (element.skip) { index += 1; return; }
+            elem.removeChild(element.value);
+            const nextAdded = findNext(differentElements, (el) => el.type === '+' && key(el.value) === key(element.value), index);
+            if (nextAdded) {
+                fixListeners(nextAdded.value as ElementWithListeners, element.value as ElementWithListeners);
+                nextAdded.value = element.value;
+            }
+        } else {
+            fixListeners(element.value as ElementWithListeners, Array.from(elem.childNodes).find((old) => key(old) === key(element.value)) as ElementWithListeners);
+            nextEqual = findNext(differentElements, (elementToFind) => elementToFind.type === '=', index);
+            safeSetElement(element.value, false);
+        }
+        index += 1;
+    });
+};
+
+const bindChildren = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<ReturnType<typeof html>, TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void)) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem === null) return;
         const elementsHtml = fn(elem);
-        const elements = html(elementsHtml).childNodes;
+        const elements = elementsHtml.childNodes;
         const mapped = new Map<string, DiffedElements>();
         const safeSetElement = (element: Node, isNew: boolean = true) => {
             const elementKey = key(element);
             if (elementKey !== null && elementKey !== undefined) {
-                mapped.set(elementKey, { element, isNew });
+                const toAdd: DiffedElements = element as DiffedElements;
+                toAdd.isNew = isNew;
+                mapped.set(elementKey, toAdd);
             }
         };
-        if (elem.children.length === 0) {
-            const toAppend = Array.from(elements);
-            elem.append(...toAppend);
-            toAppend.forEach((appended) => safeSetElement(appended));
-            if (typeof afterDiff === 'function') {
-                createEffect(() => {
-                    afterDiff(elem, mapped);
-                });
-            }
-            return;
-        }
-        const differentElements = diff(Array.from((elem.childNodes)), Array.from(elements), (a, b) => (key(a) != null && key(b) != null ? key(a) === key(b) : a === b));
-        let nextEqual = differentElements.find((element) => element.type === '=');
-        let index = 0;
-        differentElements.forEach((element) => {
-            if (element.type === '+') {
-                const nextRemoved = findNext(differentElements, (el) => el.type === '-' && key(el.value) === key(element.value), index);
-                if (nextRemoved) {
-                    element.value = nextRemoved.value;
-                    nextRemoved.skip = true;
-                }
-                if (!nextEqual) {
-                    elem.append(element.value);
-                    safeSetElement(element.value);
-                    index += 1;
-                    return;
-                }
-                nextEqual.value.before(element.value);
-                safeSetElement(element.value);
-            } else if (element.type === '-') {
-                if (element.skip) { index += 1; return; }
-                elem.removeChild(element.value);
-                const nextAdded = findNext(differentElements, (el) => el.type === '+' && key(el.value) === key(element.value), index);
-                if (nextAdded) {
-                    nextAdded.value = element.value;
-                }
-            } else {
-                nextEqual = findNext(differentElements, (elementToFind) => elementToFind.type === '=', index);
-                safeSetElement(element.value, false);
-            }
-            index += 1;
-        });
+        updateChildren(elem, elements, safeSetElement);
         if (typeof afterDiff === 'function') {
             createEffect(() => {
                 afterDiff(elem, mapped);
@@ -409,4 +515,5 @@ export {
     createVariable,
     setup,
     untrack,
+    html,
 };

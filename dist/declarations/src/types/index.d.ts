@@ -30,9 +30,11 @@ export interface ICreateEffectRunning {
 }
 export declare type IStringOrDomElement<T extends HTMLOrSVGElement> = string | T;
 export declare type IGetDomElementFn = <T extends HTMLOrSVGElement>(domElement: IStringOrDomElement<T>) => T | null;
-export declare type DiffedElements = {
-    element: Node;
+export declare type DiffedElements = Node & {
     isNew: boolean;
+};
+export declare type ElementWithListeners = (ChildNode | Element) & {
+    listeners: Map<string, Set<(e: Event) => void>>;
 };
 export declare type DOMUpdate<T extends HTMLOrSVGElement = HTMLOrSVGElement> = {
     [key in keyof T]?: Partial<T[key]> | Omit<T[key], any>;

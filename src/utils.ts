@@ -94,7 +94,7 @@ const findNext = <T>(arr: T[], eq: (element: T, index: number, array: T[]) => bo
 
 const getRawType = (obj: unknown) => Object.prototype.toString.call(obj).slice(8, -1);
 
-const html = (innerHTML: string) => {
+const strToHtml = (innerHTML: string) => {
     const ELEMENT_TEMPLATE = document.createElement('template');
     Object.assign(ELEMENT_TEMPLATE, { innerHTML });
     return ELEMENT_TEMPLATE.content;
@@ -109,7 +109,7 @@ export {
     diff,
     updateDom,
     getRawType,
-    html,
+    strToHtml,
     attribute,
     key,
 };

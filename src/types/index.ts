@@ -42,7 +42,13 @@ export type IStringOrDomElement<T extends HTMLOrSVGElement> = string | T;
 
 export type IGetDomElementFn = <T extends HTMLOrSVGElement>(domElement: IStringOrDomElement<T>) => T | null;
 
-export type DiffedElements = { element: Node, isNew: boolean; };
+export type DiffedElements = Node & {
+    isNew: boolean,
+};
+
+export type ElementWithListeners = (ChildNode | Element) & {
+    listeners: Map<string, Set<(e: Event) => void>>;
+};
 
 export type DOMUpdate<T extends HTMLOrSVGElement = HTMLOrSVGElement> = { [key in keyof T]?: Partial<T[key]> | Omit<T[key], any> };
 
