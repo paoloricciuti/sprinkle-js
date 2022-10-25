@@ -429,7 +429,7 @@ const callOnBind = (element: ElementWithListeners, recursively?: boolean) => {
 };
 
 const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>, safeSetElement: Function) => {
-    if (elem?.children?.length !== undefined && elem.children.length === 0) {
+    if (elem?.childNodes?.length !== undefined && elem.childNodes.length === 0) {
         const toAppend = Array.from(elements);
         elem.append(...toAppend);
         toAppend.forEach((appended) => {
