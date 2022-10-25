@@ -5,8 +5,8 @@ const E = (t) => typeof t == "string" ? document.querySelector(t) : t, L = (t, e
       return;
     }
     let o = t;
-    if (n.forEach((l) => {
-      o = o[l];
+    if (n.forEach((f) => {
+      o = o[f];
     }), n[n.length - 1] === "style" && r.startsWith("--")) {
       o.setProperty(r, c);
       return;
@@ -22,26 +22,26 @@ const E = (t) => typeof t == "string" ? document.querySelector(t) : t, L = (t, e
     o[r] = c;
   });
 }, U = (t, e) => [...Array(t).keys()].map(() => Array(e).fill(0)), $ = (t = [], e = [], n = (s, r) => s === r) => {
-  var l, i, a, u, d, h;
+  var f, i, a, u, d, h;
   const s = U(t.length + 1, e.length + 1);
-  for (let f = 0; f < t.length + 1; f += 1)
-    s[f][0] = f;
-  for (let f = 0; f < e.length + 1; f += 1)
-    s[0][f] = f;
-  for (let f = 0; f < t.length; f += 1)
+  for (let l = 0; l < t.length + 1; l += 1)
+    s[l][0] = l;
+  for (let l = 0; l < e.length + 1; l += 1)
+    s[0][l] = l;
+  for (let l = 0; l < t.length; l += 1)
     for (let g = 0; g < e.length; g += 1)
-      if (n(t[f], e[g]))
-        s[f + 1][g + 1] = s[f][g];
+      if (n(t[l], e[g]))
+        s[l + 1][g + 1] = s[l][g];
       else {
-        const F = Math.min(s[f + 1][g], s[f][g + 1]) + 1;
-        s[f + 1][g + 1] = F;
+        const F = Math.min(s[l + 1][g], s[l][g + 1]) + 1;
+        s[l + 1][g + 1] = F;
       }
   const r = [];
   let c = t.length, o = e.length;
   for (; c > 0 && o > 0; )
     n(t[c - 1], e[o - 1]) ? (r.unshift({ type: "=", value: t[c - 1], skip: !1 }), o -= 1, c -= 1) : s[c - 1][o] < s[c][o - 1] ? (r.unshift({ type: "-", value: t[c - 1], skip: !1 }), c -= 1) : (r.unshift({ type: "+", value: e[o - 1], skip: !1 }), o -= 1);
-  return c > 0 ? r.unshift(...((a = (i = (l = t == null ? void 0 : t.slice) == null ? void 0 : l.call(t, 0, c)) == null ? void 0 : i.map) == null ? void 0 : a.call(i, (f) => ({ type: "-", value: f, skip: !1 }))) || []) : o > 0 && r.unshift(...((h = (d = (u = e == null ? void 0 : e.slice) == null ? void 0 : u.call(e, 0, o)) == null ? void 0 : d.map) == null ? void 0 : h.call(d, (f) => ({ type: "+", value: f, skip: !1 }))) || []), r;
-}, O = (t, e, n = 0) => t.find((s, r, ...c) => r > n && e(s, r, ...c)), T = (t) => Object.prototype.toString.call(t).slice(8, -1), H = (t) => {
+  return c > 0 ? r.unshift(...((a = (i = (f = t == null ? void 0 : t.slice) == null ? void 0 : f.call(t, 0, c)) == null ? void 0 : i.map) == null ? void 0 : a.call(i, (l) => ({ type: "-", value: l, skip: !1 }))) || []) : o > 0 && r.unshift(...((h = (d = (u = e == null ? void 0 : e.slice) == null ? void 0 : u.call(e, 0, o)) == null ? void 0 : d.map) == null ? void 0 : h.call(d, (l) => ({ type: "+", value: l, skip: !1 }))) || []), r;
+}, O = (t, e, n = 0) => t.find((s, r, ...c) => r > n && e(s, r, ...c)), j = (t) => Object.prototype.toString.call(t).slice(8, -1), H = (t) => {
   const e = document.createElement("template");
   return Object.assign(e, { innerHTML: t }), e.content;
 }, P = (t, e) => t.getAttribute(e), p = (t) => t instanceof Element ? P(t, "key") : `[[textNode:${t.textContent}]]`;
@@ -82,7 +82,7 @@ const N = (t) => {
     throw new Error("It's not possible to create a variable from a primitive value...you can use createRef");
   Object.keys(t || {}).forEach((c) => {
     const o = c;
-    !!t[o] && typeof t[o] == "object" && (T(t[o]) === "Object" || Array.isArray(t[o])) && (t[o] = v(t[o], e == null ? void 0 : e[o]));
+    !!t[o] && typeof t[o] == "object" && (j(t[o]) === "Object" || Array.isArray(t[o])) && (t[o] = v(t[o], e == null ? void 0 : e[o]));
   });
   const s = /* @__PURE__ */ new Map();
   return new Proxy(t, {
@@ -92,14 +92,14 @@ const N = (t) => {
       const o = b[b.length - 1];
       return o && D(c[1], o, s), Reflect.get(...c);
     },
-    set: (c, o, l) => {
-      var f;
+    set: (c, o, f) => {
+      var l;
       if (c[x] === !1 && o !== x)
         return !0;
-      const i = o, a = (f = e == null ? void 0 : e[i]) != null ? f : Object.is;
-      let u = l;
-      !!l && typeof l == "object" && (T(l) === "Object" || Array.isArray(l)) && !l[A] && (u = v(l, a));
-      const d = a(c[i], l), h = Reflect.set(c, o, u);
+      const i = o, a = (l = e == null ? void 0 : e[i]) != null ? l : Object.is;
+      let u = f;
+      !!f && typeof f == "object" && (j(f) === "Object" || Array.isArray(f)) && !f[A] && (u = v(f, a));
+      const d = a(c[i], f), h = Reflect.set(c, o, u);
       return d || J(s, o), h;
     }
   });
@@ -108,8 +108,8 @@ const N = (t) => {
   let r = E(n);
   return r || (console.warn("Impossible to find the right html element, attaching the variables to the root."), r = document.querySelector(":root")), y(() => {
     Object.keys(s).forEach((o) => {
-      var l;
-      r.style.setProperty(`--${o}`, (l = s[o]) == null ? void 0 : l.toString());
+      var f;
+      r.style.setProperty(`--${o}`, (f = s[o]) == null ? void 0 : f.toString());
     });
   }), s;
 }, B = (t, e) => {
@@ -134,9 +134,9 @@ const N = (t) => {
     if (o.storageArea === s && o.key === t)
       try {
         if (o.newValue) {
-          const l = JSON.parse(o.newValue);
-          Object.keys(l).forEach((a) => {
-            c[a] = l[a];
+          const f = JSON.parse(o.newValue);
+          Object.keys(f).forEach((a) => {
+            c[a] = f[a];
           });
         }
       } catch {
@@ -151,10 +151,10 @@ const N = (t) => {
   }), t.dependencies.clear();
 }, G = (t) => {
   const e = () => {
-    var c, o, l;
+    var c, o, f;
     if (!n.toRun)
       return;
-    (l = (o = (c = n == null ? void 0 : n.owner) == null ? void 0 : c.owned) == null ? void 0 : o.push) == null || l.call(o, n), n.cleanup && typeof n.cleanup == "function" && n.cleanup(), I(n), b.push(n);
+    (f = (o = (c = n == null ? void 0 : n.owner) == null ? void 0 : c.owned) == null ? void 0 : o.push) == null || f.call(o, n), n.cleanup && typeof n.cleanup == "function" && n.cleanup(), I(n), b.push(n);
     let r;
     try {
       r = t();
@@ -170,16 +170,16 @@ const N = (t) => {
     toRun: !0
   }, s = e();
   s && (n.cleanup = s);
-}, j = {
+}, T = {
   createVariable: W,
   createEffect: G,
   createComputed: B
 };
-let k = { ...j };
-const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t, e) => k.createComputed(t, e), tt = (t = j) => (Object.keys(t).forEach((e) => {
+let k = { ...T };
+const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t, e) => k.createComputed(t, e), tt = (t = T) => (Object.keys(t).forEach((e) => {
   k[e] = t[e];
 }), () => {
-  k = j;
+  k = T;
 }), et = (t) => {
   const e = b;
   b = [];
@@ -223,7 +223,7 @@ const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t
   if (!!n)
     return Q(n, () => ({ style: e(n) })), n;
 }, R = (t, e, n) => {
-  var s, r, c, o, l;
+  var s, r, c, o, f;
   if (t instanceof Text) {
     let i = (s = t.textContent) != null ? s : "";
     const a = /\{\{fn:(?<index>\d+)\}\}/g;
@@ -248,8 +248,8 @@ const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t
     for (let a = 0; a < i.length; a += 1) {
       const u = i[a], [d, h] = u.name.split(":");
       if (d === "on" && h) {
-        const f = u.value.match(/\{\{fn:(?<index>\d+)\}\}/);
-        ((l = f == null ? void 0 : f.groups) == null ? void 0 : l.index) != null && (h !== "bind" && t.addEventListener(h.toLowerCase(), e[+f.groups.index]), t.removeAttribute(u.name), t.listeners || (t.listeners = /* @__PURE__ */ new Map()), t.listeners.has(h) || t.listeners.set(h, /* @__PURE__ */ new Set()), t.listeners.get(h).add(e[+f.groups.index]));
+        const l = u.value.match(/\{\{fn:(?<index>\d+)\}\}/);
+        ((f = l == null ? void 0 : l.groups) == null ? void 0 : f.index) != null && (h !== "bind" && t.addEventListener(h.toLowerCase(), e[+l.groups.index]), t.removeAttribute(u.name), t.listeners || (t.listeners = /* @__PURE__ */ new Map()), t.listeners.has(h) || t.listeners.set(h, /* @__PURE__ */ new Set()), t.listeners.get(h).add(e[+l.groups.index]));
       }
     }
   }
@@ -275,21 +275,21 @@ const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t
     n += t[o], n = M(n, s, r, e[o]);
   const c = H(n);
   for (let o = 0; o < c.children.length; o += 1) {
-    const l = c.children[o];
-    R(l, s, r);
+    const f = c.children[o];
+    R(f, s, r);
   }
   return c[V] = !0, c;
 }, S = (t, e) => {
   var n, s;
   (n = e.listeners) == null || n.forEach((r, c) => {
     r.forEach((o) => {
-      var l;
-      e.removeEventListener(c, o), (l = e.listeners.get(c)) == null || l.delete(o);
+      var f;
+      e.removeEventListener(c, o), (f = e.listeners.get(c)) == null || f.delete(o);
     });
   }), (s = t.listeners) == null || s.forEach((r, c) => {
     r.forEach((o) => {
-      var l;
-      e.addEventListener(c, o), (l = e.listeners.get(c)) == null || l.add(o);
+      var f;
+      e.addEventListener(c, o), (f = e.listeners.get(c)) == null || f.add(o);
     });
   });
 }, w = (t, e) => {
@@ -298,8 +298,10 @@ const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t
     typeof r == "function" && r(t);
   }), e && t.childNodes.forEach((r) => w(r, e));
 }, _ = (t, e, n) => {
-  var l;
-  if (((l = t == null ? void 0 : t.childNodes) == null ? void 0 : l.length) !== void 0 && t.childNodes.length === 0) {
+  var f;
+  if (t instanceof Text)
+    return;
+  if (((f = t == null ? void 0 : t.childNodes) == null ? void 0 : f.length) !== void 0 && t.childNodes.length === 0) {
     const i = Array.from(e);
     t.append(...i), i.forEach((a) => {
       n(a), w(a, !0);
@@ -358,7 +360,7 @@ const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t
       n(s, o);
     });
   }), s;
-}, z = (t, e, n) => (...r) => (console.warn(`${e}${n ? `See more at ${n}` : ""}`), t(...r)), lt = z(
+}, z = (t, e, n) => (...r) => (console.warn(`${e}${n ? `See more at ${n}` : ""}`), t(...r)), ft = z(
   Y,
   "'bindChildrens' is deprecated: please use 'bindChildren' instead.",
   new URL("https://github.com/paoloricciuti/sprinkle-js/issues/3")
@@ -366,7 +368,7 @@ const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t
 export {
   X as batch,
   Y as bindChildren,
-  lt as bindChildrens,
+  ft as bindChildrens,
   ot as bindClass,
   ct as bindClasses,
   Q as bindDom,
