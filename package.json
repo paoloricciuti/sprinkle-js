@@ -10,7 +10,7 @@
     "scripts": {
         "build": "npm run build:lib && npm run build:site",
         "build:lib": "vite build && tsc src/index.ts --declaration --emitDeclarationOnly --downlevelIteration --declarationDir dist/declarations/src",
-        "build:site": "vite build --config vite.config.site.ts",
+        "build:site": "vite build --config vite.config.site.ts && git add . && git commit -m \"new version for site\"",
         "build:docs": "node automation/docs-from-readme.js",
         "publish:patch": "npm run build && npm version patch && npm publish",
         "publish:minor": "npm run build && npm version minor && npm publish",
