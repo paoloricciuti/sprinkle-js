@@ -334,14 +334,17 @@ const replaceFunctions = (element: ElementWithListeners, functions: Function[], 
         replaceFunctions(child, functions, components);
     }
     if (element instanceof Element && element.attributes) {
-        for (let i = 0; i < element.attributes.length; i += 1) {
-            const attr = element.attributes[i];
+        const attrs = Array.from(element.attributes);
+        for (let i = 0; i < attrs.length; i += 1) {
+            const attr = attrs[i];
             const [on, listener] = attr.name.split(':');
             if (on === 'on' && listener) {
                 const match = attr.value.match(/\{\{fn:(?<index>\d+)\}\}/);
                 // eslint-disable-next-line eqeqeq
                 if (match?.groups?.['index'] != undefined) {
-                    element.addEventListener(listener as unknown as keyof HTMLElementEventMap, functions[+match.groups['index']] as any);
+                    if (listener !== 'bind') {
+                        element.addEventListener(listener.toLowerCase() as unknown as keyof HTMLElementEventMap, functions[+match.groups['index']] as any);
+                    }
                     element.removeAttribute(attr.name);
                     if (!element.listeners) {
                         element.listeners = new Map();
@@ -414,11 +417,25 @@ const fixListeners = (toAdd: ElementWithListeners, toRemove: ElementWithListener
     });
 };
 
+const callOnBind = (element: ElementWithListeners, recursively?: boolean) => {
+    element.listeners?.get('bind')?.forEach((bindListener) => {
+        if (typeof bindListener === 'function') {
+            bindListener(element);
+        }
+    });
+    if (recursively) {
+        element.childNodes.forEach((child) => callOnBind(child as ElementWithListeners, recursively));
+    }
+};
+
 const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>, safeSetElement: Function) => {
-    if (elem?.children?.length && elem.children.length === 0) {
+    if (elem?.children?.length !== undefined && elem.children.length === 0) {
         const toAppend = Array.from(elements);
         elem.append(...toAppend);
-        toAppend.forEach((appended) => safeSetElement(appended));
+        toAppend.forEach((appended) => {
+            safeSetElement(appended);
+            callOnBind(appended as ElementWithListeners, true);
+        });
         return;
     }
     const differentElements = diff(Array.from((elem.childNodes)), Array.from(elements), (a, b) => (key(a) != null && key(b) != null ? key(a) === key(b) : a === b));
@@ -430,8 +447,8 @@ const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>,
             const nextRemoved = findNext(differentElements, (el) => el.type === '-' && key(el.value) === key(element.value), index);
             if (nextRemoved) {
                 toFurtherDiff.push({
-                    new: element.value,
-                    old: nextRemoved.value,
+                    new: nextRemoved.value,
+                    old: element.value,
                 });
                 fixListeners(element.value as ElementWithListeners, nextRemoved.value as ElementWithListeners);
                 element.value = nextRemoved.value;
@@ -439,11 +456,13 @@ const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>,
             }
             if (!nextEqual) {
                 elem.append(element.value);
+                callOnBind(element.value as ElementWithListeners, !nextRemoved);
                 safeSetElement(element.value);
                 index += 1;
                 return;
             }
             nextEqual.value.before(element.value);
+            callOnBind(element.value as ElementWithListeners, !nextRemoved);
             safeSetElement(element.value);
         } else if (element.type === '-') {
             if (element.skip) { index += 1; return; }
@@ -451,8 +470,8 @@ const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>,
             const nextAdded = findNext(differentElements, (el) => el.type === '+' && key(el.value) === key(element.value), index);
             if (nextAdded) {
                 toFurtherDiff.push({
-                    new: nextAdded.value,
-                    old: element.value,
+                    new: element.value,
+                    old: nextAdded.value,
                 });
                 fixListeners(nextAdded.value as ElementWithListeners, element.value as ElementWithListeners);
                 nextAdded.value = element.value;
@@ -464,6 +483,7 @@ const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>,
                 old,
             });
             fixListeners(old as ElementWithListeners, element.value as ElementWithListeners);
+            callOnBind(element.value as ElementWithListeners);
             nextEqual = findNext(differentElements, (elementToFind) => elementToFind.type === '=', index);
             safeSetElement(element.value, false);
         }

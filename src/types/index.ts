@@ -47,7 +47,7 @@ export type DiffedElements = Node & {
 };
 
 export type ElementWithListeners = (ChildNode | Element) & {
-    listeners: Map<string, Set<(e: Event) => void>>;
+    listeners: Map<string, Set<(e: Event | ChildNode) => void>>;
 };
 
 export type DOMUpdate<T extends HTMLOrSVGElement = HTMLOrSVGElement> = { [key in keyof T]?: Partial<T[key]> | Omit<T[key], any> };

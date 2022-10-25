@@ -8,3 +8,5 @@ tsconfig.json
 /.vscode
 vite.config.ts
 /docs
+/*.config*
+/.*

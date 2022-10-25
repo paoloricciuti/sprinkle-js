@@ -882,7 +882,28 @@ option function to run after the diffing as the third parameter.
 
 The third argument can be useful to bind something to the newly created element. It takes the root element and a Map object as parameter where the keys are all the keys you've specified in the template and the values are the element associated with that key that is on the DOM. Every element has an isNew flag that specifies if it's a newly added element or an old one 
 
-Given that sometimes is difficult to build a document fragment from scratch Sprinkle JS an `html` tagged template to transform your string into an actual document fragment. Inside this tagged template literal is possible to include events with the syntax `on:eventname`. Every array inside the tagged template literal will be treated as separate elements. So for example
+Given that sometimes is difficult to build a document fragment from scratch Sprinkle JS an `html` tagged template to transform your string into an actual document fragment. Inside this tagged template literal is possible to include events with the syntax `on:eventname` and there's a special event `on:bind` to run code whenever the element will be binded to the DOM by sprinkle JS. This event will get the actual element as the parameter and it's possible to use this to call other Sprinkle JS methods on that specific element. For example:
+
+```typescript
+const variable = createVariable({inputVal: ""});
+
+bindChildren("#div-to-bind", ()=> html`
+    <input
+        on:bind=${(inputElement)=>{
+            bindInputValue(inputElement, ()=> variable.inputVal)
+        }}
+        on:input=${(e)=>{
+            variable.inputVal= e.target.value;
+        }} />
+`);
+```
+
+will bound to the div `#div-to-bind` an input as children and will bind the inputValue of it `variable.inputVal`.
+
+> **Tip**: this is a better way than the afterRun function that bindChildren takes as a third argoument to bind something to an element.
+
+Every array inside the tagged template literal will be treated as separate elements. So for example
+
 ```typescript
 html`${[1,2,3,4].map(num => html`
 <button>${num}</button>
