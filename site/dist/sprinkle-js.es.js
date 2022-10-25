@@ -299,7 +299,7 @@ const v = (t, e) => k.createVariable(t, e), y = (t) => k.createEffect(t), q = (t
   }), e && t.childNodes.forEach((r) => w(r, e));
 }, _ = (t, e, n) => {
   var l;
-  if (((l = t == null ? void 0 : t.children) == null ? void 0 : l.length) !== void 0 && t.children.length === 0) {
+  if (((l = t == null ? void 0 : t.childNodes) == null ? void 0 : l.length) !== void 0 && t.childNodes.length === 0) {
     const i = Array.from(e);
     t.append(...i), i.forEach((a) => {
       n(a), w(a, !0);
