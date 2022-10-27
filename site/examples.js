@@ -3,8 +3,8 @@ export default [
         pen: "NWYrXyW",
         description: "A drawing board that shows the power of arrays and bindChildren",
     }, {
-        pen: "gOebVrw",
-        description: "Can you store HTMLELments in a Sprinkle JS variable? Sure you can! This examples shows when it's useful.",
+        pen: "RwMQoVd",
+        description: "Need to reflect your changes in the UI? createCssVariable to the rescue!",
     },
     {
         pen: "rNJgJdo",
@@ -12,6 +12,6 @@ export default [
     },
     {
         pen: "qBoXGwZ",
-        description: "Can a list of examples not include a TODO app? I don't think so."
+        description: "Can a list of examples not include a TODO app? I don't think so. P.s. try to refresh the page: that's createStored doing it's magic. ✨"
     }
 ];
