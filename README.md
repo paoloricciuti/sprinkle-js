@@ -877,8 +877,7 @@ This function is used to bind html as the children of an element. How is this
 different than bindInnerHTML? Each item can have a key attribute and if the key
 attribute does not change the element will not change either (it will have the
 same reference in the dom). It takes a dom element or a selector as the first
-argument, a function returning the a document fragment as the second argument and an
-option function to run after the diffing as the third parameter.
+argument, a function returning a document fragment or a string or an array of document fragments of an array of strings as the second argument and an option function to run after the diffing as the third parameter.
 
 The third argument can be useful to bind something to the newly created element. It takes the root element and a Map object as parameter where the keys are all the keys you've specified in the template and the values are the element associated with that key that is on the DOM. Every element has an isNew flag that specifies if it's a newly added element or an old one 
 
@@ -911,7 +910,7 @@ html`${[1,2,3,4].map(num => html`
 ```
 will return a fragment with 4 buttons.
 
-As you've seen from this previous example one small caveat of this function is that you have to repeat the tag at each new "level" (once for the first time, once inside the map function) but this allow for enaugh composability that you can actually start to create some sort of components.
+As you've seen from this previous example one small caveat of this function is that you have to repeat the tag at each new "level" (you can skip the first one since everything you return will still get passed through the `html` function automatically but you have to include it inside the map function) but this allow for enaugh composability that you can actually start to create some sort of components.
 
 A component it's simply a function that return the return value of an `html` tagged template literal. The above example could be rewritten like so
 
@@ -936,7 +935,7 @@ const variable = createVariable({
 
 bindChildren(
   "#ul-to-bind",
-  (element) => html`${variable.listOfCoolThings.map((coolThing) => html`
+  (element) => variable.listOfCoolThings.map((coolThing) => html`
       <li key="${coolThing}">
         <button 
           key="${coolThing}-button"
@@ -945,7 +944,7 @@ bindChildren(
           }}
           >Log ${coolThing}</button>
       </li>`
-    )}`,
+    ),
   (element, elements) => {
     const youElement = elements.get("you");
     //yeah i know this is a silly example

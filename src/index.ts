@@ -367,7 +367,7 @@ const populateStringFunctionsAndComponents = (el: string, functions: Function[],
     if (typeof els === 'function') {
         el += `{{fn:${functions.length}}}`;
         functions.push(els);
-    } else if (els[FROM_H]) {
+    } else if (els instanceof DocumentFragment) {
         el += `<to-replace-${components.length}></to-replace-${components.length}>`;
         components.push(els);
     } else if (Array.isArray(els)) {
@@ -381,8 +381,6 @@ const populateStringFunctionsAndComponents = (el: string, functions: Function[],
     return el;
 };
 
-const FROM_H = Symbol('from_h');
-
 const html = (strings: TemplateStringsArray, ...els: any[]) => {
     let el = '';
     const functions: Function[] = [];
@@ -391,14 +389,11 @@ const html = (strings: TemplateStringsArray, ...els: any[]) => {
         el += strings[i];
         el = populateStringFunctionsAndComponents(el, functions, components, els[i]);
     }
-    const elements: DocumentFragment & {
-        [FROM_H]?: boolean;
-    } = strToHtml(el);
+    const elements: DocumentFragment = strToHtml(el);
     for (let i = 0; i < elements.children.length; i += 1) {
         const element = elements.children[i];
         replaceFunctions(element as ElementWithListeners, functions, components);
     }
-    elements[FROM_H] = true;
     return elements;
 };
 
@@ -495,11 +490,11 @@ const updateChildren = (elem: HTMLOrSVGElement, elements: NodeListOf<ChildNode>,
     });
 };
 
-const bindChildren = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<ReturnType<typeof html>, TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void)) => {
+const bindChildren = <TElement extends HTMLOrSVGElement = HTMLOrSVGElement>(domElement: IStringOrDomElement<TElement>, fn: IEffect<DocumentFragment | string | string[] | DocumentFragment[], TElement>, afterDiff?: ((root: TElement, elements: Map<string, DiffedElements>) => void)) => {
     const elem = getDomElement(domElement);
     createEffect(() => {
         if (elem === null) return;
-        const elementsHtml = fn(elem);
+        const elementsHtml = html`${fn(elem)}`;
         const elements = elementsHtml.childNodes;
         const mapped = new Map<string, DiffedElements>();
         const safeSetElement = (element: Node, isNew: boolean = true) => {
