@@ -448,6 +448,16 @@ body {
     border-top-left-radius: 0;
 }
 
+.share-with-friend {
+    grid-column: 1/-1;
+    text-align: center;
+}
+
+.share-with-friend a {
+    color: white;
+    white-space: nowrap;
+}
+
 #examples {
     display: grid;
     gap: 2rem;
