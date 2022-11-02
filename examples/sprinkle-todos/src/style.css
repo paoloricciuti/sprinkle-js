@@ -1,0 +1,76 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-image: url(https://www.sprinkle-js.com/assets/tiles.png);
+    background-color: #333;
+    background-blend-mode: overlay;
+    color: #fff;
+}
+
+main {
+    width: min(90%, 30rem);
+    margin: auto;
+    display: grid;
+    justify-content: center;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+#new-todo {
+    display: flex;
+    gap: .5rem;
+}
+
+.new-todo-input {
+    width: 100%;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    padding: .5rem;
+    background-color: #555;
+    color: white;
+}
+
+button {
+    all: unset;
+}
+
+button:disabled {
+    opacity: .3;
+}
+
+#todos {
+    list-style: none;
+    margin: 0;
+    margin-block: 1rem;
+    padding: 0;
+    text-align: start;
+}
+
+#todos>*+* {
+    margin-top: .5rem;
+}
+
+.todo {
+    background-color: #868e96;
+    padding: .5rem;
+    display: flex;
+    justify-content: space-between;
+    border-radius: .3rem;
+}
+
+.complete {
+    width: 100%;
+    cursor: pointer;
+}
+
+.completed .complete {
+    text-decoration: line-through;
+}
