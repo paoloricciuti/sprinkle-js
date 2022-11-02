@@ -1,11 +1,11 @@
 [[redirects]]
   from = "/new/todos"
-  to = "https://stackblitz.com/fork/github/paoloricciuti/sprinkle-js/tree/master/examples/sprinkle-todos"
+  to = "https://stackblitz.com/github/paoloricciuti/sprinkle-js/tree/master/examples/sprinkle-todos"
   status = 301
   force = true
 
 [[redirects]]
   from = "/new"
-  to = "https://stackblitz.com/fork/github/paoloricciuti/sprinkle-js/tree/master/examples/skeleton"
+  to = "https://stackblitz.com/github/paoloricciuti/sprinkle-js/tree/master/examples/skeleton"
   status = 301
   force = true
