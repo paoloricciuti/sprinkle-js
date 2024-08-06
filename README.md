@@ -47,7 +47,9 @@ Sprinkle JS work!
   feel free to do so but it's not what's meant to be.
 - **Sprinkle JS is not** for perf aficionados: we as a community are trying to
   our best and maybe it will become the best version of itself but keep always
-  keep in mind the main philosophy behind it.## Installation To install Sprinkle
+  keep in mind the main philosophy behind it.
+
+## Installation To install Sprinkle
   JS you can run
 
 ```bash
